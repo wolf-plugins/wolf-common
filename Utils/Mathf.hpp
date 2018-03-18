@@ -1,5 +1,5 @@
-#ifndef SPOONIE_MATHF_DEFINED_H
-#define SPOONIE_MATHF_DEFINED_H
+#ifndef WOLF_MATHF_DEFINED_H
+#define WOLF_MATHF_DEFINED_H
 
 #include "Geometry.hpp"
 
@@ -8,8 +8,8 @@
 #include <algorithm>
 #include <cassert>
 
-namespace spoonie
-{
+START_NAMESPACE_DISTRHO
+
 template <typename T,
           typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 static T clamp(const T &value, const T min, const T &max)
@@ -447,6 +447,7 @@ static double parseHexFloat(const char *ptr, char **endPointer)
     // so let's be sure.
     return sign * (mantissa * ipow2(exponent));
 }
-}
+
+END_NAMESPACE_DISTRHO
 
 #endif
