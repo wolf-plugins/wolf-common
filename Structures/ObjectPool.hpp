@@ -3,6 +3,8 @@
 #ifndef SPOONIE_OBJECT_POOL_H_INCLUDED
 #define SPOONIE_OBJECT_POOL_H_INCLUDED
 
+START_NAMESPACE_DISTRHO
+
 namespace spoonie
 {
 template <class T>
@@ -61,5 +63,7 @@ int ObjectPool<T>::numberObjectsLeft()
     return this->objects.getCount();
 }
 }
+
+END_NAMESPACE_DISTRHO
 
 #endif

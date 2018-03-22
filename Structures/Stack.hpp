@@ -3,6 +3,8 @@
 #ifndef SPOONIE_STACK_H_INCLUDED
 #define SPOONIE_STACK_H_INCLUDED
 
+START_NAMESPACE_DISTRHO
+
 namespace spoonie
 {
 
@@ -75,5 +77,7 @@ int Stack<T>::getSize()
     return size;
 }
 }
+
+END_NAMESPACE_DISTRHO
 
 #endif

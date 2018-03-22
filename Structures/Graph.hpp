@@ -1,6 +1,10 @@
 #ifndef SPOONIE_GRAPH_DEFINED_H
 #define SPOONIE_GRAPH_DEFINED_H
 
+#include "src/DistrhoDefines.h"
+
+START_NAMESPACE_DISTRHO
+
 namespace spoonie
 {
   /**
@@ -78,5 +82,7 @@ private:
 };
 
 }
+
+END_NAMESPACE_DISTRHO
 
 #endif

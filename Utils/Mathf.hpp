@@ -10,6 +10,8 @@
 
 START_NAMESPACE_DISTRHO
 
+namespace spoonie
+{
 template <typename T,
           typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 static T clamp(const T &value, const T min, const T &max)
@@ -141,7 +143,7 @@ static float lerp(float a, float b, float f)
 // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                            
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static int doubleToRadixCString(char *buf, double value, int radix)
 {
@@ -308,17 +310,17 @@ static int toHexFloat(char *buffer, const double value)
 
     int length;
 
-    if(sign)
+    if (sign)
         length = std::sprintf(buffer, "%c0x", sign);
     else
         length = std::sprintf(buffer, "0x");
 
     length += doubleToRadixCString(buffer + length, hexDigits, 16);
 
-    if(exponentSign)
+    if (exponentSign)
         return length + std::sprintf(buffer + length, "p%c%d", exponentSign, exponent);
     else
-        return length + std::sprintf(buffer + length, "p%d", exponent);        
+        return length + std::sprintf(buffer + length, "p%d", exponent);
 };
 
 //following functions adapted from ispc
@@ -446,6 +448,7 @@ static double parseHexFloat(const char *ptr, char **endPointer)
     // be represented exactly as doubles?  I would hope so but am not sure,
     // so let's be sure.
     return sign * (mantissa * ipow2(exponent));
+}
 }
 
 END_NAMESPACE_DISTRHO

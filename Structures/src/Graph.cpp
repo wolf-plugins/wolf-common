@@ -7,6 +7,8 @@
 #include <cassert>
 #include <cstring>
 
+START_NAMESPACE_DISTRHO
+
 namespace spoonie
 {
 void Vertex::setPosition(float x, float y)
@@ -210,3 +212,5 @@ void Graph::rebuildFromString(const char *serializedGraph)
     vertexCount = i;
 }
 }
+
+END_NAMESPACE_DISTRHO
