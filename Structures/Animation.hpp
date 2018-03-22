@@ -23,6 +23,7 @@ class Animation
 {
   public:
     Animation(float duration, EasingFunction easingFunction = noEasing);
+    ~Animation();
     void play();
     void pause();
     void rewind();
@@ -40,13 +41,15 @@ class Animation
   private:
 };
 
-class SizeChangeAnimation : Animation
+class SizeChangeAnimation : public Animation
 {
   public:
     SizeChangeAnimation(float duration, Widget *widget, Size<uint> targetSize, EasingFunction easingFunction = noEasing);
+    ~SizeChangeAnimation();
 
   protected:
     void run() override;
+    void applyEasing() override;
 
     Widget *fWidget;
     Size<uint> fSourceSize;

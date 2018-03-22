@@ -12,6 +12,11 @@ Animation::Animation(float duration, EasingFunction easingFunction) : fDuration(
 {
 }
 
+Animation::~Animation()
+{
+
+}
+
 void Animation::play()
 {
 	fIsRunning = true;
@@ -32,12 +37,27 @@ bool Animation::isRunning()
 	return fIsRunning;
 }
 
+void Animation::applyEasing()
+{
+
+}
+
 //TODO: Make this more generic if possible
 SizeChangeAnimation::SizeChangeAnimation(float duration, Widget *widget, Size<uint> targetSize, EasingFunction easingFunction) : Animation(duration, easingFunction),
 																																 fWidget(widget),
 																																 fSourceSize(widget->getSize()),
 																																 fTargetSize(targetSize)
 {
+}
+
+SizeChangeAnimation::~SizeChangeAnimation()
+{
+
+}
+
+void SizeChangeAnimation::applyEasing()
+{
+
 }
 
 void SizeChangeAnimation::run()
