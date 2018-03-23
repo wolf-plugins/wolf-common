@@ -373,9 +373,9 @@ bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
     else
     {
         window.setCursorPos(getAbsoluteX(), getAbsoluteY());
-        window.setCursorStyle(Window::CursorStyle::Grab);
+        window.showCursor();
 
-       window.showCursor();
+        window.setCursorStyle(Window::CursorStyle::Grab);
     }
 
     parent->repaint();

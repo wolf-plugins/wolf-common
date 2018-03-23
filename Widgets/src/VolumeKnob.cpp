@@ -2,35 +2,42 @@
 
 START_NAMESPACE_DISTRHO
 
-VolumeKnob::VolumeKnob(Window &parent, Size<uint> size) noexcept : NanoKnob(parent, size),
-                                                                   fGrowAnimation(0.100f, this, Size<uint>(size.getWidth() + 20, size.getHeight() + 20))
-{
-    parent.addIdleCallback(this);
-}
+VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(widget, size)
 
-VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(widget, size),
-                                                                       fGrowAnimation(0.100f, this, Size<uint>(size.getWidth() + 5, size.getHeight() + 5))
 {
+    const float radius = size.getHeight() / 2.0f;
+    const float gaugeWidth = 3.5f;
+    const float diameter = (radius - gaugeWidth) * 2.0f;
+
+    fKnobSize = Size<uint>(diameter, diameter);
+    fGrowAnimation = new SizeChangeAnimation(0.200f, &fKnobSize, Size<uint>(fKnobSize.getWidth() - 8, fKnobSize.getHeight() - 8));
+
     widget->getParentWindow().addIdleCallback(this);
 }
 
 void VolumeKnob::idleCallback()
 {
-    if (fGrowAnimation.isPlaying())
+    if (fGrowAnimation->isPlaying())
     {
-        fGrowAnimation.run();
+        fGrowAnimation->run();
         repaint();
     }
 }
 
 void VolumeKnob::onMouseHover()
 {
-    fGrowAnimation.play(Animation::Forward);
+    fGrowAnimation->pause();
+    fGrowAnimation->setDuration(0.200f);
+    fGrowAnimation->seek(fGrowAnimation->getCurrentTime() / 2.0f);
+    fGrowAnimation->play(Animation::Forward);
 }
 
 void VolumeKnob::onMouseLeave()
 {
-    fGrowAnimation.play(Animation::Backward);
+    fGrowAnimation->pause();
+    fGrowAnimation->setDuration(0.400f);
+    fGrowAnimation->seek(fGrowAnimation->getCurrentTime() * 2.0f);
+    fGrowAnimation->play(Animation::Backward);
 }
 
 void VolumeKnob::drawNormal()
@@ -47,22 +54,15 @@ void VolumeKnob::drawNormal()
 
     const float radius = height / 2.0f;
 
-    const float indicatorLineHeight = radius - 5;
-    const float indicatorLineWidth = 2.0f;
-    const float indicatorLineMarginTop = 2.0f;
+    const float indicatorLineHeight = fKnobSize.getHeight() / 2.0f - 8;
+    const float indicatorLineWidth = 3.0f;
+    const float indicatorLineMarginTop = 4.0f;
 
     const float gaugeWidth = 3.5f;
     Color gaugeColor = Color(0, 0, 40, 255);
     gaugeColor.interpolate(color, 0.4f);
 
     const float margin = 2.0f;
-
-    //Knob
-    beginPath();
-
-    fillColor(Color(100, 100, 100, 255));
-    circle(radius, radius, radius - gaugeWidth - margin);
-    fill();
 
     //Gauge (empty)
     beginPath();
@@ -75,10 +75,23 @@ void VolumeKnob::drawNormal()
     //Gauge (value)
     beginPath();
 
-    strokeWidth(gaugeWidth - 1.0f);
+    strokeWidth(gaugeWidth);
     strokeColor(color);
     arc(radius, radius, radius - margin, 0.75f * M_PI, (0.75f + 1.5f * percentFilled) * M_PI, NanoVG::Winding::CW);
     stroke();
+
+    //Knob
+    beginPath();
+
+    Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobSize.getHeight(), Color(86, 92, 95, 255), Color(39, 42, 43, 255));
+    //strokeWidth(0.5f);
+    //strokeColor(37,37,37,255);
+
+    fillPaint(knobPaint);
+
+    circle(radius, radius, fKnobSize.getWidth() / 2.0f);
+    fill();
+    //stroke();
 
     //Indicator line
     beginPath();
@@ -89,8 +102,7 @@ void VolumeKnob::drawNormal()
     translate(-radius, -radius);
 
     fillColor(color);
-    strokeWidth(1.0f);
-    roundedRect(radius - indicatorLineWidth / 2.0f, margin + indicatorLineMarginTop, indicatorLineWidth, indicatorLineHeight, 2.0f);
+    rect(radius - indicatorLineWidth / 2.0f, margin + indicatorLineMarginTop + fKnobSize.getHeight() / 2.0f - radius, indicatorLineWidth, indicatorLineHeight);
     fill();
 
     restore();

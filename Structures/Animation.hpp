@@ -45,6 +45,7 @@ public:
 
   bool isPlaying();
 
+  float getCurrentTime();
   float getDuration();
   void setDuration(float duration);
 
@@ -66,7 +67,7 @@ private:
 class SizeChangeAnimation : public Animation
 {
 public:
-  SizeChangeAnimation(float duration, Widget *widget, Size<uint> targetSize, EasingFunction easingFunction = noEasing);
+  SizeChangeAnimation(float duration, Size<uint> *sourceSize, Size<uint> targetSize, EasingFunction easingFunction = noEasing);
   ~SizeChangeAnimation();
 
   void run() override;
@@ -74,9 +75,8 @@ public:
 protected:
   void applyEasing() override;
 
-  Widget *fWidget;
-
-  Size<uint> fSourceSize;  
+  Size<uint> fInitialSize;
+  Size<uint> *fCurrentSize;  
   Size<uint> fTargetSize;
 };
 

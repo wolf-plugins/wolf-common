@@ -44,6 +44,11 @@ void Animation::rewind()
 	fTimeLastRun = std::chrono::steady_clock::now();
 }
 
+float Animation::getCurrentTime()
+{
+	return fCurrentTime;
+}
+
 float Animation::getDuration()
 {
 	return fDuration;
@@ -65,10 +70,10 @@ void Animation::applyEasing()
 }
 
 //TODO: Make this more generic if possible
-SizeChangeAnimation::SizeChangeAnimation(float duration, Widget *widget, Size<uint> targetSize, EasingFunction easingFunction) : Animation(duration, easingFunction),
-																																 fWidget(widget),
-																																 fSourceSize(widget->getSize()),
-																																 fTargetSize(targetSize)
+SizeChangeAnimation::SizeChangeAnimation(float duration, Size<uint> *sourceSize, Size<uint> targetSize, EasingFunction easingFunction) : Animation(duration, easingFunction),
+																																		 fCurrentSize(sourceSize),
+																																		 fInitialSize(*sourceSize),
+																																		 fTargetSize(targetSize)
 {
 }
 
@@ -95,8 +100,8 @@ void SizeChangeAnimation::run()
 	fTimeLastRun = now;
 
 	//Just some cheap lerp for now
-	fWidget->setWidth(spoonie::lerp(fSourceSize.getWidth(), fTargetSize.getWidth(), fCurrentTime / fDuration));
-	fWidget->setHeight(spoonie::lerp(fSourceSize.getHeight(), fTargetSize.getHeight(), fCurrentTime / fDuration));
+	fCurrentSize->setWidth(spoonie::lerp(fInitialSize.getWidth(), fTargetSize.getWidth(), fCurrentTime / fDuration));
+	fCurrentSize->setHeight(spoonie::lerp(fInitialSize.getHeight(), fTargetSize.getHeight(), fCurrentTime / fDuration));
 
 	if ((fPlaybackDirection == Forward && fCurrentTime == fDuration) || (fPlaybackDirection == Backward && fCurrentTime == 0.0f))
 	{

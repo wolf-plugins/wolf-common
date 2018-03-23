@@ -10,7 +10,7 @@ class VolumeKnob : public NanoKnob,
                    public IdleCallback
 {
 public:
-  explicit VolumeKnob(Window &parent, Size<uint> size) noexcept;
+  /* explicit VolumeKnob(Window &parent, Size<uint> size) noexcept; */
   explicit VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept;
 
 protected:
@@ -24,7 +24,8 @@ protected:
   void drawTurning() override;
 
 private:
-  SizeChangeAnimation fGrowAnimation;
+  ScopedPointer<SizeChangeAnimation> fGrowAnimation;
+  Size<uint> fKnobSize;
 
   DISTRHO_LEAK_DETECTOR(VolumeKnob)
 };
