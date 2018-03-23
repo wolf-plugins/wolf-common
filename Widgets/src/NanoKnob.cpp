@@ -14,12 +14,13 @@ NanoKnob::NanoKnob(Window &parent, Size<uint> size) noexcept
       fUsingLog(false),
       fLeftMouseDown(false),
       fColor(Color(255, 0, 0, 255)),
+      fIsHovered(false),
       fCallback(nullptr)
 {
     setSize(size);
 
     using namespace SPOONIE_FONTS;
-    createFontFromMemory("roboto_light", (const uchar*)roboto_light, roboto_light_size, 0);
+    createFontFromMemory("roboto_light", (const uchar *)roboto_light, roboto_light_size, 0);
 }
 
 NanoKnob::NanoKnob(NanoWidget *widget, Size<uint> size) noexcept
@@ -31,12 +32,13 @@ NanoKnob::NanoKnob(NanoWidget *widget, Size<uint> size) noexcept
       fUsingLog(false),
       fLeftMouseDown(false),
       fColor(Color(255, 0, 0, 255)),
+      fIsHovered(false),
       fCallback(nullptr)
 {
     setSize(size);
 
     using namespace SPOONIE_FONTS;
-    createFontFromMemory("roboto_light", (const uchar*)roboto_light, roboto_light_size, 0);
+    createFontFromMemory("roboto_light", (const uchar *)roboto_light, roboto_light_size, 0);
 }
 
 float NanoKnob::getValue() const noexcept
@@ -145,6 +147,14 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
     return false;
 }
 
+void NanoKnob::onMouseHover()
+{
+}
+
+void NanoKnob::onMouseLeave()
+{
+}
+
 bool NanoKnob::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
@@ -157,6 +167,23 @@ bool NanoKnob::onMotion(const MotionEvent &ev)
         setValue(fValue + difference, true);
 
         return true;
+    }
+
+    if (contains(ev.pos))
+    {
+        if (!fIsHovered)
+        {
+            fIsHovered = true;
+            onMouseHover();
+        }
+    }
+    else
+    {
+        if (fIsHovered)
+        {
+            fIsHovered = false;
+            onMouseLeave();
+        }
     }
 
     return false;

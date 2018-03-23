@@ -5,6 +5,7 @@
 #include "Color.hpp"
 #include "Geometry.hpp"
 #include "Widget.hpp"
+#include <chrono>
 
 START_NAMESPACE_DISTRHO
 
@@ -12,48 +13,71 @@ using DGL_NAMESPACE::Color;
 
 enum EasingFunction
 {
-    noEasing,
-    easeOutPower2,
-    easeOutPower4,
-    easeInPower2,
-    easeInPower4
+  noEasing, //linear
+  easeOutPower2,
+  easeOutPower4,
+  easeInPower2,
+  easeInPower4
 };
 
 class Animation
 {
-  public:
-    Animation(float duration, EasingFunction easingFunction = noEasing);
-    ~Animation();
-    void play();
-    void pause();
-    void rewind();
-    bool isRunning();
+public:
+  enum PlaybackDirection
+  {
+    Forward,
+    Backward
+  };
 
-  protected:
-    virtual void run() = 0;
-    virtual void applyEasing();
+  enum RepeatMode
+  {
+    NoRepeat,
+    PingPong //unsupported for now
+  };
 
-    float fDuration; //in seconds
-    float fCurrentTime;
+  Animation(float duration, EasingFunction easingFunction = noEasing);
+  ~Animation();
 
-    EasingFunction fEasingFunction;
-    bool fIsRunning;
-  private:
+  void play(PlaybackDirection playbackDirection = Forward, RepeatMode repeatMode = NoRepeat);
+  void pause();
+  void seek(float time);
+  void rewind();
+
+  bool isPlaying();
+
+  float getDuration();
+  void setDuration(float duration);
+
+protected:
+  virtual void run() = 0;
+  virtual void applyEasing();
+
+  float fDuration; //in seconds
+  float fCurrentTime;
+  std::chrono::steady_clock::time_point fTimeLastRun;
+  PlaybackDirection fPlaybackDirection;
+  RepeatMode fRepeatMode;
+  EasingFunction fEasingFunction;
+  bool fIsPlaying;
+
+private:
 };
 
 class SizeChangeAnimation : public Animation
 {
-  public:
-    SizeChangeAnimation(float duration, Widget *widget, Size<uint> targetSize, EasingFunction easingFunction = noEasing);
-    ~SizeChangeAnimation();
+public:
+  SizeChangeAnimation(float duration, Widget *widget, Size<uint> targetSize, EasingFunction easingFunction = noEasing);
+  ~SizeChangeAnimation();
 
-  protected:
-    void run() override;
-    void applyEasing() override;
+  void run() override;
 
-    Widget *fWidget;
-    Size<uint> fSourceSize;
-    Size<uint> fTargetSize;
+protected:
+  void applyEasing() override;
+
+  Widget *fWidget;
+
+  Size<uint> fSourceSize;  
+  Size<uint> fTargetSize;
 };
 
 END_NAMESPACE_DISTRHO

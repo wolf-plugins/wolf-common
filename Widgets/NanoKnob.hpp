@@ -35,10 +35,13 @@ protected:
   bool onMouse(const MouseEvent &) override;
   bool onMotion(const MotionEvent &) override;
   bool onScroll(const ScrollEvent &) override;
-
+  
   Color getColor() noexcept;
   float getMin() noexcept;
   float getMax() noexcept;
+
+  virtual void onMouseHover();
+  virtual void onMouseLeave();
 
   virtual void drawNormal() = 0;
   virtual void drawHover() = 0;
@@ -53,6 +56,7 @@ private:
 
   bool fLeftMouseDown;
   Point<int> fLeftMouseDownLocation;
+  bool fIsHovered;
   
   int fRotationAngle;
   bool fDragging;
@@ -62,8 +66,6 @@ private:
   Color fColor;
 
   Callback *fCallback;
-
-  void setRotationAngle(const int angle);
 
   DISTRHO_LEAK_DETECTOR(NanoKnob)
 };

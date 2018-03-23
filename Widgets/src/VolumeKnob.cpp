@@ -2,12 +2,35 @@
 
 START_NAMESPACE_DISTRHO
 
-VolumeKnob::VolumeKnob(Window &parent, Size<uint> size) noexcept : NanoKnob(parent, size)
+VolumeKnob::VolumeKnob(Window &parent, Size<uint> size) noexcept : NanoKnob(parent, size),
+                                                                   fGrowAnimation(0.100f, this, Size<uint>(size.getWidth() + 20, size.getHeight() + 20))
 {
+    parent.addIdleCallback(this);
 }
 
-VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(widget, size)
+VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(widget, size),
+                                                                       fGrowAnimation(0.100f, this, Size<uint>(size.getWidth() + 5, size.getHeight() + 5))
 {
+    widget->getParentWindow().addIdleCallback(this);
+}
+
+void VolumeKnob::idleCallback()
+{
+    if (fGrowAnimation.isPlaying())
+    {
+        fGrowAnimation.run();
+        repaint();
+    }
+}
+
+void VolumeKnob::onMouseHover()
+{
+    fGrowAnimation.play(Animation::Forward);
+}
+
+void VolumeKnob::onMouseLeave()
+{
+    fGrowAnimation.play(Animation::Backward);
 }
 
 void VolumeKnob::drawNormal()
@@ -29,11 +52,11 @@ void VolumeKnob::drawNormal()
     const float indicatorLineMarginTop = 2.0f;
 
     const float gaugeWidth = 3.5f;
-    Color gaugeColor = Color(0,0,40,255);
+    Color gaugeColor = Color(0, 0, 40, 255);
     gaugeColor.interpolate(color, 0.4f);
 
     const float margin = 2.0f;
-    
+
     //Knob
     beginPath();
 
@@ -43,7 +66,7 @@ void VolumeKnob::drawNormal()
 
     //Gauge (empty)
     beginPath();
-    
+
     strokeWidth(gaugeWidth);
     strokeColor(gaugeColor);
     arc(radius, radius, radius - margin, 0.75f * M_PI, 0.25f * M_PI, NanoVG::Winding::CW);
@@ -55,7 +78,7 @@ void VolumeKnob::drawNormal()
     strokeWidth(gaugeWidth - 1.0f);
     strokeColor(color);
     arc(radius, radius, radius - margin, 0.75f * M_PI, (0.75f + 1.5f * percentFilled) * M_PI, NanoVG::Winding::CW);
-    stroke();  
+    stroke();
 
     //Indicator line
     beginPath();
@@ -82,7 +105,7 @@ void VolumeKnob::drawNormal()
 
     textAlign(ALIGN_TOP | ALIGN_LEFT);
     text(5, 0, "Out", NULL);*/
-    
+
     closePath();
 }
 

@@ -2,22 +2,31 @@
 #define SPOONIE_VOLUME_KNOB_HPP_INCLUDED
 
 #include "NanoKnob.hpp"
+#include "Animation.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class VolumeKnob : public NanoKnob
+class VolumeKnob : public NanoKnob,
+                   public IdleCallback
 {
 public:
-    explicit VolumeKnob(Window &parent, Size<uint> size) noexcept;
-    explicit VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept;
+  explicit VolumeKnob(Window &parent, Size<uint> size) noexcept;
+  explicit VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept;
 
 protected:
-    void drawNormal() override;
-    void drawHover() override;
-    void drawTurning() override;
+  void idleCallback() override;
+
+  void onMouseHover() override;
+  void onMouseLeave() override;
+
+  void drawNormal() override;
+  void drawHover() override;
+  void drawTurning() override;
 
 private:
-    DISTRHO_LEAK_DETECTOR(VolumeKnob)
+  SizeChangeAnimation fGrowAnimation;
+
+  DISTRHO_LEAK_DETECTOR(VolumeKnob)
 };
 
 END_NAMESPACE_DISTRHO
