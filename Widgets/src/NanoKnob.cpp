@@ -140,7 +140,7 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
 
-        //window.hideCursor();
+        window.hideCursor();
         window.clipCursor(Rectangle<int>(getAbsoluteX() + getWidth() / 2.0f, 0, 0, (int)window.getHeight()));
 
         return true;
