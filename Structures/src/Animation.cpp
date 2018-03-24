@@ -70,22 +70,22 @@ void Animation::applyEasing()
 }
 
 //TODO: Make this more generic if possible
-SizeChangeAnimation::SizeChangeAnimation(float duration, Size<uint> *sourceSize, Size<uint> targetSize, EasingFunction easingFunction) : Animation(duration, easingFunction),
-																																		 fCurrentSize(sourceSize),
-																																		 fInitialSize(*sourceSize),
-																																		 fTargetSize(targetSize)
+FloatTransition::FloatTransition(float duration, float *initialValue, float targetValue, EasingFunction easingFunction) : Animation(duration, easingFunction),
+																														  fCurrentValue(initialValue),
+																														  fInitialValue(*initialValue),
+																														  fTargetValue(targetValue)
 {
 }
 
-SizeChangeAnimation::~SizeChangeAnimation()
+FloatTransition::~FloatTransition()
 {
 }
 
-void SizeChangeAnimation::applyEasing()
+void FloatTransition::applyEasing()
 {
 }
 
-void SizeChangeAnimation::run()
+void FloatTransition::run()
 {
 	using namespace std::chrono;
 	steady_clock::time_point now = steady_clock::now();
@@ -100,8 +100,7 @@ void SizeChangeAnimation::run()
 	fTimeLastRun = now;
 
 	//Just some cheap lerp for now
-	fCurrentSize->setWidth(spoonie::lerp(fInitialSize.getWidth(), fTargetSize.getWidth(), fCurrentTime / fDuration));
-	fCurrentSize->setHeight(spoonie::lerp(fInitialSize.getHeight(), fTargetSize.getHeight(), fCurrentTime / fDuration));
+	*fCurrentValue = spoonie::lerp(fInitialValue, fTargetValue, fCurrentTime / fDuration);
 
 	if ((fPlaybackDirection == Forward && fCurrentTime == fDuration) || (fPlaybackDirection == Backward && fCurrentTime == 0.0f))
 	{

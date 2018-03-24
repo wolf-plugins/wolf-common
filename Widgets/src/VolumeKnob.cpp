@@ -9,8 +9,9 @@ VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(
     const float gaugeWidth = 3.5f;
     const float diameter = (radius - gaugeWidth) * 2.0f;
 
-    fKnobSize = Size<uint>(diameter, diameter);
-    fGrowAnimation = new SizeChangeAnimation(0.200f, &fKnobSize, Size<uint>(fKnobSize.getWidth() - 8, fKnobSize.getHeight() - 8));
+    fKnobDiameter = diameter;
+
+    fGrowAnimation = new FloatTransition(0.200f, &fKnobDiameter, fKnobDiameter - 8);
 
     widget->getParentWindow().addIdleCallback(this);
 }
@@ -54,7 +55,7 @@ void VolumeKnob::drawNormal()
 
     const float radius = height / 2.0f;
 
-    const float indicatorLineHeight = fKnobSize.getHeight() / 2.0f - 8;
+    const float indicatorLineHeight = fKnobDiameter / 2.0f - 8;
     const float indicatorLineWidth = 3.0f;
     const float indicatorLineMarginTop = 4.0f;
 
@@ -83,13 +84,13 @@ void VolumeKnob::drawNormal()
     //Knob
     beginPath();
 
-    Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobSize.getHeight(), Color(86, 92, 95, 255), Color(39, 42, 43, 255));
+    Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobDiameter, Color(86, 92, 95, 255), Color(39, 42, 43, 255));
     //strokeWidth(0.5f);
     //strokeColor(37,37,37,255);
 
     fillPaint(knobPaint);
 
-    circle(radius, radius, fKnobSize.getWidth() / 2.0f);
+    circle(radius, radius, fKnobDiameter / 2.0f);
     fill();
     //stroke();
 
@@ -102,21 +103,10 @@ void VolumeKnob::drawNormal()
     translate(-radius, -radius);
 
     fillColor(color);
-    rect(radius - indicatorLineWidth / 2.0f, margin + indicatorLineMarginTop + fKnobSize.getHeight() / 2.0f - radius, indicatorLineWidth, indicatorLineHeight);
+    rect(radius - indicatorLineWidth / 2.0f, margin + indicatorLineMarginTop + fKnobDiameter / 2.0f - radius, indicatorLineWidth, indicatorLineHeight);
     fill();
 
     restore();
-
-    //Label
-    /*fontFace("roboto_light");
-    fontSize(32.f);
-    fillColor(255, 255, 255, 125);
-
-    textAlign(ALIGN_BOTTOM | ALIGN_RIGHT);
-    text(getWidth() - 5, getHeight(), "In", NULL);
-
-    textAlign(ALIGN_TOP | ALIGN_LEFT);
-    text(5, 0, "Out", NULL);*/
 
     closePath();
 }

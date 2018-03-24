@@ -24,8 +24,8 @@ protected:
   void drawTurning() override;
 
 private:
-  ScopedPointer<SizeChangeAnimation> fGrowAnimation;
-  Size<uint> fKnobSize;
+  ScopedPointer<FloatTransition> fGrowAnimation;
+  float fKnobDiameter;
 
   DISTRHO_LEAK_DETECTOR(VolumeKnob)
 };

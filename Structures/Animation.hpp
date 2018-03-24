@@ -65,23 +65,23 @@ private:
   DISTRHO_LEAK_DETECTOR(Animation)
 };
 
-class SizeChangeAnimation : public Animation
+class FloatTransition : public Animation
 {
 public:
-  SizeChangeAnimation(float duration, Size<uint> *sourceSize, Size<uint> targetSize, EasingFunction easingFunction = noEasing);
-  virtual ~SizeChangeAnimation();
+  FloatTransition(float duration, float *initialValue, float targetValue, EasingFunction easingFunction = noEasing);
+  virtual ~FloatTransition();
 
   void run() override;
 
 protected:
   void applyEasing() override;
 
-  Size<uint> fInitialSize;
-  Size<uint> *fCurrentSize;
-  Size<uint> fTargetSize;
+  float fInitialValue;
+  float *fCurrentValue;
+  float fTargetValue;
 
 private:
-  DISTRHO_LEAK_DETECTOR(SizeChangeAnimation)
+  DISTRHO_LEAK_DETECTOR(FloatTransition)
 };
 
 END_NAMESPACE_DISTRHO
