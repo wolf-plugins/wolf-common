@@ -63,8 +63,8 @@ void VolumeKnob::drawNormal()
     Color gaugeColor = Color(0, 0, 40, 255);
     gaugeColor.interpolate(color, 0.4f);
 
-    const float margin = 2.0f;
-
+    const float margin = 3.0f;
+    
     //Gauge (empty)
     beginPath();
 
