@@ -62,13 +62,14 @@ protected:
   bool fIsPlaying;
 
 private:
+  DISTRHO_LEAK_DETECTOR(Animation)
 };
 
 class SizeChangeAnimation : public Animation
 {
 public:
   SizeChangeAnimation(float duration, Size<uint> *sourceSize, Size<uint> targetSize, EasingFunction easingFunction = noEasing);
-  ~SizeChangeAnimation();
+  virtual ~SizeChangeAnimation();
 
   void run() override;
 
@@ -76,8 +77,11 @@ protected:
   void applyEasing() override;
 
   Size<uint> fInitialSize;
-  Size<uint> *fCurrentSize;  
+  Size<uint> *fCurrentSize;
   Size<uint> fTargetSize;
+
+private:
+  DISTRHO_LEAK_DETECTOR(SizeChangeAnimation)
 };
 
 END_NAMESPACE_DISTRHO
