@@ -193,7 +193,7 @@ Point<int> GraphVertex::clampVertexPosition(const Point<int> point) const
         //clamp to neighbouring vertices
         x = spoonie::clamp<int>(point.getX(), leftVertex->getX() + 1, rightVertex->getX() - 1);
     }
-    
+
     //clamp to graph
     y = spoonie::clamp<int>(y, 0, parent->getHeight());
 
@@ -256,7 +256,7 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
         return true;
     }
 
-    const float resistance = 3.5f;
+    const float resistance = 4.0f;
 
     Point<int> pos = spoonie::flipY(ev.pos, parent->getHeight());
 
@@ -269,7 +269,24 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
     if (leftVertex->getY() > rightVertex->getY())
         difference = -difference;
 
-    mouseDownPosition = pos;
+    Window &window = getParentWindow();
+    const uint windowHeight = window.getHeight();
+
+    //FIXME: this is a bit confusing... mouseDownPosition is flipped, but setCursorPos expects the real y value
+    if (ev.pos.getY() <= 2)
+    {
+        window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + parent->getHeight() - 2);
+        mouseDownPosition.setY(2);
+    }
+    else if (ev.pos.getY() >= parent->getHeight() + 2)
+    {
+        window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + 2);
+        mouseDownPosition.setY(parent->getHeight() - 2);
+    }
+    else
+    {
+        mouseDownPosition = pos;
+    }
 
     tension = spoonie::clamp(tension + difference / resistance, -100.0f, 100.0f);
 
@@ -296,10 +313,10 @@ bool GraphVertex::leftDoubleClick(const Widget::MouseEvent &)
     return true;
 }
 
-void GraphVertex::clipCursorToNeighbouringVertices() 
+void GraphVertex::clipCursorToNeighbouringVertices()
 {
-    GraphVertex* leftVertex = getVertexAtLeft();
-    GraphVertex* rightVertex = getVertexAtRight();
+    GraphVertex *leftVertex = getVertexAtLeft();
+    GraphVertex *rightVertex = getVertexAtRight();
 
     //properties of the clip rectangle
     const int left = leftVertex ? leftVertex->getAbsoluteX() : this->getAbsoluteX();
@@ -315,7 +332,7 @@ bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
 
     steady_clock::time_point now = steady_clock::now();
 
-    bool doubleClick = ev.press && lastClickButton == ev.button && duration_cast< duration<double> >(now - lastClickTimePoint).count() < 0.250;
+    bool doubleClick = ev.press && lastClickButton == ev.button && duration_cast<duration<double>>(now - lastClickTimePoint).count() < 0.250;
 
     if (ev.press)
     {
@@ -323,10 +340,11 @@ bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
         lastClickButton = ev.button;
     }
 
-    if (doubleClick) {
+    if (doubleClick)
+    {
         lastClickButton = -1;
 
-        if(this->type == GraphVertexType::Middle) //vertices on the sides don't receive double click, cause they can't get removed
+        if (this->type == GraphVertexType::Middle) //vertices on the sides don't receive double click, cause they can't get removed
             return leftDoubleClick(ev);
     }
 
@@ -343,7 +361,7 @@ bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
     {
         window.setCursorPos(getAbsoluteX(), getAbsoluteY());
         window.setCursorStyle(Window::CursorStyle::Grab);
-        
+
         window.unclipCursor();
 
         window.showCursor();
@@ -369,9 +387,11 @@ bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
         mouseDownPosition = spoonie::flipY(ev.pos, parent->getHeight());
 
         window.hideCursor();
+        window.clipCursor(Rectangle<int>(getAbsoluteX(), 0, 0, (int)window.getHeight()));
     }
     else
     {
+        window.unclipCursor();
         window.setCursorPos(getAbsoluteX(), getAbsoluteY());
         window.showCursor();
 
@@ -392,10 +412,10 @@ void GraphTensionHandle::render()
 
     layer->strokeWidth(2.0f);
 
-    if(parent->edgeMustBeEmphasized(vertex->getIndex())) //TODO: make that a method on the vertex
+    if (parent->edgeMustBeEmphasized(vertex->getIndex())) //TODO: make that a method on the vertex
         layer->strokeColor(WaveShaperConfig::tension_handle_focused);
     else
-        layer->strokeColor(WaveShaperConfig::tension_handle_normal); 
+        layer->strokeColor(WaveShaperConfig::tension_handle_normal);
 
     const Margin margin = parent->getMargin();
 

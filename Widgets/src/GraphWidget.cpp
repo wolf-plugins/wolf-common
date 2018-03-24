@@ -28,7 +28,7 @@ GraphWidget::GraphWidget(WaveShaperUI *ui)
       focusedElement(nullptr),
       mouseLeftDown(false),
       mouseRightDown(false),
-      margin(48, 48, 36, 122),
+      margin(24, 24, 24, 122),
       maxInput(0.0f)
 {
     
