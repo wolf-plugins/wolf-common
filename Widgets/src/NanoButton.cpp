@@ -127,7 +127,7 @@ bool NanoButton::onMotion(const MotionEvent &ev)
         return true;
     }
 
-    if (contains(ev.pos))
+    if (hover)
     {
         if (state == kNanoStateNormal)
         {

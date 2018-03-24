@@ -159,7 +159,7 @@ bool NanoKnob::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float resistance = 280.0f;
+        const float resistance = 800.0f;
         const float difference = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / resistance * (fMax - fMin);
 
         fLeftMouseDownLocation.setY(ev.pos.getY());
@@ -194,7 +194,7 @@ bool NanoKnob::onScroll(const ScrollEvent &ev)
     if (!contains(ev.pos))
         return false;
 
-    const float resistance = 38.0f;
+    const float resistance = 100.0f;
 
     setValue(getValue() + ev.delta.getY() / resistance * (fMax - fMin), true);
 
