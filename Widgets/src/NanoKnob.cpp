@@ -125,6 +125,7 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
         {
             fLeftMouseDown = false;
 
+            window.unclipCursor();
             window.setCursorPos(this);
             window.showCursor();
 
@@ -140,6 +141,7 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
         fLeftMouseDown = true;
 
         window.hideCursor();
+        window.clipCursor(Rectangle<int>(0, 0, getAbsoluteX(), (int)window.getHeight()));
 
         return true;
     }
@@ -159,10 +161,27 @@ bool NanoKnob::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float resistance = 800.0f;
+        const float resistance = 1500.0f;
         const float difference = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / resistance * (fMax - fMin);
 
-        fLeftMouseDownLocation.setY(ev.pos.getY());
+        Window &window = getParentWindow();
+        const uint windowHeight = window.getHeight();
+        
+        // this doesn't seem right. TODO: investigate mouse cursor manipulation code for off-by-one error
+        if (ev.pos.getY() + getAbsoluteY() >= windowHeight - 1) 
+        {
+            window.setCursorPos(getAbsoluteX(), 2);
+            fLeftMouseDownLocation.setY(-getAbsoluteY() + 2);
+        }
+        else if (ev.pos.getY() + getAbsoluteY() == 0)
+        {
+            window.setCursorPos(getAbsoluteX(), windowHeight - 2);
+            fLeftMouseDownLocation.setY(windowHeight - getAbsoluteY() - 2);
+        }
+        else
+        {
+            fLeftMouseDownLocation.setY(ev.pos.getY());
+        }
 
         setValue(fValue + difference, true);
 
