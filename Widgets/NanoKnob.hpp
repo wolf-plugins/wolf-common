@@ -42,6 +42,8 @@ protected:
 
   virtual void onMouseHover();
   virtual void onMouseLeave();
+  virtual void onMouseUp();
+  virtual void onMouseDown();
 
   virtual void drawNormal() = 0;
   virtual void drawHover() = 0;

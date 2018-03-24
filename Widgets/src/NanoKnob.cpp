@@ -129,6 +129,8 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
             window.setCursorPos(this);
             window.showCursor();
 
+            onMouseUp();
+
             return true;
         }
 
@@ -142,6 +144,8 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
 
         window.hideCursor();
         window.clipCursor(Rectangle<int>(getAbsoluteX() + getWidth() / 2.0f, 0, 0, (int)window.getHeight()));
+
+        onMouseDown();
 
         return true;
     }
@@ -157,11 +161,19 @@ void NanoKnob::onMouseLeave()
 {
 }
 
+void NanoKnob::onMouseUp()
+{
+}
+
+void NanoKnob::onMouseDown()
+{
+}
+
 bool NanoKnob::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float resistance = 1500.0f;
+        const float resistance = 1200.0f;
         const float difference = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / resistance * (fMax - fMin);
 
         Window &window = getParentWindow();
@@ -213,7 +225,7 @@ bool NanoKnob::onScroll(const ScrollEvent &ev)
     if (!contains(ev.pos))
         return false;
 
-    const float resistance = 100.0f;
+    const float resistance = 80.0f;
 
     setValue(getValue() + ev.delta.getY() / resistance * (fMax - fMin), true);
 

@@ -11,7 +11,7 @@ VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(
 
     fKnobDiameter = diameter;
 
-    fGrowAnimation = new FloatTransition(0.200f, &fKnobDiameter, fKnobDiameter - 8);
+    fGrowAnimation = new FloatTransition(0.050f, &fKnobDiameter, fKnobDiameter - 7);
 
     widget->getParentWindow().addIdleCallback(this);
 }
@@ -27,13 +27,23 @@ void VolumeKnob::idleCallback()
 
 void VolumeKnob::onMouseHover()
 {
+
+}
+
+void VolumeKnob::onMouseLeave()
+{
+
+}
+
+void VolumeKnob::onMouseDown()
+{
     fGrowAnimation->pause();
-    fGrowAnimation->setDuration(0.200f);
+    fGrowAnimation->setDuration(0.100f);
     fGrowAnimation->seek(fGrowAnimation->getCurrentTime() / 2.0f);
     fGrowAnimation->play(Animation::Forward);
 }
 
-void VolumeKnob::onMouseLeave()
+void VolumeKnob::onMouseUp()
 {
     fGrowAnimation->pause();
     fGrowAnimation->setDuration(0.400f);

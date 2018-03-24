@@ -18,6 +18,8 @@ protected:
 
   void onMouseHover() override;
   void onMouseLeave() override;
+  void onMouseUp() override;
+  void onMouseDown() override;
 
   void drawNormal() override;
   void drawHover() override;
