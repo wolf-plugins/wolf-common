@@ -49,7 +49,7 @@ void LabelBox::onNanoDisplay()
     beginPath();
 
     fontFace("chivo_bold");
-    fontSize(std::round(height - verticalMargin / 2.0f));
+    fontSize(16.0f);
     fillColor(Color(255, 255, 255, 255));
     textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
 

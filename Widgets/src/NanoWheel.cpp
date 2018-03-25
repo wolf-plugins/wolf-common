@@ -111,7 +111,9 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const int value = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / 20;
+        const float tension = 40.0f;
+
+        const int value = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / tension;
 
         if (value != 0)
         {
