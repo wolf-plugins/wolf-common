@@ -1,7 +1,7 @@
 #include "LabelBox.hpp"
 #include "Mathf.hpp"
 
-#include "Fonts/roboto_light.hpp"
+#include "Fonts/chivo_bold.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -10,7 +10,7 @@ LabelBox::LabelBox(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(wi
     setSize(size);
 
     using namespace SPOONIE_FONTS;
-    createFontFromMemory("roboto_light", (const uchar *)roboto_light, roboto_light_size, 0);
+    createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
 }
 
 void LabelBox::onNanoDisplay()
@@ -45,14 +45,15 @@ void LabelBox::onNanoDisplay()
 
     closePath();
 
+    //Text
     beginPath();
 
-    fontFace(NANOVG_DEJAVU_SANS_TTF);
-    fontSize(height - verticalMargin);
+    fontFace("chivo_bold");
+    fontSize(std::round(height - verticalMargin / 2.0f));
     fillColor(Color(255, 255, 255, 255));
     textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
 
-    text(width / 2.0f, height / 2.0f + verticalMargin / 2.0f - 1, fText, NULL);
+    text(std::round(width / 2.0f), std::round(height / 2.0f + verticalMargin / 2.0f - 2), fText, NULL);
 
     closePath();
 }

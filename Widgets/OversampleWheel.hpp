@@ -13,6 +13,7 @@ public:
 
 protected:
     void draw() override;
+    void drawTriangles();
     
 private:
     DISTRHO_LEAK_DETECTOR(OversampleWheel)
