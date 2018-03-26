@@ -10,7 +10,7 @@
 START_NAMESPACE_DISTRHO
 
 GraphWidgetSocket::GraphWidgetSocket(WaveShaperUI *ui)
-    : NanoWidget((NanoWidget*)ui),
+    : NanoWidget((NanoWidget *)ui),
       ui(ui),
       graphWidget(ui)
 {
@@ -80,7 +80,7 @@ void GraphWidgetSocket::onNanoDisplay()
 
   rect(0.0f, graphBottom + marginSize, getWidth(), graphBottomShadowHeight);
 
-  Paint gradient = linearGradient(centerX, graphBottom + marginSize, centerX, graphBottom + marginSize + graphBottomShadowHeight, Color(21, 22, 30, 0), Color(21, 22, 30, 255));
+  Paint gradient = linearGradient(centerX, graphBottom + marginSize, centerX, graphBottom + marginSize + graphBottomShadowHeight, Color(21, 22, 30, 0), Color(21, 22, 30, 180));
   fillPaint(gradient);
 
   fill();

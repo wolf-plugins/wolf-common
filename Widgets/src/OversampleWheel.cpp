@@ -8,6 +8,7 @@ const float trianglesVerticalMargin = 7.0f;
 const float trianglesHorizontalMargin = 4.0f;
 const float trianglesWidth = 8.0f;
 const float trianglesHeight = 6.0f;
+const float outlineWidth = 2.0f;
 
 OversampleWheel::OversampleWheel(Window &parent, Size<uint> size) noexcept : NanoWheel(parent, size)
 {
@@ -71,52 +72,29 @@ void OversampleWheel::drawTriangles()
     closePath();
 }
 
-void OversampleWheel::draw()
+void OversampleWheel::drawBackground()
+{
+    const float width = getWidth();
+    const float height = getHeight();
+
+    beginPath();
+
+    Paint backgroundGradient = linearGradient(outlineWidth, outlineWidth, outlineWidth, height, Color(54, 52, 88, 255), Color(38, 37, 51, 255));
+
+    fillPaint(backgroundGradient);
+    rect(outlineWidth, outlineWidth, width - outlineWidth * 2.0f, height - outlineWidth * 2.0f);
+    fill();
+
+    closePath();
+}
+
+void OversampleWheel::drawText()
 {
     const float width = getWidth();
     const float height = getHeight();
 
     const char *oversamplingFactors[] = {"", "2x", "4x", "8x", "16x"};
 
-    //outline
-    beginPath();
-
-    const float outlineWidth = 2.0f;
-
-    fillColor(Color(27, 27, 27, 255));
-    roundedRect(0, 0, width, height, 4.0f);
-    fill();
-
-    closePath();
-
-    //background
-    beginPath();
-
-    fillColor(Color(54, 52, 88, 255));
-    rect(outlineWidth, outlineWidth, width - outlineWidth * 2.0f, height - outlineWidth * 2.0f);
-    fill();
-
-    closePath();
-
-    //line at top of display
-    beginPath();
-
-    const float widthLineTopDisplay = 1.0f;
-
-    strokeColor(Color(72, 137, 208, 255));
-    strokeWidth(widthLineTopDisplay);
-
-    moveTo(outlineWidth, outlineWidth);
-    lineTo(width - outlineWidth, outlineWidth);
-
-    stroke();
-
-    closePath();
-
-    //triangles
-    drawTriangles();
-
-    //text
     const int value = getValue();
 
     if (value > 0)
@@ -130,8 +108,72 @@ void OversampleWheel::draw()
 
         text(std::round(width - trianglesWidth - trianglesHorizontalMargin - 5), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
 
+        fontBlur(5.0f);
+        fillColor(Color(255, 255, 255, 80));
+
+        text(std::round(width - trianglesWidth - trianglesHorizontalMargin - 5), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
+
         closePath();
     }
+}
+
+void OversampleWheel::drawOutline()
+{
+    const float width = getWidth();
+    const float height = getHeight();
+
+    beginPath();
+
+    fillColor(Color(27, 27, 27, 255));
+    roundedRect(0, 0, width, height, 5.0f);
+    fill();
+
+    closePath();
+}
+
+void OversampleWheel::draw()
+{
+    const float width = getWidth();
+    const float height = getHeight();
+
+    //outline
+    drawOutline();
+
+    //background
+    drawBackground();
+    
+    //line at top of display
+    beginPath();
+
+    const float widthLineTopDisplay = 1.4f;
+
+    strokeColor(Color(72, 137, 208, 255));
+    strokeWidth(widthLineTopDisplay);
+
+    moveTo(outlineWidth, outlineWidth);
+    lineTo(width - outlineWidth, outlineWidth);
+
+    stroke();
+
+    closePath();
+
+    //reflection at bottom of wheel
+    beginPath();
+
+    Paint wheelShadow = linearGradient(width / 2.0f, height - outlineWidth, width / 2.0f, height, Color(0,0,0,255), Color(0,0,0,0));
+    rect(0, height - outlineWidth, width, height);
+
+    fillPaint(wheelShadow);
+
+    fill(); 
+
+    closePath();
+
+    //triangles
+    drawTriangles();
+
+    //text
+    drawText();
 }
 
 END_NAMESPACE_DISTRHO

@@ -30,15 +30,27 @@ void ResizeHandle::setMinSize(int minX, int minY)
 
 void ResizeHandle::onNanoDisplay()
 {
+    const float width = getWidth();
+    const float height = getHeight();
+    const float lineMarginSides = 5.0f;
+    const float lineMarginBottom = 2.0f;
+
     beginPath();
 
-    strokeWidth(2.0f);
-    fillColor(Color(255, 0, 0, 255));
-    strokeColor(Color(0, 0, 0, 255));
+    strokeWidth(1.0f);
+    strokeColor(Color(176, 176, 176, 255));
 
-    rect(0, 0, getWidth(), getHeight());
+    const float linesBottom = height;
 
-    fill();
+    moveTo(0, linesBottom);
+    lineTo(width, 0);
+
+    for (int i = 1; i < 5; ++i)
+    {
+        moveTo(lineMarginSides * i, linesBottom);
+        lineTo(width + lineMarginSides * i, 0);
+    }
+
     stroke();
 
     closePath();

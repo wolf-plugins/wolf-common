@@ -14,6 +14,9 @@ public:
 protected:
     void draw() override;
     void drawTriangles();
+    void drawBackground();
+    void drawText();
+    void drawOutline();
     
 private:
     DISTRHO_LEAK_DETECTOR(OversampleWheel)

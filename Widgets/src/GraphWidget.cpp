@@ -10,7 +10,7 @@
 #include "GraphNodesLayer.hpp"
 #include "Config.hpp"
 
-#include "Fonts/roboto_light.hpp"
+#include "Fonts/chivo_italic.hpp"
 
 #include <chrono>
 #include <cstdlib>
@@ -47,7 +47,7 @@ GraphWidget::GraphWidget(WaveShaperUI *ui)
     getParentWindow().addIdleCallback(this);
 
     using namespace SPOONIE_FONTS;
-    createFontFromMemory("roboto_light", (const uchar *)roboto_light, roboto_light_size, 0);
+    createFontFromMemory("chivo_italic", (const uchar *)chivo_italic, chivo_italic_size, 0);
 }
 
 GraphWidget::~GraphWidget()
@@ -401,8 +401,8 @@ void GraphWidget::idleCallback()
 
 void GraphWidget::drawInOutLabels()
 {
-    fontFace("roboto_light");
-    fontSize(32.f);
+    fontFace("chivo_italic");
+    fontSize(36.f);
     fillColor(255, 255, 255, 125);
 
     textAlign(ALIGN_BOTTOM | ALIGN_RIGHT);
