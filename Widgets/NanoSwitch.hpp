@@ -32,7 +32,6 @@ protected:
     
 private:
     bool  fIsDown;
-
     Callback* fCallback;
 
     DISTRHO_LEAK_DETECTOR(NanoSwitch)
