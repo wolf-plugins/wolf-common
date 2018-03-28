@@ -34,7 +34,7 @@ void BipolarModeSwitch::drawHandle()
 
     const float halfWidth = width / 2.0f;
 
-    const float radius = 5.0f;
+    const float radius = 6.0f;
 
     beginPath();
 
