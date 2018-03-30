@@ -12,8 +12,7 @@ public:
     explicit RemoveDCSwitch(NanoWidget *widget, Size<uint> size) noexcept;
 
 protected:
-    void drawUp() override;
-    void drawDown() override;
+    void draw() override;
     
 private:
     DISTRHO_LEAK_DETECTOR(RemoveDCSwitch)

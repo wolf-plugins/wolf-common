@@ -11,12 +11,10 @@ public:
     explicit BipolarModeSwitch(NanoWidget *widget, Size<uint> size) noexcept;
 
 protected:
-    void draw();
     void drawHandle();
     void drawSocket();
 
-    void drawUp() override;
-    void drawDown() override;
+    void draw() override;
     
 private:
     DISTRHO_LEAK_DETECTOR(BipolarModeSwitch)

@@ -4,7 +4,7 @@
 START_NAMESPACE_DISTRHO
 
 //TODO: Put these in the config file
-const float trianglesVerticalMargin = 7.0f;
+const float trianglesVerticalMargin = 5.0f;
 const float trianglesHorizontalMargin = 4.0f;
 const float trianglesWidth = 8.0f;
 const float trianglesHeight = 6.0f;
@@ -102,7 +102,7 @@ void OversampleWheel::drawText()
         beginPath();
 
         fontFace("chivo_bold");
-        fontSize(26.0f);
+        fontSize(22.0f);
         fillColor(Color(193, 219, 240, 255));
         textAlign(ALIGN_RIGHT | ALIGN_CENTER);
 
@@ -158,7 +158,7 @@ void OversampleWheel::draw()
     closePath();
 
     //reflection at bottom of wheel
-    beginPath();
+    /*beginPath();
 
     Paint wheelShadow = linearGradient(width / 2.0f, height - outlineWidth, width / 2.0f, height, Color(0,0,0,255), Color(0,0,0,0));
     rect(0, height - outlineWidth, width, height);
@@ -167,7 +167,7 @@ void OversampleWheel::draw()
 
     fill(); 
 
-    closePath();
+    closePath();*/
 
     //triangles
     drawTriangles();

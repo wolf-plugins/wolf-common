@@ -56,15 +56,4 @@ void BipolarModeSwitch::draw()
     drawHandle();
 }
 
-//TODO: change this to a single draw() method
-void BipolarModeSwitch::drawUp()
-{
-    draw();
-}
-
-void BipolarModeSwitch::drawDown()
-{
-    draw();
-}
-
 END_NAMESPACE_DISTRHO

@@ -34,10 +34,7 @@ void NanoSwitch::setDown(bool down) noexcept
 
 void NanoSwitch::onNanoDisplay()
 {
-    if (fIsDown)
-        drawDown();
-    else
-        drawUp();
+    draw();
 }
     
 void NanoSwitch::setCallback(Callback* callback) noexcept

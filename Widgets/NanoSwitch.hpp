@@ -27,8 +27,7 @@ public:
 protected:
     void onNanoDisplay() override;
     bool onMouse(const MouseEvent&) override;
-    virtual void drawUp() = 0;
-    virtual void drawDown() = 0;
+    virtual void draw() = 0;
     
 private:
     bool  fIsDown;

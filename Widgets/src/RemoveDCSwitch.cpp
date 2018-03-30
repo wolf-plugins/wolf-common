@@ -10,23 +10,7 @@ RemoveDCSwitch::RemoveDCSwitch(NanoWidget *widget, Size<uint> size) noexcept : N
 {
 }
 
-void RemoveDCSwitch::drawUp()
-{
-    beginPath();
-
-    strokeWidth(2.0f);
-    fillColor(Color(255, 0, 0, 255));
-    strokeColor(Color(0, 0, 0, 255));
-
-    rect(0, 0, getWidth(), getHeight());
-
-    fill();
-    stroke();
-
-    closePath();
-}
-
-void RemoveDCSwitch::drawDown()
+void RemoveDCSwitch::draw()
 {
     const float socketMargin = 2.0f; //how much we can see the socket behind the main square
     const float doubleSocketMargin = socketMargin * 2.0f;
@@ -40,21 +24,28 @@ void RemoveDCSwitch::drawDown()
     const float mainRectHalfWidth = mainRectWidth / 2.0f;
     const float mainRectCenter = mainRectTopLeft + mainRectHalfWidth;
 
-    //glow
-    beginPath();
-    fillPaint(boxGradient(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight, 4.0f, 12.6f, Color(210, 123, 30, 255), Color(210, 123, 30, 0)));
+    if (isDown())
+    {
+        //glow
+        beginPath();
 
-    rect(0, 0, getWidth(), getHeight());
+        fillPaint(boxGradient(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight, 4.0f, 12.6f, Color(210, 123, 30, 125), Color(210, 123, 30, 0)));
 
-    fill();
+        roundedRect(0, 0, getWidth(), getHeight(), 6.0f);
+        fill();
 
-    closePath();
+        closePath();
+    }
 
     //socket
     beginPath();
-    fillColor(Color(89, 56, 1, 255));
 
-    rect(glowMargin, glowMargin, getWidth() - doubleGlowMargin, getHeight() - doubleGlowMargin);
+    if (isDown())
+        fillColor(Color(59, 36, 27, 255));
+    else
+        fillColor(Color(27, 27, 27, 255));
+
+    roundedRect(glowMargin, glowMargin, getWidth() - doubleGlowMargin, getHeight() - doubleGlowMargin, 4.0f);
 
     fill();
 
@@ -63,7 +54,11 @@ void RemoveDCSwitch::drawDown()
     //main rectangle
     beginPath();
 
-    fillColor(Color(234, 151, 39, 255));
+    if (isDown())
+        fillColor(Color(234, 151, 39, 255));
+    else
+        fillColor(Color(82, 82, 82, 255));
+
     rect(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight);
     fill();
 
@@ -71,7 +66,11 @@ void RemoveDCSwitch::drawDown()
 
     //radial gradient at middle of main rectangle
     beginPath();
-    fillPaint(radialGradient(mainRectCenter, mainRectCenter, 0.5f, mainRectHalfWidth, Color(254, 224, 191, 255), Color(240, 199, 154, 0)));
+
+    if (isDown())
+        fillPaint(radialGradient(mainRectCenter, mainRectCenter, 0.5f, mainRectHalfWidth, Color(254, 224, 191, 255), Color(240, 199, 154, 0)));
+    else
+        fillPaint(radialGradient(mainRectCenter, mainRectCenter, 0.5f, mainRectHalfWidth, Color(113, 113, 113, 255), Color(73, 73, 73, 255)));
 
     rect(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight);
 
@@ -79,18 +78,21 @@ void RemoveDCSwitch::drawDown()
 
     closePath();
 
-    //line at top
-    beginPath();
+    if (isDown())
+    {
+        //line at top
+        beginPath();
 
-    strokeColor(Color(255, 182, 82, 255));
-    strokeWidth(2.0f);
+        strokeColor(Color(255, 182, 82, 255));
+        strokeWidth(1.0f);
 
-    moveTo(mainRectTopLeft, mainRectTopLeft);
-    lineTo(mainRectTopLeft + mainRectWidth, mainRectTopLeft);
+        moveTo(mainRectTopLeft, mainRectTopLeft + 1.0f);
+        lineTo(mainRectTopLeft + mainRectWidth, mainRectTopLeft + 1.0f);
 
-    stroke();
+        stroke();
 
-    closePath();
+        closePath();
+    }
 }
 
 END_NAMESPACE_DISTRHO
