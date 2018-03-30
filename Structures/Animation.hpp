@@ -53,6 +53,7 @@ public:
 protected:
   virtual void run() = 0;
   virtual void onPlay();
+  virtual void onSeek();
   virtual void applyEasing();
 
   float fDuration; //in seconds
@@ -96,7 +97,8 @@ public:
 
   void run() override;
   void onPlay() override;
-  
+  void onSeek() override;
+
 protected:
   void applyEasing() override;
 

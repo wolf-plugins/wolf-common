@@ -35,6 +35,11 @@ void Animation::onPlay()
 
 }
 
+void Animation::onSeek()
+{
+
+}
+
 void Animation::setPlaybackDirection(PlaybackDirection playbackDirection)
 {
 	fPlaybackDirection = playbackDirection;
@@ -48,12 +53,14 @@ void Animation::pause()
 void Animation::seek(float time)
 {
 	fCurrentTime = spoonie::clamp(time, 0.0f, fDuration);
+	fTimeLastRun = std::chrono::steady_clock::now();
+
+	onSeek();
 }
 
 void Animation::rewind()
 {
-	fCurrentTime = 0.0f;
-	fTimeLastRun = std::chrono::steady_clock::now();
+	seek(0);
 }
 
 float Animation::getCurrentTime()
@@ -103,11 +110,6 @@ void FloatTransition::applyEasing()
 
 void FloatTransition::run()
 {
-	if ((fPlaybackDirection == Forward && fCurrentTime >= fDuration) || (fPlaybackDirection == Backward && fCurrentTime <= 0.0f))
-	{
-		this->pause();
-	}
-
 	using namespace std::chrono;
 	steady_clock::time_point now = steady_clock::now();
 
@@ -122,6 +124,11 @@ void FloatTransition::run()
 
 	//Just some cheap lerp for now
 	*fCurrentValue = spoonie::lerp(fInitialValue, fTargetValue, fCurrentTime / fDuration);
+
+	if ((fPlaybackDirection == Forward && fCurrentTime >= fDuration) || (fPlaybackDirection == Backward && fCurrentTime <= 0.0f))
+	{
+		this->pause();
+	}
 }
 
 ColorTransition::ColorTransition(float duration, Color *initialColor, Color targetColor, EasingFunction easingFunction) : Animation(duration, easingFunction)
@@ -146,6 +153,14 @@ void ColorTransition::onPlay()
 	{
 		fRgbaTransitions[i].setDuration(fDuration);
 		fRgbaTransitions[i].play(fPlaybackDirection);
+	}
+}
+
+void ColorTransition::onSeek()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		fRgbaTransitions[i].seek(fCurrentTime);
 	}
 }
 
