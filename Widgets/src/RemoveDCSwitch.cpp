@@ -3,12 +3,15 @@
 START_NAMESPACE_DISTRHO
 
 RemoveDCSwitch::RemoveDCSwitch(NanoWidget *widget, Size<uint> size) noexcept : NanoSwitch(widget, size),
+
                                                                                fSocketColor(27, 27, 27, 255),
-                                                                               fSocketColorTransition(0.500f, &fSocketColor, Color(59, 36, 27, 255)),
+                                                                               fSocketColorTransition(0.080f, &fSocketColor, Color(59, 36, 27, 255)),
+
                                                                                fGlowIcol(Color(210, 123, 30, 0)),
-                                                                               fGlowIcolTransition(0.500f, &fGlowIcol, Color(210, 123, 30, 125)),
-                                                                               fMainRectColor(Color(82, 82, 82, 255)),
-                                                                               fMainRectColorTransition(0.500f, &fMainRectColor, Color(234, 151, 39, 255))
+                                                                               fGlowIcolTransition(0.200f, &fGlowIcol, Color(210, 123, 30, 125)),
+
+                                                                               fMainRectColor(Color(73, 73, 73, 255)),
+                                                                               fMainRectColorTransition(0.100f, &fMainRectColor, Color(234, 151, 39, 255))
 
 {
     widget->getParentWindow().addIdleCallback(this);
@@ -98,7 +101,7 @@ void RemoveDCSwitch::draw()
     if (isDown())
         fillPaint(radialGradient(mainRectCenter, mainRectCenter, 0.5f, mainRectHalfWidth, Color(254, 224, 191, 255), Color(240, 199, 154, 0)));
     else
-        fillPaint(radialGradient(mainRectCenter, mainRectCenter, 0.5f, mainRectHalfWidth, Color(113, 113, 113, 255), Color(73, 73, 73, 255)));
+        fillPaint(radialGradient(mainRectCenter, mainRectCenter, 0.5f, mainRectHalfWidth, Color(113, 113, 113, 255), Color(73, 73, 73, 0)));
 
     rect(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight);
 
@@ -106,7 +109,7 @@ void RemoveDCSwitch::draw()
 
     closePath();
 
-    if (isDown())
+    /*if (isDown())
     {
         //line at top
         beginPath();
@@ -120,7 +123,7 @@ void RemoveDCSwitch::draw()
         stroke();
 
         closePath();
-    }
+    }*/
 }
 
 END_NAMESPACE_DISTRHO
