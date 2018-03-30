@@ -2,12 +2,49 @@
 
 START_NAMESPACE_DISTRHO
 
-RemoveDCSwitch::RemoveDCSwitch(Window &parent, Size<uint> size) noexcept : NanoSwitch(parent, size)
+RemoveDCSwitch::RemoveDCSwitch(NanoWidget *widget, Size<uint> size) noexcept : NanoSwitch(widget, size),
+                                                                               fSocketColor(27, 27, 27, 255),
+                                                                               fSocketColorTransition(0.500f, &fSocketColor, Color(59, 36, 27, 255)),
+                                                                               fGlowIcol(Color(210, 123, 30, 0)),
+                                                                               fGlowIcolTransition(0.500f, &fGlowIcol, Color(210, 123, 30, 125)),
+                                                                               fMainRectColor(Color(82, 82, 82, 255)),
+                                                                               fMainRectColorTransition(0.500f, &fMainRectColor, Color(234, 151, 39, 255))
+
 {
+    widget->getParentWindow().addIdleCallback(this);
 }
 
-RemoveDCSwitch::RemoveDCSwitch(NanoWidget *widget, Size<uint> size) noexcept : NanoSwitch(widget, size)
+void RemoveDCSwitch::idleCallback()
 {
+    bool mustRepaint = false;
+
+    if (fSocketColorTransition.isPlaying())
+    {
+        fSocketColorTransition.run();
+        mustRepaint = true;
+    }
+
+    if (fGlowIcolTransition.isPlaying())
+    {
+        fGlowIcolTransition.run();
+        mustRepaint = true;
+    }
+
+    if (fMainRectColorTransition.isPlaying())
+    {
+        fMainRectColorTransition.run();
+        mustRepaint = true;
+    }
+
+    if (mustRepaint)
+        repaint();
+}
+
+void RemoveDCSwitch::onClick()
+{
+    fSocketColorTransition.play(isDown() ? Animation::Forward : Animation::Backward);
+    fGlowIcolTransition.play(isDown() ? Animation::Forward : Animation::Backward);
+    fMainRectColorTransition.play(isDown() ? Animation::Forward : Animation::Backward);
 }
 
 void RemoveDCSwitch::draw()
@@ -24,26 +61,20 @@ void RemoveDCSwitch::draw()
     const float mainRectHalfWidth = mainRectWidth / 2.0f;
     const float mainRectCenter = mainRectTopLeft + mainRectHalfWidth;
 
-    if (isDown())
-    {
-        //glow
-        beginPath();
+    //glow
+    beginPath();
 
-        fillPaint(boxGradient(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight, 4.0f, 12.6f, Color(210, 123, 30, 125), Color(210, 123, 30, 0)));
+    fillPaint(boxGradient(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight, 4.0f, 12.6f, fGlowIcol, Color(210, 123, 30, 0)));
 
-        roundedRect(0, 0, getWidth(), getHeight(), 6.0f);
-        fill();
+    roundedRect(0, 0, getWidth(), getHeight(), 6.0f);
+    fill();
 
-        closePath();
-    }
+    closePath();
 
     //socket
     beginPath();
 
-    if (isDown())
-        fillColor(Color(59, 36, 27, 255));
-    else
-        fillColor(Color(27, 27, 27, 255));
+    fillColor(fSocketColor);
 
     roundedRect(glowMargin, glowMargin, getWidth() - doubleGlowMargin, getHeight() - doubleGlowMargin, 4.0f);
 
@@ -54,12 +85,9 @@ void RemoveDCSwitch::draw()
     //main rectangle
     beginPath();
 
-    if (isDown())
-        fillColor(Color(234, 151, 39, 255));
-    else
-        fillColor(Color(82, 82, 82, 255));
+    fillColor(fMainRectColor);
 
-    rect(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight);
+    roundedRect(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight, 2.0f);
     fill();
 
     closePath();

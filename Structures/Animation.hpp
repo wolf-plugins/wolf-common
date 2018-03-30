@@ -48,9 +48,11 @@ public:
   float getCurrentTime();
   float getDuration();
   void setDuration(float duration);
-
+  void setPlaybackDirection(PlaybackDirection playbackDirection);
+  
 protected:
   virtual void run() = 0;
+  virtual void onPlay();
   virtual void applyEasing();
 
   float fDuration; //in seconds
@@ -68,12 +70,14 @@ private:
 class FloatTransition : public Animation
 {
 public:
+  FloatTransition();
+
   FloatTransition(float duration, float *initialValue, float targetValue, EasingFunction easingFunction = noEasing);
   virtual ~FloatTransition();
 
   void run() override;
 
-protected:
+protected:  
   void applyEasing() override;
 
   float fInitialValue;
@@ -82,6 +86,24 @@ protected:
 
 private:
   DISTRHO_LEAK_DETECTOR(FloatTransition)
+};
+
+class ColorTransition : public Animation
+{
+public:
+  ColorTransition(float duration, Color *initialColor, Color targetColor, EasingFunction easingFunction = noEasing);
+  virtual ~ColorTransition();
+
+  void run() override;
+  void onPlay() override;
+  
+protected:
+  void applyEasing() override;
+
+  FloatTransition fRgbaTransitions[4]; 
+
+private:
+  DISTRHO_LEAK_DETECTOR(ColorTransition)
 };
 
 END_NAMESPACE_DISTRHO

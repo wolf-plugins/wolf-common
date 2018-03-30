@@ -26,6 +26,18 @@ void Animation::play(PlaybackDirection playbackDirection, RepeatMode repeatMode)
 	fRepeatMode = repeatMode;
 
 	fTimeLastRun = std::chrono::steady_clock::now();
+
+	onPlay();
+}
+
+void Animation::onPlay()
+{
+
+}
+
+void Animation::setPlaybackDirection(PlaybackDirection playbackDirection)
+{
+	fPlaybackDirection = playbackDirection;
 }
 
 void Animation::pause()
@@ -69,6 +81,10 @@ void Animation::applyEasing()
 	//TODO
 }
 
+FloatTransition::FloatTransition() : Animation(0.0f, noEasing)
+{
+}
+
 //TODO: Make this more generic if possible
 FloatTransition::FloatTransition(float duration, float *initialValue, float targetValue, EasingFunction easingFunction) : Animation(duration, easingFunction),
 																														  fCurrentValue(initialValue),
@@ -87,6 +103,11 @@ void FloatTransition::applyEasing()
 
 void FloatTransition::run()
 {
+	if ((fPlaybackDirection == Forward && fCurrentTime >= fDuration) || (fPlaybackDirection == Backward && fCurrentTime <= 0.0f))
+	{
+		this->pause();
+	}
+
 	using namespace std::chrono;
 	steady_clock::time_point now = steady_clock::now();
 
@@ -101,11 +122,42 @@ void FloatTransition::run()
 
 	//Just some cheap lerp for now
 	*fCurrentValue = spoonie::lerp(fInitialValue, fTargetValue, fCurrentTime / fDuration);
+}
 
-	if ((fPlaybackDirection == Forward && fCurrentTime == fDuration) || (fPlaybackDirection == Backward && fCurrentTime == 0.0f))
+ColorTransition::ColorTransition(float duration, Color *initialColor, Color targetColor, EasingFunction easingFunction) : Animation(duration, easingFunction)
+{
+	fRgbaTransitions[0] = FloatTransition(duration, &initialColor->red, targetColor.red, easingFunction);
+	fRgbaTransitions[1] = FloatTransition(duration, &initialColor->green, targetColor.green, easingFunction);
+	fRgbaTransitions[2] = FloatTransition(duration, &initialColor->blue, targetColor.blue, easingFunction);
+	fRgbaTransitions[3] = FloatTransition(duration, &initialColor->alpha, targetColor.alpha, easingFunction);
+}
+
+ColorTransition::~ColorTransition()
+{
+}
+
+void ColorTransition::applyEasing()
+{
+}
+
+void ColorTransition::onPlay()
+{
+	for (int i = 0; i < 4; ++i)
 	{
-		this->pause();
+		fRgbaTransitions[i].setDuration(fDuration);
+		fRgbaTransitions[i].play(fPlaybackDirection);
 	}
+}
+
+void ColorTransition::run()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		fRgbaTransitions[i].run();
+	}
+
+	if (!fRgbaTransitions[0].isPlaying())
+		this->pause();
 }
 
 END_NAMESPACE_DISTRHO

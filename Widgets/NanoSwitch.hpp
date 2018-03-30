@@ -27,8 +27,10 @@ public:
 protected:
     void onNanoDisplay() override;
     bool onMouse(const MouseEvent&) override;
+
     virtual void draw() = 0;
-    
+
+    virtual void onClick();
 private:
     bool  fIsDown;
     Callback* fCallback;

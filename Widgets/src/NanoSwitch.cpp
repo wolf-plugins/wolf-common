@@ -42,6 +42,11 @@ void NanoSwitch::setCallback(Callback* callback) noexcept
     fCallback = callback;
 }
 
+void NanoSwitch::onClick()
+{
+
+}
+
 bool NanoSwitch::onMouse(const MouseEvent& ev)
 {
     if (ev.press && contains(ev.pos))
@@ -49,6 +54,8 @@ bool NanoSwitch::onMouse(const MouseEvent& ev)
         fIsDown = !fIsDown;
 
         repaint();
+
+        onClick();
 
         if (fCallback != nullptr)
             fCallback->nanoSwitchClicked(this);
