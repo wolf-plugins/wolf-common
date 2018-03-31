@@ -128,6 +128,7 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
             window.unclipCursor();
             window.setCursorPos(this);
             window.showCursor();
+            getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
 
             onMouseUp();
 
@@ -178,7 +179,7 @@ bool NanoKnob::onMotion(const MotionEvent &ev)
 
         Window &window = getParentWindow();
         const uint windowHeight = window.getHeight();
-        
+
         // this doesn't seem right. TODO: investigate mouse cursor manipulation code for off-by-one error
         if (ev.pos.getY() + getAbsoluteY() >= windowHeight - 1)
         {

@@ -32,6 +32,8 @@ private:
     bool fHasFocus;
     Callback* fCallback;
 
+    bool fIsHovered;
+    
     int fMinSizeX;
     int fMinSizeY;
 

@@ -8,32 +8,36 @@ START_NAMESPACE_DISTRHO
 
 class NanoSwitch : public NanoWidget
 {
-public:
+  public:
     class Callback
     {
-    public:
+      public:
         virtual ~Callback() {}
-        virtual void nanoSwitchClicked(NanoSwitch* nanoSwitch) = 0;
+        virtual void nanoSwitchClicked(NanoSwitch *nanoSwitch) = 0;
     };
 
-    explicit NanoSwitch(Window& parent, Size<uint> size) noexcept;
-    explicit NanoSwitch(NanoWidget* widget, Size<uint> size) noexcept;
+    explicit NanoSwitch(Window &parent, Size<uint> size) noexcept;
+    explicit NanoSwitch(NanoWidget *widget, Size<uint> size) noexcept;
 
     bool isDown() const noexcept;
     void setDown(bool down) noexcept;
 
-    void setCallback(Callback* callback) noexcept;
+    void setCallback(Callback *callback) noexcept;
 
-protected:
+  protected:
     void onNanoDisplay() override;
-    bool onMouse(const MouseEvent&) override;
+    bool onMouse(const MouseEvent &) override;
+    bool onMotion(const MotionEvent &ev) override;
 
     virtual void draw() = 0;
 
     virtual void onClick();
-private:
-    bool  fIsDown;
-    Callback* fCallback;
+
+  private:
+    bool fIsDown;
+    bool fIsHovered;
+    
+    Callback *fCallback;
 
     DISTRHO_LEAK_DETECTOR(NanoSwitch)
 };

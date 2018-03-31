@@ -87,6 +87,7 @@ bool NanoWheel::onMouse(const MouseEvent &ev)
 
             window.setCursorPos(this);
             window.showCursor();
+            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
 
             return true;
         }
@@ -123,6 +124,22 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
         }
 
         return true;
+    }
+
+    if (contains(ev.pos))
+    {
+        if (!fIsHovered)
+        {
+            fIsHovered = true;
+            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
+        }
+
+        return true;
+    }
+    else if (fIsHovered)
+    {
+        fIsHovered = false;
+        getParentWindow().setCursorStyle(Window::CursorStyle::Default);
     }
 
     return false;

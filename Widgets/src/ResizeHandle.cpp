@@ -1,4 +1,6 @@
 #include "ResizeHandle.hpp"
+#include "Window.hpp"
+
 #include <cmath>
 
 START_NAMESPACE_DISTRHO
@@ -99,6 +101,22 @@ bool ResizeHandle::onMotion(const MotionEvent &ev)
         fCallback->resizeHandleMoved(right, bottom);
 
         return true;
+    }
+
+    if (contains(ev.pos))
+    {
+        if (!fIsHovered)
+        {
+            fIsHovered = true;
+            getParentWindow().setCursorStyle(Window::CursorStyle::NW_SE_Resize);
+        }
+
+        return true;
+    }
+    else if (fIsHovered)
+    {
+        fIsHovered = false;
+        getParentWindow().setCursorStyle(Window::CursorStyle::Default);
     }
 
     return false;

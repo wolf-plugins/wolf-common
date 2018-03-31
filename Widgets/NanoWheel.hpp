@@ -40,6 +40,8 @@ class NanoWheel : public NanoWidget
     bool fLeftMouseDown;
     Point<int> fLeftMouseDownLocation;
 
+    bool fIsHovered;
+
     int fValue;
     int fMin;
     int fMax;

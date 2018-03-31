@@ -642,6 +642,12 @@ bool GraphWidget::onMotion(const MotionEvent &ev)
     else if (hovered && !contains(ev.pos) && focusedElement == nullptr)
     {
         onMouseLeave();
+        hovered = false;
+
+        return false;
+    }
+    else if (focusedElement == nullptr)
+    {
         return false;
     }
 

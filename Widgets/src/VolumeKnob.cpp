@@ -27,12 +27,12 @@ void VolumeKnob::idleCallback()
 
 void VolumeKnob::onMouseHover()
 {
-
+    getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
 }
 
 void VolumeKnob::onMouseLeave()
 {
-
+    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 }
 
 void VolumeKnob::onMouseDown()
