@@ -50,6 +50,8 @@ protected:
   bool onMotion(const MotionEvent &ev) override;
   void idleCallback() override;
 
+  void onMouseLeave();
+
   /**
    * Unused.
    */
@@ -179,6 +181,8 @@ private:
   const int marginRight = 48;
   const int marginBottom = 84;*/
 
+  bool hovered;
+  
   Margin margin;
 
   float maxInput;

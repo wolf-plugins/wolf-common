@@ -21,7 +21,7 @@ START_NAMESPACE_DISTRHO
 const char *graphDefaultState = "0x0p+0,0x0p+0,0x0p+0,0;0x1p+0,0x1p+0,0x0p+0,0;";
 
 GraphWidget::GraphWidget(WaveShaperUI *ui)
-    : NanoWidget((NanoWidget*)ui),
+    : NanoWidget((NanoWidget *)ui),
       ui(ui),
       graphNodesLayer(this),
       graphVerticesPool(spoonie::maxVertices, this, &graphNodesLayer, GraphVertexType::Middle),
@@ -29,9 +29,10 @@ GraphWidget::GraphWidget(WaveShaperUI *ui)
       mouseLeftDown(false),
       mouseRightDown(false),
       margin(24, 24, 24, 122),
-      maxInput(0.0f)
+      maxInput(0.0f),
+      hovered(false)
 {
-    
+
     const int width = ui->getWidth() - margin.left - margin.right;
     const int height = ui->getHeight() - margin.top - margin.bottom;
 
@@ -60,7 +61,7 @@ GraphWidget::~GraphWidget()
 
 void GraphWidget::onResize(const ResizeEvent &ev)
 {
-    if(ev.oldSize.isNull())
+    if (ev.oldSize.isNull())
         return;
 
     setAbsolutePos(margin.left, margin.top);
@@ -632,23 +633,37 @@ bool GraphWidget::onMouse(const MouseEvent &ev)
 bool GraphWidget::onMotion(const MotionEvent &ev)
 {
     const Point<int> point = spoonie::flipY(ev.pos, getHeight());
+    GraphNode *hoveredNode = getHoveredNode(point);
 
-    if (focusedElement)
+    if (contains(ev.pos) || hoveredNode != nullptr)
+    {
+        hovered = true;
+    }
+    else if (hovered && !contains(ev.pos) && focusedElement == nullptr)
+    {
+        onMouseLeave();
+        return false;
+    }
+
+    if (focusedElement != nullptr)
     {
         return focusedElement->onMotion(ev);
     }
-
-    GraphNode *hoveredNode = getHoveredNode(point);
 
     if (hoveredNode != nullptr)
     {
         return hoveredNode->onMotion(ev);
     }
 
-    //The cursor is not over any graph node
+    //The mouse pointer is not over any graph node
     getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 
-    return false;
+    return true;
+}
+
+void GraphWidget::onMouseLeave()
+{
+    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 }
 
 const Margin GraphWidget::getMargin()

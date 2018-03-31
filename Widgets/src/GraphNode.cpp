@@ -360,11 +360,10 @@ bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
     else
     {
         window.setCursorPos(getAbsoluteX(), getAbsoluteY());
-        window.setCursorStyle(Window::CursorStyle::Grab);
-
         window.unclipCursor();
 
         window.showCursor();
+        window.setCursorStyle(Window::CursorStyle::Grab);
     }
 
     parent->repaint();
