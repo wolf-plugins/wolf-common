@@ -4,13 +4,20 @@
 #include "Mathf.hpp"
 #include "Geometry.hpp"
 #include "Widget.hpp"
+
 #include <chrono>
 
 START_NAMESPACE_DISTRHO
 
 Animation::Animation(float duration, EasingFunction easingFunction) : fDuration(duration),
 																	  fEasingFunction(easingFunction),
-																	  fIsPlaying(false)
+																	  fRepeatMode(NoRepeat),
+																	  fPlaybackDirection(Forward),
+																	  fIsPlaying(false),
+																	  fCurrentTime(0.0f),
+																	  fSpeed(1.0f),
+																	  fTimeLastRun(std::chrono::steady_clock::now())
+
 {
 }
 
@@ -32,17 +39,18 @@ void Animation::play(PlaybackDirection playbackDirection, RepeatMode repeatMode)
 
 void Animation::onPlay()
 {
-
 }
 
 void Animation::onSeek()
 {
-
 }
 
-void Animation::setPlaybackDirection(PlaybackDirection playbackDirection)
+void Animation::onDurationChange()
 {
-	fPlaybackDirection = playbackDirection;
+}
+
+void Animation::onSpeedChange()
+{
 }
 
 void Animation::pause()
@@ -76,6 +84,8 @@ float Animation::getDuration()
 void Animation::setDuration(float duration)
 {
 	fDuration = duration;
+
+	onDurationChange();
 }
 
 bool Animation::isPlaying()
@@ -88,11 +98,40 @@ void Animation::applyEasing()
 	//TODO
 }
 
+void Animation::setSpeed(float speed)
+{
+	fSpeed = speed;
+
+	onSpeedChange();
+}
+
+void Animation::synchronize()
+{
+	using namespace std::chrono;
+	steady_clock::time_point now = steady_clock::now();
+
+	float deltaTime = duration_cast<duration<float>>((now - fTimeLastRun) * fSpeed).count();
+
+	if (fPlaybackDirection == Forward)
+		fCurrentTime = std::min(fDuration, fCurrentTime + deltaTime);
+	else
+		fCurrentTime = std::max(0.0f, fCurrentTime - deltaTime);
+
+	fTimeLastRun = now;
+}
+
+void Animation::pauseIfDone()
+{
+	if ((fPlaybackDirection == Forward && fCurrentTime >= fDuration) || (fPlaybackDirection == Backward && fCurrentTime <= 0.0f))
+	{
+		this->pause();
+	}
+}
+
 FloatTransition::FloatTransition() : Animation(0.0f, noEasing)
 {
 }
 
-//TODO: Make this more generic if possible
 FloatTransition::FloatTransition(float duration, float *initialValue, float targetValue, EasingFunction easingFunction) : Animation(duration, easingFunction),
 																														  fCurrentValue(initialValue),
 																														  fInitialValue(*initialValue),
@@ -110,69 +149,98 @@ void FloatTransition::applyEasing()
 
 void FloatTransition::run()
 {
-	using namespace std::chrono;
-	steady_clock::time_point now = steady_clock::now();
-
-	float deltaTime = duration_cast<duration<float>>(now - fTimeLastRun).count();
-
-	if (fPlaybackDirection == Forward)
-		fCurrentTime = std::min(fDuration, fCurrentTime + deltaTime);
-	else
-		fCurrentTime = std::max(0.0f, fCurrentTime - deltaTime);
-
-	fTimeLastRun = now;
+	synchronize();
 
 	//Just some cheap lerp for now
 	*fCurrentValue = spoonie::lerp(fInitialValue, fTargetValue, fCurrentTime / fDuration);
 
-	if ((fPlaybackDirection == Forward && fCurrentTime >= fDuration) || (fPlaybackDirection == Backward && fCurrentTime <= 0.0f))
+	pauseIfDone();
+}
+
+AnimationContainer::AnimationContainer(float duration, EasingFunction easingFunction) : Animation(duration, easingFunction)
+{
+}
+
+AnimationContainer::~AnimationContainer()
+{
+}
+
+void AnimationContainer::applyEasing()
+{
+}
+
+void AnimationContainer::onPlay()
+{
+	for (size_t i = 0; i < fAnimations.size(); ++i)
 	{
-		this->pause();
+		fAnimations[i]->play(fPlaybackDirection, fRepeatMode);
 	}
 }
 
-ColorTransition::ColorTransition(float duration, Color *initialColor, Color targetColor, EasingFunction easingFunction) : Animation(duration, easingFunction)
+void AnimationContainer::onSeek()
 {
-	fRgbaTransitions[0] = FloatTransition(duration, &initialColor->red, targetColor.red, easingFunction);
-	fRgbaTransitions[1] = FloatTransition(duration, &initialColor->green, targetColor.green, easingFunction);
-	fRgbaTransitions[2] = FloatTransition(duration, &initialColor->blue, targetColor.blue, easingFunction);
-	fRgbaTransitions[3] = FloatTransition(duration, &initialColor->alpha, targetColor.alpha, easingFunction);
+	for (size_t i = 0; i < fAnimations.size(); ++i)
+	{
+		fAnimations[i]->seek(fCurrentTime);
+	}
+}
+
+void AnimationContainer::onDurationChange()
+{
+	for (size_t i = 0; i < fAnimations.size(); ++i)
+	{
+		fAnimations[i]->setDuration(fDuration);
+	}
+}
+
+void AnimationContainer::onSpeedChange()
+{
+	for (size_t i = 0; i < fAnimations.size(); ++i)
+	{
+		fAnimations[i]->setSpeed(fSpeed);
+	}
+}
+
+void AnimationContainer::run()
+{
+	synchronize();
+
+	for (size_t i = 0; i < fAnimations.size(); ++i)
+	{
+		fAnimations[i]->run();
+	}
+
+	pauseIfDone();
+}
+
+ColorTransition::ColorTransition(float duration, Color *initialColor, Color targetColor, EasingFunction easingFunction) : AnimationContainer(duration, easingFunction)
+{
+	fAnimations = std::vector<std::shared_ptr<Animation>>(4);
+
+	fAnimations[0] = std::make_shared<FloatTransition>(duration, &initialColor->red, targetColor.red, easingFunction);
+	fAnimations[1] = std::make_shared<FloatTransition>(duration, &initialColor->green, targetColor.green, easingFunction);
+	fAnimations[2] = std::make_shared<FloatTransition>(duration, &initialColor->blue, targetColor.blue, easingFunction);
+	fAnimations[3] = std::make_shared<FloatTransition>(duration, &initialColor->alpha, targetColor.alpha, easingFunction);
 }
 
 ColorTransition::~ColorTransition()
 {
 }
 
-void ColorTransition::applyEasing()
+GradientTransition::GradientTransition() : AnimationContainer(0)
 {
 }
 
-void ColorTransition::onPlay()
+GradientTransition::GradientTransition(float duration, NanoVG::Paint *initialGradient, NanoVG::Paint targetGradient, EasingFunction easingFunction) : AnimationContainer(duration, easingFunction)
 {
-	for (int i = 0; i < 4; ++i)
-	{
-		fRgbaTransitions[i].setDuration(fDuration);
-		fRgbaTransitions[i].play(fPlaybackDirection);
-	}
+	fAnimations = std::vector<std::shared_ptr<Animation>>(2);
+
+	fAnimations[0] = std::make_shared<ColorTransition>(duration, &initialGradient->innerColor, targetGradient.innerColor, easingFunction);
+	fAnimations[1] = std::make_shared<ColorTransition>(duration, &initialGradient->outerColor, targetGradient.outerColor, easingFunction);
 }
 
-void ColorTransition::onSeek()
+GradientTransition::~GradientTransition()
 {
-	for (int i = 0; i < 4; ++i)
-	{
-		fRgbaTransitions[i].seek(fCurrentTime);
-	}
-}
-
-void ColorTransition::run()
-{
-	for (int i = 0; i < 4; ++i)
-	{
-		fRgbaTransitions[i].run();
-	}
-
-	if (!fRgbaTransitions[0].isPlaying())
-		this->pause();
 }
 
 END_NAMESPACE_DISTRHO

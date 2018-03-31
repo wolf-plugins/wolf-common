@@ -20,12 +20,16 @@ class RemoveDCSwitch : public NanoSwitch,
 
   private:
     Color fSocketColor;
-    Color fGlowIcol;
-    Color fMainRectColor;
-
     ColorTransition fSocketColorTransition;
+
+    Color fGlowIcol;
     ColorTransition fGlowIcolTransition;
+
+    Color fMainRectColor;
     ColorTransition fMainRectColorTransition;
+
+    NanoVG::Paint fMainRectGradient;
+    GradientTransition fMainRectGradientTransition;
 
     DISTRHO_LEAK_DETECTOR(RemoveDCSwitch)
 };

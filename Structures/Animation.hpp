@@ -5,20 +5,15 @@
 #include "Color.hpp"
 #include "Geometry.hpp"
 #include "Widget.hpp"
+#include "NanoVG.hpp"
+
 #include <chrono>
+#include <functional>
+#include <memory>
 
 START_NAMESPACE_DISTRHO
 
 using DGL_NAMESPACE::Color;
-
-enum EasingFunction
-{
-  noEasing, //linear
-  easeOutPower2,
-  easeOutPower4,
-  easeInPower2,
-  easeInPower4
-};
 
 class Animation
 {
@@ -35,6 +30,15 @@ public:
     PingPong //unsupported for now
   };
 
+  enum EasingFunction
+  {
+    noEasing, //linear
+    easeOutPower2,
+    easeOutPower4,
+    easeInPower2,
+    easeInPower4
+  };
+
   Animation(float duration, EasingFunction easingFunction = noEasing);
   ~Animation();
 
@@ -43,21 +47,30 @@ public:
   void seek(float time);
   void rewind();
 
+  virtual void run() = 0;
+
   bool isPlaying();
+
+  void setDuration(float duration);
+  void setSpeed(float speed);
 
   float getCurrentTime();
   float getDuration();
-  void setDuration(float duration);
-  void setPlaybackDirection(PlaybackDirection playbackDirection);
-  
+
 protected:
-  virtual void run() = 0;
+  void synchronize();
+  void pauseIfDone();
+
   virtual void onPlay();
   virtual void onSeek();
+  virtual void onDurationChange();
+  virtual void onSpeedChange();
+
   virtual void applyEasing();
 
-  float fDuration; //in seconds
+  float fDuration;
   float fCurrentTime;
+  float fSpeed;
   std::chrono::steady_clock::time_point fTimeLastRun;
   PlaybackDirection fPlaybackDirection;
   RepeatMode fRepeatMode;
@@ -78,7 +91,7 @@ public:
 
   void run() override;
 
-protected:  
+protected:
   void applyEasing() override;
 
   float fInitialValue;
@@ -89,23 +102,47 @@ private:
   DISTRHO_LEAK_DETECTOR(FloatTransition)
 };
 
-class ColorTransition : public Animation
+class AnimationContainer : public Animation
+{
+public:
+  AnimationContainer(float duration, EasingFunction easingFunction = noEasing);
+  virtual ~AnimationContainer();
+
+  void run() override;
+
+  void onPlay() override;
+  void onSeek() override;
+  void onDurationChange() override;
+  void onSpeedChange() override;
+
+protected:
+  void applyEasing() override;
+
+  std::vector<std::shared_ptr<Animation>> fAnimations;
+
+private:
+  DISTRHO_LEAK_DETECTOR(AnimationContainer)
+};
+
+class ColorTransition : public AnimationContainer
 {
 public:
   ColorTransition(float duration, Color *initialColor, Color targetColor, EasingFunction easingFunction = noEasing);
   virtual ~ColorTransition();
 
-  void run() override;
-  void onPlay() override;
-  void onSeek() override;
-
-protected:
-  void applyEasing() override;
-
-  FloatTransition fRgbaTransitions[4]; 
-
 private:
   DISTRHO_LEAK_DETECTOR(ColorTransition)
+};
+
+class GradientTransition : public AnimationContainer
+{
+public:
+  GradientTransition();
+  GradientTransition(float duration, NanoVG::Paint *initialGradient, NanoVG::Paint targetGradient, EasingFunction easingFunction = noEasing);
+  virtual ~GradientTransition();
+
+private:
+  DISTRHO_LEAK_DETECTOR(GradientTransition)
 };
 
 END_NAMESPACE_DISTRHO
