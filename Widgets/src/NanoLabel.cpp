@@ -27,7 +27,7 @@ void NanoLabel::onNanoDisplay()
     fillColor(fColor);
     textAlign(fAlign);
 
-    text(0, 0, fText, NULL);
+    text(fMargin.left, fMargin.top, fText, NULL);
 
     closePath();
 }
