@@ -4,7 +4,6 @@
 #include "ObjectPool.hpp"
 #include "DistrhoUI.hpp"
 #include "Graph.hpp"
-#include "GraphNodesLayer.hpp"
 #include "Layout.hpp"
 
 START_NAMESPACE_DISTRHO
@@ -13,18 +12,19 @@ class GraphVertex;
 class GraphTensionHandle;
 class GraphNode;
 class WaveShaperUI;
+class GraphWidget;
 
-class GraphWidget : public NanoWidget,
-                    public IdleCallback
+class GraphWidgetInner : public NanoWidget,
+                         public IdleCallback
 {
   friend class GraphNode;
   friend class GraphVertex;
   friend class GraphTensionHandle;
-  friend class GraphNodesLayer;
+  friend class GraphWidget;
 
 public:
-  GraphWidget(WaveShaperUI *ui);
-  ~GraphWidget();
+  GraphWidgetInner(WaveShaperUI *ui, Size<uint> size);
+  ~GraphWidgetInner();
 
   /**
    * Recreate the graph according to a saved state.
@@ -35,9 +35,6 @@ public:
    * Reset the graph back into its default state.
    */
   void reset();
-
-  const Margin getMargin();
-  void setMargin(const Margin margin);
 
 protected:
   /**
@@ -57,9 +54,6 @@ protected:
    */
   void updateAnimations();
 
-  /**
-   * Flip the Y axis so that the origin of the graph is located at the bottom-left corner.
-   */
   void flipYAxis();
 
   /**
@@ -104,6 +98,8 @@ protected:
    */
   void drawInputIndicator();
 
+  void drawVertices();
+
   /**
    * Insert a new vertex into the graph at a specified location and return a pointer to it. 
    * The position is in absolute coordinates.
@@ -143,11 +139,6 @@ private:
   spoonie::Graph lineEditor;
 
   /**
-   * The widget on which the nodes are rendered.
-   */
-  GraphNodesLayer graphNodesLayer;
-
-  /**
    * Contains the vertex widgets used in the graph.
    */
   GraphVertex *graphVertices[spoonie::maxVertices];
@@ -173,23 +164,34 @@ private:
    */
   const float absoluteVertexSize = 7.0f;
 
-  /**
-   * Define the space around the grid of the graph.
-   */
-  /*const int marginTop = 36;
-  const int marginLeft = 48;
-  const int marginRight = 48;
-  const int marginBottom = 84;*/
-
   bool hovered;
-  
-  Margin margin;
 
   float maxInput;
   float maxInputAcceleration = 0.0f;
 
   Size<uint> initialSize;
-  
+
+  GraphWidget *parent;
+
+  DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWidgetInner)
+};
+
+class GraphWidget : public NanoWidget
+{
+public:
+  GraphWidget(WaveShaperUI *ui, Size<uint> size);
+  ~GraphWidget();
+
+  void rebuildFromString(const char * serializedGraph);
+
+protected:
+  void onResize(const ResizeEvent &ev) override;
+  void onNanoDisplay() override;
+
+private:
+  ScopedPointer<GraphWidgetInner> fGraphWidgetInner;
+  Margin fMargin;
+
   DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWidget)
 };
 

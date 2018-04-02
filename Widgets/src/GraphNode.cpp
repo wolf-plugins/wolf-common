@@ -10,9 +10,8 @@
 
 START_NAMESPACE_DISTRHO
 
-GraphNode::GraphNode(GraphWidget *parent, GraphNodesLayer *layer) : parent(parent),
-                                                                    layer(layer),
-                                                                    grabbed(false)
+GraphNode::GraphNode(GraphWidgetInner *parent) : parent(parent),
+                                                 grabbed(false)
 {
 }
 
@@ -22,11 +21,11 @@ bool GraphNode::onMotion(const Widget::MotionEvent &) { return false; }
 bool GraphNode::onMouse(const Widget::MouseEvent &) { return false; }
 void GraphNode::render() {}
 
-GraphVertex::GraphVertex(GraphWidget *parent, GraphNodesLayer *layer, GraphVertexType type) : GraphNode(parent, layer),
-                                                                                              tensionHandle(parent, layer, this),
-                                                                                              surface(Circle<int>(0, 0, 8.0f)),
-                                                                                              type(type),
-                                                                                              lastClickButton(0)
+GraphVertex::GraphVertex(GraphWidgetInner *parent, GraphVertexType type) : GraphNode(parent),
+                                                                           tensionHandle(parent, this),
+                                                                           surface(Circle<int>(0, 0, 8.0f)),
+                                                                           type(type),
+                                                                           lastClickButton(0)
 {
     switch (type)
     {
@@ -54,21 +53,19 @@ bool GraphVertex::isLockedX() const
 
 void GraphVertex::render()
 {
-    layer->beginPath();
+    parent->beginPath();
 
-    layer->strokeWidth(2.0f);
+    parent->strokeWidth(2.0f);
 
-    layer->strokeColor(WaveShaperConfig::vertex_stroke_normal);
-    layer->fillColor(WaveShaperConfig::vertex_fill_normal);
+    parent->strokeColor(WaveShaperConfig::vertex_stroke_normal);
+    parent->fillColor(WaveShaperConfig::vertex_fill_normal);
 
-    const Margin margin = parent->getMargin();
+    parent->circle(getX(), getY(), getSize());
 
-    layer->circle(margin.left + getX(), parent->getHeight() - getY() + margin.top, getSize());
+    parent->fill();
+    parent->stroke();
 
-    layer->fill();
-    layer->stroke();
-
-    layer->closePath();
+    parent->closePath();
 }
 
 GraphVertexType GraphVertex::getType()
@@ -371,8 +368,8 @@ bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
     return true;
 }
 
-GraphTensionHandle::GraphTensionHandle(GraphWidget *parent, GraphNodesLayer *layer, GraphVertex *vertex) : GraphNode(parent, layer),
-                                                                                                           vertex(vertex)
+GraphTensionHandle::GraphTensionHandle(GraphWidgetInner *parent, GraphVertex *vertex) : GraphNode(parent),
+                                                                                        vertex(vertex)
 {
 }
 
@@ -407,22 +404,20 @@ void GraphTensionHandle::render()
     if (vertex->getType() == GraphVertexType::Right) //last vertex doesn't have a tension handle
         return;
 
-    layer->beginPath();
+    parent->beginPath();
 
-    layer->strokeWidth(2.0f);
+    parent->strokeWidth(2.0f);
 
     if (parent->edgeMustBeEmphasized(vertex->getIndex())) //TODO: make that a method on the vertex
-        layer->strokeColor(WaveShaperConfig::tension_handle_focused);
+        parent->strokeColor(WaveShaperConfig::tension_handle_focused);
     else
-        layer->strokeColor(WaveShaperConfig::tension_handle_normal);
+        parent->strokeColor(WaveShaperConfig::tension_handle_normal);
 
-    const Margin margin = parent->getMargin();
+    parent->circle(getX(), getY(), 6.0f);
 
-    layer->circle(margin.left + getX(), parent->getHeight() - getY() + margin.top, 6.0f);
+    parent->stroke();
 
-    layer->stroke();
-
-    layer->closePath();
+    parent->closePath();
 }
 
 END_NAMESPACE_DISTRHO

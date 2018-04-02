@@ -7,7 +7,6 @@
 #include "WaveShaperUI.hpp"
 #include "GraphNode.hpp"
 #include "Mathf.hpp"
-#include "GraphNodesLayer.hpp"
 #include "Config.hpp"
 
 #include "Fonts/chivo_italic.hpp"
@@ -20,28 +19,89 @@ START_NAMESPACE_DISTRHO
 
 const char *graphDefaultState = "0x0p+0,0x0p+0,0x0p+0,0;0x1p+0,0x1p+0,0x0p+0,0;";
 
-GraphWidget::GraphWidget(WaveShaperUI *ui)
+GraphWidget::GraphWidget(WaveShaperUI *ui, Size<uint> size) : NanoWidget((NanoWidget *)ui),
+                                                              fMargin(16,16,16,16)
+{
+    setSize(size);
+
+    const float graphWidth = size.getWidth() - fMargin.left - fMargin.right;
+    const float graphHeight = size.getHeight() - fMargin.top - fMargin.bottom;
+
+    const Size<uint> graphInnerSize = Size<uint>(graphWidth, graphHeight);
+
+    fGraphWidgetInner = new GraphWidgetInner(ui, graphInnerSize);
+    fGraphWidgetInner->parent = this;
+}
+
+GraphWidget::~GraphWidget()
+{
+}
+
+void GraphWidget::onNanoDisplay()
+{
+    const float width = getWidth();
+    const float height = getHeight();
+
+    beginPath();
+
+    rect(0.f, 0.f, width, height);
+    fillColor(WaveShaperConfig::graph_background);
+    fill();
+
+    closePath();
+
+    translate(fMargin.left, fMargin.top);
+    fGraphWidgetInner->setAbsolutePos(getAbsoluteX() + fMargin.left, getAbsoluteY() + fMargin.top);
+
+    fGraphWidgetInner->drawBackground();
+
+    fGraphWidgetInner->flipYAxis();
+
+    fGraphWidgetInner->drawBackground();
+    fGraphWidgetInner->drawGrid();
+
+    fGraphWidgetInner->drawInOutLabels();
+
+    fGraphWidgetInner->drawGraphLine(5.0f, WaveShaperConfig::graph_edges_background_normal, WaveShaperConfig::graph_edges_background_focused);    //outer
+    fGraphWidgetInner->drawGraphLine(1.1416f, WaveShaperConfig::graph_edges_foreground_normal, WaveShaperConfig::graph_edges_foreground_focused); //inner
+
+    fGraphWidgetInner->drawInputIndicator();
+
+    if (fGraphWidgetInner->focusedElement != nullptr && dynamic_cast<GraphVertex *>(fGraphWidgetInner->focusedElement))
+        fGraphWidgetInner->drawAlignmentLines();
+
+    fGraphWidgetInner->drawVertices();
+}
+
+void GraphWidget::onResize(const ResizeEvent &ev)
+{
+    if (ev.oldSize.isNull())
+        return;
+
+    const float graphInnerWidth = getWidth() - fMargin.left - fMargin.right;
+    const float graphInnerHeight = getHeight() - fMargin.top - fMargin.bottom;
+
+    const Size<uint> graphInnerSize = Size<uint>(graphInnerWidth, graphInnerHeight);
+
+    fGraphWidgetInner->setSize(graphInnerSize);
+}
+
+void GraphWidget::rebuildFromString(const char *serializedGraph)
+{
+    fGraphWidgetInner->rebuildFromString(serializedGraph);
+}
+
+GraphWidgetInner::GraphWidgetInner(WaveShaperUI *ui, Size<uint> size)
     : NanoWidget((NanoWidget *)ui),
       ui(ui),
-      graphNodesLayer(this),
-      graphVerticesPool(spoonie::maxVertices, this, &graphNodesLayer, GraphVertexType::Middle),
+      graphVerticesPool(spoonie::maxVertices, this, GraphVertexType::Middle),
       focusedElement(nullptr),
       mouseLeftDown(false),
       mouseRightDown(false),
-      margin(24, 24, 24, 122),
       maxInput(0.0f),
       hovered(false)
 {
-
-    const int width = ui->getWidth() - margin.left - margin.right;
-    const int height = ui->getHeight() - margin.top - margin.bottom;
-
-    setSize(width, height);
-    initialSize = getSize();
-
-    graphNodesLayer.setSize(ui->getWidth(), ui->getHeight());
-
-    setAbsolutePos(margin.left, margin.top);
+    setSize(size);
 
     initializeDefaultVertices();
 
@@ -51,7 +111,7 @@ GraphWidget::GraphWidget(WaveShaperUI *ui)
     createFontFromMemory("chivo_italic", (const uchar *)chivo_italic, chivo_italic_size, 0);
 }
 
-GraphWidget::~GraphWidget()
+GraphWidgetInner::~GraphWidgetInner()
 {
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
@@ -59,13 +119,10 @@ GraphWidget::~GraphWidget()
     }
 }
 
-void GraphWidget::onResize(const ResizeEvent &ev)
+void GraphWidgetInner::onResize(const ResizeEvent &ev)
 {
     if (ev.oldSize.isNull())
         return;
-
-    setAbsolutePos(margin.left, margin.top);
-    graphNodesLayer.setSize(ui->getWidth(), ui->getHeight());
 
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
@@ -76,7 +133,7 @@ void GraphWidget::onResize(const ResizeEvent &ev)
     }
 }
 
-void GraphWidget::initializeDefaultVertices()
+void GraphWidgetInner::initializeDefaultVertices()
 {
     //Left vertex
     GraphVertex *vertex = graphVerticesPool.getObject();
@@ -97,7 +154,7 @@ void GraphWidget::initializeDefaultVertices()
     graphVertices[1] = vertex;
 }
 
-void GraphWidget::reset()
+void GraphWidgetInner::reset()
 {
     resetVerticesPool();
 
@@ -107,7 +164,7 @@ void GraphWidget::reset()
     lineEditor.rebuildFromString(graphDefaultState);
 }
 
-void GraphWidget::resetVerticesPool()
+void GraphWidgetInner::resetVerticesPool()
 {
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
@@ -115,7 +172,7 @@ void GraphWidget::resetVerticesPool()
     }
 }
 
-void GraphWidget::rebuildFromString(const char *serializedGraph)
+void GraphWidgetInner::rebuildFromString(const char *serializedGraph)
 {
     resetVerticesPool();
 
@@ -144,20 +201,20 @@ void GraphWidget::rebuildFromString(const char *serializedGraph)
     }
 }
 
-void GraphWidget::updateAnimations()
+void GraphWidgetInner::updateAnimations()
 {
 }
 
-void GraphWidget::flipYAxis() //(0,0) at the bottom-left corner makes more sense for this plugin
+void GraphWidgetInner::flipYAxis()
 {
     transform(1.0f, 0.0f, 0.0f, -1.0f, 0.0f, getHeight());
 }
 
-void GraphWidget::drawSubGrid()
+void GraphWidgetInner::drawSubGrid()
 {
 }
 
-void GraphWidget::drawGrid()
+void GraphWidgetInner::drawGrid()
 {
     const float width = getWidth();
     const float height = getHeight();
@@ -254,7 +311,7 @@ void GraphWidget::drawGrid()
     }
 }
 
-void GraphWidget::drawBackground()
+void GraphWidgetInner::drawBackground()
 {
     const float width = getWidth();
     const float height = getHeight();
@@ -273,7 +330,7 @@ void GraphWidget::drawBackground()
     closePath();
 }
 
-bool GraphWidget::edgeMustBeEmphasized(int vertexIndex)
+bool GraphWidgetInner::edgeMustBeEmphasized(int vertexIndex)
 {
     if (focusedElement == nullptr)
         return false;
@@ -290,7 +347,7 @@ bool GraphWidget::edgeMustBeEmphasized(int vertexIndex)
     return focusedElement == vertex || focusedElement == vertex->getVertexAtRight();
 }
 
-void GraphWidget::drawGraphEdge(int vertexIndex, float lineWidth, Color color)
+void GraphWidgetInner::drawGraphEdge(int vertexIndex, float lineWidth, Color color)
 {
     DISTRHO_SAFE_ASSERT(vertexIndex < lineEditor.getVertexCount() - 1);
 
@@ -323,7 +380,7 @@ void GraphWidget::drawGraphEdge(int vertexIndex, float lineWidth, Color color)
     closePath();
 }
 
-void GraphWidget::drawGraphLine(float lineWidth, Color normalColor, Color emphasizedColor)
+void GraphWidgetInner::drawGraphLine(float lineWidth, Color normalColor, Color emphasizedColor)
 {
     for (int i = 0; i < lineEditor.getVertexCount() - 1; ++i)
     {
@@ -333,7 +390,7 @@ void GraphWidget::drawGraphLine(float lineWidth, Color normalColor, Color emphas
     }
 }
 
-void GraphWidget::drawAlignmentLines()
+void GraphWidgetInner::drawAlignmentLines()
 {
     const int x = focusedElement->getX();
     const int y = focusedElement->getY();
@@ -356,7 +413,7 @@ void GraphWidget::drawAlignmentLines()
     closePath();
 }
 
-void GraphWidget::drawInputIndicator()
+void GraphWidgetInner::drawInputIndicator()
 {
     const float width = getWidth();
     const float height = getHeight();
@@ -379,7 +436,7 @@ void GraphWidget::drawInputIndicator()
     closePath();
 }
 
-void GraphWidget::idleCallback()
+void GraphWidgetInner::idleCallback()
 {
     const float input = ui->getParameterValue(paramOut);
     const float deadZone = 0.001f;
@@ -400,7 +457,7 @@ void GraphWidget::idleCallback()
     }
 }
 
-void GraphWidget::drawInOutLabels()
+void GraphWidgetInner::drawInOutLabels()
 {
     fontFace("chivo_italic");
     fontSize(36.f);
@@ -413,25 +470,25 @@ void GraphWidget::drawInOutLabels()
     text(5, 0, "Out", NULL);
 }
 
-void GraphWidget::onNanoDisplay()
+void GraphWidgetInner::drawVertices()
 {
-    drawBackground();
-    drawGrid();
+    const int vertexCount = lineEditor.getVertexCount();
 
-    drawInOutLabels();
+    for (int i = 0; i < vertexCount; ++i)
+    {
+        GraphVertex *vertex = graphVertices[i];
 
-    flipYAxis();
-
-    drawGraphLine(5.0f, WaveShaperConfig::graph_edges_background_normal, WaveShaperConfig::graph_edges_background_focused);    //outer
-    drawGraphLine(1.1416f, WaveShaperConfig::graph_edges_foreground_normal, WaveShaperConfig::graph_edges_foreground_focused); //inner
-
-    drawInputIndicator();
-
-    if (focusedElement != nullptr && dynamic_cast<GraphVertex *>(focusedElement))
-        drawAlignmentLines();
+        vertex->getTensionHandle()->render();
+        vertex->render();
+    }
 }
 
-bool GraphWidget::onScroll(const ScrollEvent &ev)
+void GraphWidgetInner::onNanoDisplay()
+{
+
+}
+
+bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
 {
     const Point<int> point = spoonie::flipY(ev.pos, getHeight());
 
@@ -459,7 +516,7 @@ bool GraphWidget::onScroll(const ScrollEvent &ev)
     return false;
 }
 
-void GraphWidget::removeVertex(int index)
+void GraphWidgetInner::removeVertex(int index)
 {
     //Make sure the vertex to remove is in the middle of the graph
     if (index <= 0)
@@ -487,7 +544,7 @@ void GraphWidget::removeVertex(int index)
     repaint();
 }
 
-GraphVertex *GraphWidget::insertVertex(const Point<int> pos)
+GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
 {
     int i = lineEditor.getVertexCount();
 
@@ -521,7 +578,7 @@ GraphVertex *GraphWidget::insertVertex(const Point<int> pos)
     return vertex;
 }
 
-GraphNode *GraphWidget::getHoveredNode(Point<int> cursorPos)
+GraphNode *GraphWidgetInner::getHoveredNode(Point<int> cursorPos)
 {
     //Testing for mouse hover on graph vertices
     for (int i = lineEditor.getVertexCount() - 1; i >= 0; --i)
@@ -544,7 +601,7 @@ GraphNode *GraphWidget::getHoveredNode(Point<int> cursorPos)
     return nullptr;
 }
 
-bool GraphWidget::leftClick(const MouseEvent &ev)
+bool GraphWidgetInner::leftClick(const MouseEvent &ev)
 {
     const Point<int> point = spoonie::flipY(ev.pos, getHeight());
 
@@ -577,12 +634,12 @@ bool GraphWidget::leftClick(const MouseEvent &ev)
     return false;
 }
 
-bool GraphWidget::middleClick(const MouseEvent &)
+bool GraphWidgetInner::middleClick(const MouseEvent &)
 {
     return false;
 }
 
-bool GraphWidget::rightClick(const MouseEvent &ev)
+bool GraphWidgetInner::rightClick(const MouseEvent &ev)
 {
     const Point<int> point = spoonie::flipY(ev.pos, getHeight());
 
@@ -615,7 +672,7 @@ bool GraphWidget::rightClick(const MouseEvent &ev)
     return false;
 }
 
-bool GraphWidget::onMouse(const MouseEvent &ev)
+bool GraphWidgetInner::onMouse(const MouseEvent &ev)
 {
     switch (ev.button)
     {
@@ -630,7 +687,7 @@ bool GraphWidget::onMouse(const MouseEvent &ev)
     return false;
 }
 
-bool GraphWidget::onMotion(const MotionEvent &ev)
+bool GraphWidgetInner::onMotion(const MotionEvent &ev)
 {
     const Point<int> point = spoonie::flipY(ev.pos, getHeight());
     GraphNode *hoveredNode = getHoveredNode(point);
@@ -667,19 +724,9 @@ bool GraphWidget::onMotion(const MotionEvent &ev)
     return true;
 }
 
-void GraphWidget::onMouseLeave()
+void GraphWidgetInner::onMouseLeave()
 {
     getParentWindow().setCursorStyle(Window::CursorStyle::Default);
-}
-
-const Margin GraphWidget::getMargin()
-{
-    return margin;
-}
-
-void GraphWidget::setMargin(Margin margin)
-{
-    this->margin = margin;
 }
 
 END_NAMESPACE_DISTRHO

@@ -5,7 +5,7 @@
 
 START_NAMESPACE_DISTRHO
 
-class GraphWidget;
+class GraphWidgetInner;
 
 enum GraphVertexType
 {
@@ -17,9 +17,9 @@ enum GraphVertexType
 class GraphNode : public IdleCallback
 {
 public:
-  friend class GraphWidget;
+  friend class GraphWidgetInner;
 
-  GraphNode(GraphWidget *parent, GraphNodesLayer *layer);
+  GraphNode(GraphWidgetInner *parent);
   ~GraphNode();
 
   /**
@@ -37,7 +37,7 @@ public:
 
   int getAbsoluteX() const;
   int getAbsoluteY() const;
-  
+
   Window &getParentWindow();
 
 protected:
@@ -46,10 +46,10 @@ protected:
   virtual bool onMotion(const Widget::MotionEvent &ev);
   virtual bool onMouse(const Widget::MouseEvent &ev);
 
+  Point<int> getCorrectedPos(Point<int> surface);
   spoonie::Graph *getLineEditor() const;
 
-  GraphWidget *parent;
-  GraphNodesLayer *layer;
+  GraphWidgetInner *parent;
   Color color;
 
   bool grabbed;
@@ -58,9 +58,9 @@ protected:
 class GraphTensionHandle : public GraphNode
 {
 public:
-  friend class GraphWidget;
+  friend class GraphWidgetInner;
 
-  GraphTensionHandle(GraphWidget *parent, GraphNodesLayer *layer, GraphVertex *vertex);
+  GraphTensionHandle(GraphWidgetInner *parent, GraphVertex *vertex);
 
   void render() override;
   bool contains(Point<int> pos) override;
@@ -75,16 +75,16 @@ protected:
 private:
   GraphVertex *vertex;
   Point<int> mouseDownPosition;
-  
+
   DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphTensionHandle)
 };
 
 class GraphVertex : public GraphNode
 {
-  friend class GraphWidget;
+  friend class GraphWidgetInner;
 
 public:
-  GraphVertex(GraphWidget *parent, GraphNodesLayer *layer, GraphVertexType type);
+  GraphVertex(GraphWidgetInner *parent, GraphVertexType type);
 
   void reset();
   void render() override;
