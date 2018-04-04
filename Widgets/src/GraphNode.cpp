@@ -2,7 +2,6 @@
 #include "Graph.hpp"
 #include "NanoVG.hpp"
 #include "Window.hpp"
-#include "WaveShaperUI.hpp"
 #include "GraphWidget.hpp"
 #include "GraphNode.hpp"
 #include "Mathf.hpp"

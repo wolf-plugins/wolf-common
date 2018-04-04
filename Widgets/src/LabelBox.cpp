@@ -1,7 +1,7 @@
 #include "LabelBox.hpp"
 #include "Mathf.hpp"
 
-#include "Fonts/chivo_bold.hpp"
+//#include "Fonts/chivo_bold.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -9,8 +9,8 @@ LabelBox::LabelBox(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(wi
 {
     setSize(size);
 
-    using namespace SPOONIE_FONTS;
-    createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
+    //using namespace SPOONIE_FONTS;
+    //createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
 }
 
 void LabelBox::onNanoDisplay()

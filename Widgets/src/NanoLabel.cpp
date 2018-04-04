@@ -1,7 +1,7 @@
 #include "NanoLabel.hpp"
 #include "Mathf.hpp"
 
-#include "Fonts/chivo_bold.hpp"
+//#include "Fonts/chivo_bold.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -14,8 +14,8 @@ NanoLabel::NanoLabel(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(
 {
     setSize(size);
 
-    using namespace SPOONIE_FONTS;
-    fFontId = createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
+    //using namespace SPOONIE_FONTS;
+    //fFontId = createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
 }
 
 void NanoLabel::onNanoDisplay()
