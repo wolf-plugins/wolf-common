@@ -17,13 +17,14 @@ bool NanoSwitch::isDown() const noexcept
     return fIsDown;
 }
 
-void NanoSwitch::setDown(bool down) noexcept
+void NanoSwitch::setDown(bool down, bool sendCallback) noexcept
 {
-    if (fIsDown == down)
-        return;
-
     fIsDown = down;
-    repaint();
+
+    onClick();
+
+    if (sendCallback && fCallback != nullptr)
+        fCallback->nanoSwitchClicked(this);
 }
 
 void NanoSwitch::onNanoDisplay()
@@ -44,14 +45,7 @@ bool NanoSwitch::onMouse(const MouseEvent &ev)
 {
     if (ev.press && contains(ev.pos))
     {
-        fIsDown = !fIsDown;
-
-        repaint();
-
-        onClick();
-
-        if (fCallback != nullptr)
-            fCallback->nanoSwitchClicked(this);
+        setDown(!fIsDown, true);
 
         return true;
     }

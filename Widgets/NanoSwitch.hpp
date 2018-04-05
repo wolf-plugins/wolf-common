@@ -20,7 +20,7 @@ class NanoSwitch : public NanoWidget
     explicit NanoSwitch(NanoWidget *widget, Size<uint> size) noexcept;
 
     bool isDown() const noexcept;
-    void setDown(bool down) noexcept;
+    void setDown(bool down, bool sendCallback = false) noexcept;
 
     void setCallback(Callback *callback) noexcept;
 
