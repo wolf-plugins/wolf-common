@@ -64,7 +64,7 @@ void RemoveDCSwitch::idleCallback()
         repaint();
 }
 
-void RemoveDCSwitch::onClick()
+void RemoveDCSwitch::onStateChanged()
 {
     fSocketColorTransition.play(isDown() ? Animation::Forward : Animation::Backward);
     fGlowIcolTransition.play(isDown() ? Animation::Forward : Animation::Backward);

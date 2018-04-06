@@ -16,7 +16,7 @@ class RemoveDCSwitch : public NanoSwitch,
   protected:
     void draw() override;
     void idleCallback() override;
-    void onClick() override;
+    void onStateChanged() override;
 
   private:
     Color fSocketColor;

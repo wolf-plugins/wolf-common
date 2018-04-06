@@ -5,13 +5,13 @@
 #include "DistrhoUI.hpp"
 #include "Graph.hpp"
 #include "Layout.hpp"
+#include "Widget.hpp"
 
 START_NAMESPACE_DISTRHO
 
 class GraphVertex;
 class GraphTensionHandle;
 class GraphNode;
-class WaveShaperUI;
 class GraphWidget;
 
 class GraphWidgetInner : public NanoWidget,
@@ -23,7 +23,7 @@ class GraphWidgetInner : public NanoWidget,
   friend class GraphWidget;
 
 public:
-  GraphWidgetInner(WaveShaperUI *ui, Size<uint> size);
+  GraphWidgetInner(UI *ui, Size<uint> size);
   ~GraphWidgetInner();
 
   /**
@@ -93,6 +93,8 @@ protected:
    */
   void drawAlignmentLines();
 
+  void updateInput(const float input);
+
   /**
    * Draw a vertical line to indicate the input volume on the graph.
    */
@@ -119,7 +121,7 @@ protected:
   bool rightClick(const MouseEvent &ev);
 
 private:
-  WaveShaperUI *ui;
+  UI *ui;
 
   /**
    * Initialize the left and right vertices in the graph.
@@ -169,7 +171,7 @@ private:
   float maxInput;
   float maxInputAcceleration = 0.0f;
 
-  Size<uint> initialSize;
+  float fInput;
 
   GraphWidget *parent;
 
@@ -179,10 +181,11 @@ private:
 class GraphWidget : public NanoWidget
 {
 public:
-  GraphWidget(WaveShaperUI *ui, Size<uint> size);
+  GraphWidget(UI *ui, Size<uint> size);
   ~GraphWidget();
 
   void rebuildFromString(const char * serializedGraph);
+  void updateInput(const float input);
 
 protected:
   void onResize(const ResizeEvent &ev) override;

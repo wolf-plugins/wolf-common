@@ -4,7 +4,6 @@
 #include "Graph.hpp"
 #include "ObjectPool.hpp"
 #include "GraphWidget.hpp"
-#include "WaveShaperUI.hpp"
 #include "GraphNode.hpp"
 #include "Mathf.hpp"
 #include "Config.hpp"
@@ -19,7 +18,7 @@ START_NAMESPACE_DISTRHO
 
 const char *graphDefaultState = "0x0p+0,0x0p+0,0x0p+0,0;0x1p+0,0x1p+0,0x0p+0,0;";
 
-GraphWidget::GraphWidget(WaveShaperUI *ui, Size<uint> size) : NanoWidget((NanoWidget *)ui),
+GraphWidget::GraphWidget(UI *ui, Size<uint> size) : NanoWidget((NanoWidget *)ui),
                                                               fMargin(16,16,16,16)
 {
     setSize(size);
@@ -91,7 +90,12 @@ void GraphWidget::rebuildFromString(const char *serializedGraph)
     fGraphWidgetInner->rebuildFromString(serializedGraph);
 }
 
-GraphWidgetInner::GraphWidgetInner(WaveShaperUI *ui, Size<uint> size)
+void GraphWidget::updateInput(const float input)
+{
+    fGraphWidgetInner->updateInput(input);
+}
+
+GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
     : NanoWidget((NanoWidget *)ui),
       ui(ui),
       graphVerticesPool(spoonie::maxVertices, this, GraphVertexType::Middle),
@@ -413,6 +417,11 @@ void GraphWidgetInner::drawAlignmentLines()
     closePath();
 }
 
+void GraphWidgetInner::updateInput(const float input)
+{
+    fInput = input;
+}
+
 void GraphWidgetInner::drawInputIndicator()
 {
     const float width = getWidth();
@@ -438,7 +447,7 @@ void GraphWidgetInner::drawInputIndicator()
 
 void GraphWidgetInner::idleCallback()
 {
-    const float input = ui->getParameterValue(paramOut);
+    const float input = fInput;
     const float deadZone = 0.001f;
 
     if (input > deadZone && input > maxInput)
