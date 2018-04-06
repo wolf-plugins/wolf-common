@@ -19,7 +19,7 @@ START_NAMESPACE_DISTRHO
 const char *graphDefaultState = "0x0p+0,0x0p+0,0x0p+0,0;0x1p+0,0x1p+0,0x0p+0,0;";
 
 GraphWidget::GraphWidget(UI *ui, Size<uint> size) : NanoWidget((NanoWidget *)ui),
-                                                              fMargin(16,16,16,16)
+                                                    fMargin(16, 16, 16, 16)
 {
     setSize(size);
 
@@ -43,9 +43,28 @@ void GraphWidget::onNanoDisplay()
 
     beginPath();
 
+    fillColor(WaveShaperConfig::graph_margin);
+    strokeColor(WaveShaperConfig::side_borders);
+    strokeWidth(1.0f);
+
     rect(0.f, 0.f, width, height);
-    fillColor(WaveShaperConfig::graph_background);
+
     fill();
+    stroke();
+
+    closePath();
+
+    beginPath();
+
+    const float topBorderWidth = 2.0f;
+
+    strokeColor(WaveShaperConfig::top_border);
+    strokeWidth(topBorderWidth);
+
+    moveTo(0, 1);
+    lineTo(width, 1);
+
+    stroke();
 
     closePath();
 
@@ -58,8 +77,6 @@ void GraphWidget::onNanoDisplay()
 
     fGraphWidgetInner->drawBackground();
     fGraphWidgetInner->drawGrid();
-
-    fGraphWidgetInner->drawInOutLabels();
 
     fGraphWidgetInner->drawGraphLine(5.0f, WaveShaperConfig::graph_edges_background_normal, WaveShaperConfig::graph_edges_background_focused);    //outer
     fGraphWidgetInner->drawGraphLine(1.1416f, WaveShaperConfig::graph_edges_foreground_normal, WaveShaperConfig::graph_edges_foreground_focused); //inner
@@ -494,7 +511,7 @@ void GraphWidgetInner::drawVertices()
 
 void GraphWidgetInner::onNanoDisplay()
 {
-
+    drawInOutLabels();
 }
 
 bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
