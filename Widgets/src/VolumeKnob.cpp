@@ -74,7 +74,7 @@ void VolumeKnob::draw()
     gaugeColor.interpolate(color, 0.4f);
 
     const float margin = 3.0f;
-    
+
     //Gauge (empty)
     beginPath();
 
@@ -94,15 +94,15 @@ void VolumeKnob::draw()
     //Knob
     beginPath();
 
-    Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobDiameter, Color(86, 92, 95, 255), Color(39, 42, 43, 255));
-    //strokeWidth(0.5f);
-    //strokeColor(37,37,37,255);
+    strokeWidth(2.0f);
+    strokePaint(linearGradient(0, 0, 0, height - 10, Color(190, 190, 190, 30), Color(23, 23, 23, 255)));
 
+    Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobDiameter, Color(86, 92, 95, 255), Color(39, 42, 43, 255));
     fillPaint(knobPaint);
 
     circle(radius, radius, fKnobDiameter / 2.0f);
     fill();
-    //stroke();
+    stroke();
 
     //Indicator line
     beginPath();
