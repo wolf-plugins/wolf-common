@@ -185,6 +185,7 @@ public:
   ~GraphWidget();
 
   void rebuildFromString(const char * serializedGraph);
+  void reset();
   void updateInput(const float input);
 
 protected:

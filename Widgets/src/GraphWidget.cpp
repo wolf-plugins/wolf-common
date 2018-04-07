@@ -107,6 +107,11 @@ void GraphWidget::rebuildFromString(const char *serializedGraph)
     fGraphWidgetInner->rebuildFromString(serializedGraph);
 }
 
+void GraphWidget::reset()
+{
+    fGraphWidgetInner->reset();
+}
+
 void GraphWidget::updateInput(const float input)
 {
     fGraphWidgetInner->updateInput(input);
