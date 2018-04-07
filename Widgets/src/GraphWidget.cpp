@@ -72,11 +72,10 @@ void GraphWidget::onNanoDisplay()
     fGraphWidgetInner->setAbsolutePos(getAbsoluteX() + fMargin.left, getAbsoluteY() + fMargin.top);
 
     fGraphWidgetInner->drawBackground();
+    fGraphWidgetInner->drawGrid();
+    fGraphWidgetInner->drawInOutLabels();
 
     fGraphWidgetInner->flipYAxis();
-
-    fGraphWidgetInner->drawBackground();
-    fGraphWidgetInner->drawGrid();
 
     fGraphWidgetInner->drawGraphLine(5.0f, WaveShaperConfig::graph_edges_background_normal, WaveShaperConfig::graph_edges_background_focused);    //outer
     fGraphWidgetInner->drawGraphLine(1.1416f, WaveShaperConfig::graph_edges_foreground_normal, WaveShaperConfig::graph_edges_foreground_focused); //inner
@@ -519,7 +518,6 @@ void GraphWidgetInner::drawVertices()
 
 void GraphWidgetInner::onNanoDisplay()
 {
-    drawInOutLabels();
 }
 
 bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
