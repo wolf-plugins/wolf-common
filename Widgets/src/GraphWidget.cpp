@@ -367,10 +367,13 @@ bool GraphWidgetInner::edgeMustBeEmphasized(int vertexIndex)
     if (dynamic_cast<GraphTensionHandle *>(focusedElement))
         return focusedElement == vertex->getTensionHandle();
 
+    return false; //might not be a good idea to make it emphasized otherwise
+
+    /*
     if (type == GraphVertexType::Right)
         return false; //there is no edge at the right of the last vertex
 
-    return focusedElement == vertex || focusedElement == vertex->getVertexAtRight();
+    return focusedElement == vertex || focusedElement == vertex->getVertexAtRight();*/
 }
 
 void GraphWidgetInner::drawGraphEdge(int vertexIndex, float lineWidth, Color color)

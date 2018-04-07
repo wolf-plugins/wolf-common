@@ -51,7 +51,7 @@ void VolumeKnob::onMouseUp()
     fGrowAnimation->play(Animation::Backward);
 }
 
-void VolumeKnob::drawNormal()
+void VolumeKnob::draw()
 {
     const float width = getWidth();
     const float height = getHeight();
@@ -119,14 +119,6 @@ void VolumeKnob::drawNormal()
     restore();
 
     closePath();
-}
-
-void VolumeKnob::drawHover()
-{
-}
-
-void VolumeKnob::drawTurning()
-{
 }
 
 END_NAMESPACE_DISTRHO

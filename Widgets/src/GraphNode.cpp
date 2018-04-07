@@ -52,12 +52,18 @@ bool GraphVertex::isLockedX() const
 
 void GraphVertex::render()
 {
+    const bool focused = parent->focusedElement == this;
+
     parent->beginPath();
 
     parent->strokeWidth(2.0f);
 
     parent->strokeColor(WaveShaperConfig::vertex_stroke_normal);
-    parent->fillColor(WaveShaperConfig::vertex_fill_normal);
+
+    if (focused)
+        parent->fillColor(WaveShaperConfig::vertex_fill_focused);
+    else
+        parent->fillColor(WaveShaperConfig::vertex_fill_normal);
 
     parent->circle(getX(), getY(), getSize());
 

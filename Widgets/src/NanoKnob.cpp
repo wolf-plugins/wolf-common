@@ -101,7 +101,7 @@ Color NanoKnob::getColor() noexcept
 
 void NanoKnob::onNanoDisplay()
 {
-    drawNormal();
+    draw();
 }
 
 bool NanoKnob::onMouse(const MouseEvent &ev)

@@ -45,9 +45,7 @@ protected:
   virtual void onMouseUp();
   virtual void onMouseDown();
 
-  virtual void drawNormal() = 0;
-  virtual void drawHover() = 0;
-  virtual void drawTurning() = 0;
+  virtual void draw() = 0;
 
 private:
   float fMin;

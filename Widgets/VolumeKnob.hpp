@@ -21,9 +21,7 @@ protected:
   void onMouseUp() override;
   void onMouseDown() override;
 
-  void drawNormal() override;
-  void drawHover() override;
-  void drawTurning() override;
+  void draw() override;
 
 private:
   ScopedPointer<FloatTransition> fGrowAnimation;
