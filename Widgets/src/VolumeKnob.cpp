@@ -7,9 +7,9 @@ VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(
 {
     const float radius = size.getHeight() / 2.0f;
     const float gaugeWidth = 3.5f;
-    const float diameter = (radius - gaugeWidth) * 2.0f;
+    const float diameter = (radius - gaugeWidth) * 2.0f - 4;
 
-    fKnobDiameter = diameter - 2;
+    fKnobDiameter = diameter;
 
     fGrowAnimation = new FloatTransition(0.100f, &fKnobDiameter, fKnobDiameter - 7);
 
