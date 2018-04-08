@@ -51,7 +51,7 @@ void ResetGraphButton::drawHover()
 
     beginPath();
 
-    strokeWidth(2.0f);
+    strokeWidth(1.0f);
     strokeColor(Color(255, 255, 255, 255));
 
     const float margin = 2.0f;

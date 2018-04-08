@@ -1,4 +1,5 @@
 #include "NanoButton.hpp"
+#include "Window.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -120,9 +121,15 @@ bool NanoButton::onMotion(const MotionEvent &ev)
     {
         //should be drawn as down only when the mouse is on the widget
         if (hover)
-            setButtonState(kNanoStateDown);
-        else
+        {
             setButtonState(kNanoStateHover);
+            getParentWindow().setCursorStyle(Window::CursorStyle::Pointer);
+        }
+        else
+        {
+            setButtonState(kNanoStateHover);
+            getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+        }
 
         return true;
     }
@@ -132,6 +139,7 @@ bool NanoButton::onMotion(const MotionEvent &ev)
         if (state == kNanoStateNormal)
         {
             setButtonState(kNanoStateHover);
+            getParentWindow().setCursorStyle(Window::CursorStyle::Pointer);
         }
 
         return true;
@@ -139,6 +147,7 @@ bool NanoButton::onMotion(const MotionEvent &ev)
     else if (state == kNanoStateHover)
     {
         setButtonState(kNanoStateNormal);
+        getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 
         return false;
     }
