@@ -9,30 +9,51 @@ VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(
     const float gaugeWidth = 3.5f;
     const float diameter = (radius - gaugeWidth) * 2.0f - 4;
 
+    fKnobICol = Color(86, 92, 95, 255);
+
+    fKnobOCol = Color(39, 42, 43, 255);
+    const Color fKnobTargetOCol = Color(59, 62, 63, 255);
+
     fKnobDiameter = diameter;
 
     fGrowAnimation = new FloatTransition(0.100f, &fKnobDiameter, fKnobDiameter - 7);
+    fHoverAnimation = new ColorTransition(0.200f, &fKnobOCol, fKnobTargetOCol);
 
     widget->getParentWindow().addIdleCallback(this);
 }
 
 void VolumeKnob::idleCallback()
 {
+    bool mustRepaint = false;
+
     if (fGrowAnimation->isPlaying())
     {
         fGrowAnimation->run();
-        repaint();
+        mustRepaint = true;
     }
+
+    if (fHoverAnimation->isPlaying())
+    {
+        fHoverAnimation->run();
+        mustRepaint = true;
+    }
+
+    if (mustRepaint)
+        repaint();
 }
 
 void VolumeKnob::onMouseHover()
 {
     getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
+
+    fHoverAnimation->play(Animation::Forward);
 }
 
 void VolumeKnob::onMouseLeave()
 {
     getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+
+    fHoverAnimation->play(Animation::Backward);
 }
 
 void VolumeKnob::onMouseDown()
@@ -97,7 +118,7 @@ void VolumeKnob::draw()
     strokeWidth(2.0f);
     strokePaint(linearGradient(0, 0, 0, height - 10, Color(190, 190, 190, 30), Color(23, 23, 23, 255)));
 
-    Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobDiameter, Color(86, 92, 95, 255), Color(39, 42, 43, 255));
+    Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobDiameter, fKnobICol, fKnobOCol);
     fillPaint(knobPaint);
 
     circle(radius, radius, fKnobDiameter / 2.0f);

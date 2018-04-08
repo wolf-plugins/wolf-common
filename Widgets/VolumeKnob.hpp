@@ -25,7 +25,12 @@ protected:
 
 private:
   ScopedPointer<FloatTransition> fGrowAnimation;
+  ScopedPointer<ColorTransition> fHoverAnimation;
+  
   float fKnobDiameter;
+
+  Color fKnobICol;
+  Color fKnobOCol;
 
   DISTRHO_LEAK_DETECTOR(VolumeKnob)
 };
