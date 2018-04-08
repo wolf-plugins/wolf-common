@@ -70,7 +70,7 @@ bool ResizeHandle::onMouse(const MouseEvent &ev)
         return true;
     }
 
-    if (ev.button == 1 && contains(ev.pos))
+    if (ev.button == 1 && ev.press && contains(ev.pos))
     {
         fHasFocus = true;
 
