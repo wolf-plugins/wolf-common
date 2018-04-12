@@ -46,6 +46,8 @@ private:
     State state;
 
     bool fHasFocus;
+    bool fIsHovered;
+    
     Callback* fCallback;
 
     DISTRHO_LEAK_DETECTOR(NanoButton)

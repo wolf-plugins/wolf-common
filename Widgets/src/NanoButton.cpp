@@ -3,18 +3,11 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoButton::NanoButton(Window &parent, Size<uint> size) noexcept
-    : NanoWidget(parent),
-      state(kNanoStateNormal),
-      fHasFocus(false)
-{
-    setSize(size);
-}
-
 NanoButton::NanoButton(NanoWidget *parent, Size<uint> size) noexcept
     : NanoWidget(parent),
       state(kNanoStateNormal),
-      fHasFocus(false)
+      fHasFocus(false),
+      fIsHovered(false)
 {
     setSize(size);
 }
