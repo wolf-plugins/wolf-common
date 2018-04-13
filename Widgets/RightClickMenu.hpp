@@ -10,19 +10,23 @@
 
 START_NAMESPACE_DISTRHO
 
-class RightClickMenu :  public Window,
-                        public NanoWidget
+class RightClickMenu :  private Window,
+                        private NanoWidget
 {
 public:
     RightClickMenu(NanoWidget *parent, Size<uint> size) noexcept;
     ~RightClickMenu();
 
+    void show(int posX, int posY);
+    void close();
+    
 protected:
     void onNanoDisplay() override;
     void setEntries(std::vector<const char *> entries);
     
 private:
     std::vector<const char *> fEntries;
+    NanoWidget *fParent;
 };
 
 #endif
