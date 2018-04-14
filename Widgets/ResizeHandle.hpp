@@ -16,7 +16,6 @@ public:
         virtual void resizeHandleMoved(int width, int height) = 0;
     };
 
-    explicit ResizeHandle(Window& parent, Size<uint> size) noexcept;
     explicit ResizeHandle(NanoWidget* widget, Size<uint> size) noexcept;
 
     void setCallback(Callback* callback) noexcept;
