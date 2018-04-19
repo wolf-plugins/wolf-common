@@ -25,6 +25,8 @@ void NanoSwitch::setDown(bool down) noexcept
     fIsDown = down;
 
     onStateChanged();
+    
+    repaint();
 }
 
 void NanoSwitch::onNanoDisplay()

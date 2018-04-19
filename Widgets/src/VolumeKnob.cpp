@@ -74,8 +74,6 @@ void VolumeKnob::onMouseUp()
 
 void VolumeKnob::draw()
 {
-    NanoVG::scissor(-100, -100, getWidth() + 200, getHeight() + 200);
-
     const float width = getWidth();
     const float height = getHeight();
     const Color color = getColor();

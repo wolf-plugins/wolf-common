@@ -123,8 +123,9 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
       focusedElement(nullptr),
       mouseLeftDown(false),
       mouseRightDown(false),
+      hovered(false),
       maxInput(0.0f),
-      hovered(false)
+      fInput(0.0f)
 {
     setSize(size);
 
