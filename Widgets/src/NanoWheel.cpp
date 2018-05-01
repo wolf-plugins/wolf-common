@@ -120,6 +120,24 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
         {
             fLeftMouseDownLocation.setY(ev.pos.getY());
 
+            Window &window = getParentWindow();
+            const uint windowHeight = window.getHeight();
+
+            if (ev.pos.getY() + getAbsoluteY() >= windowHeight - 1)
+            {
+                window.setCursorPos(getAbsoluteX(), 2);
+                fLeftMouseDownLocation.setY(-getAbsoluteY() + 2);
+            }
+            else if (ev.pos.getY() + getAbsoluteY() == 0)
+            {
+                window.setCursorPos(getAbsoluteX(), windowHeight - 2);
+                fLeftMouseDownLocation.setY(windowHeight - getAbsoluteY() - 2);
+            }
+            else
+            {
+                fLeftMouseDownLocation.setY(ev.pos.getY());
+            }
+
             setValue(fValue + spoonie::clamp(value, -1, 1), true);
         }
 
