@@ -7,6 +7,8 @@ START_NAMESPACE_DISTRHO
 NanoWheel::NanoWheel(Window &parent, Size<uint> size) noexcept
     : NanoWidget(parent),
       fLeftMouseDown(false),
+      fLeftMouseDownLocation(Point<int>(0, 0)),
+      fIsHovered(true),
       fValue(0),
       fMin(0),
       fMax(0)
@@ -17,6 +19,8 @@ NanoWheel::NanoWheel(Window &parent, Size<uint> size) noexcept
 NanoWheel::NanoWheel(NanoWidget *parent, Size<uint> size) noexcept
     : NanoWidget(parent),
       fLeftMouseDown(false),
+      fLeftMouseDownLocation(Point<int>(0, 0)),
+      fIsHovered(true),
       fValue(0),
       fMin(0),
       fMax(0)
