@@ -8,13 +8,20 @@ START_NAMESPACE_DISTRHO
 
 class ParamSmooth
 {
-  public:
-    ParamSmooth(); 
+public:
+  ParamSmooth();
+  ParamSmooth(float value);
 
-  private:
-    float fHistory;
+  float getSmoothedValue(float frequency, double sampleRate);
+  float getRawValue() const;
 
-    DISTRHO_LEAK_DETECTOR(ParamSmooth)
+  void setValue(float value);
+
+private:
+  float fHistory;
+  float fValue;
+
+  DISTRHO_LEAK_DETECTOR(ParamSmooth)
 };
 
 END_NAMESPACE_DISTRHO
