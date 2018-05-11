@@ -58,12 +58,12 @@ void GraphVertex::render()
 
     parent->strokeWidth(2.0f);
 
-    parent->strokeColor(WaveShaperConfig::vertex_stroke_normal);
+    parent->strokeColor(WolfShaperConfig::vertex_stroke_normal);
 
     if (focused)
-        parent->fillColor(WaveShaperConfig::vertex_fill_focused);
+        parent->fillColor(WolfShaperConfig::vertex_fill_focused);
     else
-        parent->fillColor(WaveShaperConfig::vertex_fill_normal);
+        parent->fillColor(WolfShaperConfig::vertex_fill_normal);
 
     parent->circle(getX(), getY(), getSize());
 
@@ -414,9 +414,9 @@ void GraphTensionHandle::render()
     parent->strokeWidth(2.0f);
 
     if (parent->edgeMustBeEmphasized(vertex->getIndex())) //TODO: make that a method on the vertex
-        parent->strokeColor(WaveShaperConfig::tension_handle_focused);
+        parent->strokeColor(WolfShaperConfig::tension_handle_focused);
     else
-        parent->strokeColor(WaveShaperConfig::tension_handle_normal);
+        parent->strokeColor(WolfShaperConfig::tension_handle_normal);
 
     parent->circle(getX(), getY(), 6.0f);
 

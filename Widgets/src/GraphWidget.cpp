@@ -43,8 +43,8 @@ void GraphWidget::onNanoDisplay()
 
     beginPath();
 
-    fillColor(WaveShaperConfig::graph_margin);
-    strokeColor(WaveShaperConfig::side_borders);
+    fillColor(WolfShaperConfig::graph_margin);
+    strokeColor(WolfShaperConfig::side_borders);
     strokeWidth(1.0f);
 
     rect(0.f, 0.f, width, height);
@@ -58,7 +58,7 @@ void GraphWidget::onNanoDisplay()
 
     const float topBorderWidth = 2.0f;
 
-    strokeColor(WaveShaperConfig::top_border);
+    strokeColor(WolfShaperConfig::top_border);
     strokeWidth(topBorderWidth);
 
     moveTo(0, 1);
@@ -77,8 +77,8 @@ void GraphWidget::onNanoDisplay()
 
     fGraphWidgetInner->flipYAxis();
 
-    fGraphWidgetInner->drawGraphLine(5.0f, WaveShaperConfig::graph_edges_background_normal, WaveShaperConfig::graph_edges_background_focused);    //outer
-    fGraphWidgetInner->drawGraphLine(1.1416f, WaveShaperConfig::graph_edges_foreground_normal, WaveShaperConfig::graph_edges_foreground_focused); //inner
+    fGraphWidgetInner->drawGraphLine(5.0f, WolfShaperConfig::graph_edges_background_normal, WolfShaperConfig::graph_edges_background_focused);    //outer
+    fGraphWidgetInner->drawGraphLine(1.1416f, WolfShaperConfig::graph_edges_foreground_normal, WolfShaperConfig::graph_edges_foreground_focused); //inner
 
     fGraphWidgetInner->drawInputIndicator();
 
@@ -252,9 +252,9 @@ void GraphWidgetInner::drawGrid()
     const float verticalStep = width / squaresPerRow;
     const float horizontalStep = height / squaresPerRow;
 
-    const Color gridForegroundColor = WaveShaperConfig::grid_foreground;
-    const Color gridBackgroundColor = WaveShaperConfig::grid_background;
-    const Color subGridColor = WaveShaperConfig::sub_grid;
+    const Color gridForegroundColor = WolfShaperConfig::grid_foreground;
+    const Color gridBackgroundColor = WolfShaperConfig::grid_background;
+    const Color subGridColor = WolfShaperConfig::sub_grid;
 
     //vertical
     for (int i = 0; i < squaresPerRow + 1; ++i)
@@ -350,7 +350,7 @@ void GraphWidgetInner::drawBackground()
     rect(0.f, 0.f, width, height);
     //Paint gradient = radialGradient(centerX, centerY, 1.0f, centerX, Color(42, 42, 42, 255), Color(33, 32, 39, 255));
     //fillPaint(gradient);
-    fillColor(WaveShaperConfig::graph_background);
+    fillColor(WolfShaperConfig::graph_background);
     fill();
 
     closePath();
@@ -429,7 +429,7 @@ void GraphWidgetInner::drawAlignmentLines()
     beginPath();
 
     strokeWidth(1.0f);
-    strokeColor(WaveShaperConfig::alignment_lines);
+    strokeColor(WolfShaperConfig::alignment_lines);
 
     moveTo(x, 0);
     lineTo(x, height);
@@ -459,7 +459,7 @@ void GraphWidgetInner::drawInputIndicator()
 
     beginPath();
 
-    strokeColor(WaveShaperConfig::input_volume_indicator);
+    strokeColor(WolfShaperConfig::input_volume_indicator);
     strokeWidth(2.0f);
 
     moveTo(inputIndicatorX, 0);
