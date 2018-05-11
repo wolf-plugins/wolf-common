@@ -9,7 +9,7 @@
 
 START_NAMESPACE_DISTRHO
 
-namespace spoonie
+namespace wolf
 {
 void Vertex::setPosition(float x, float y)
 {
@@ -177,11 +177,11 @@ const char *Graph::serialize()
     {
         vertex = vertices[i];
 
-        length += spoonie::toHexFloat(serializationBuffer + length, vertex.x);
+        length += wolf::toHexFloat(serializationBuffer + length, vertex.x);
         length += std::sprintf(serializationBuffer + length, ",");
-        length += spoonie::toHexFloat(serializationBuffer + length, vertex.y);
+        length += wolf::toHexFloat(serializationBuffer + length, vertex.y);
         length += std::sprintf(serializationBuffer + length, ",");
-        length += spoonie::toHexFloat(serializationBuffer + length, vertex.tension);
+        length += wolf::toHexFloat(serializationBuffer + length, vertex.tension);
         length += std::sprintf(serializationBuffer + length, ",%d;", vertex.type);
     }
 
@@ -201,9 +201,9 @@ void Graph::rebuildFromString(const char *serializedGraph)
 
     do
     {
-        const float x = spoonie::parseHexFloat(rest, &rest);
-        const float y = spoonie::parseHexFloat(++rest, &rest);
-        const float tension = spoonie::parseHexFloat(++rest, &rest);
+        const float x = wolf::parseHexFloat(rest, &rest);
+        const float y = wolf::parseHexFloat(++rest, &rest);
+        const float tension = wolf::parseHexFloat(++rest, &rest);
         const CurveType type = static_cast<CurveType>(std::strtol(++rest, &rest, 10));
 
         vertices[i++] = Vertex(x, y, tension, type);

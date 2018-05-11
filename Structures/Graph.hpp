@@ -1,11 +1,11 @@
-#ifndef SPOONIE_GRAPH_DEFINED_H
-#define SPOONIE_GRAPH_DEFINED_H
+#ifndef WOLF_GRAPH_DEFINED_H
+#define WOLF_GRAPH_DEFINED_H
 
 #include "src/DistrhoDefines.h"
 
 START_NAMESPACE_DISTRHO
 
-namespace spoonie
+namespace wolf
 {
   /**
    * The max number of vertices that can be in the graph at the same time.

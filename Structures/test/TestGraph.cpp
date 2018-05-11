@@ -11,7 +11,7 @@ BOOST_AUTO_TEST_SUITE(graph_suite)
 
 BOOST_AUTO_TEST_CASE(graph_add_nodes)
 {
-    spoonie::Graph graph = spoonie::Graph();
+    wolf::Graph graph = wolf::Graph();
     
     graph.insertVertex(0.2f, 0.2f);
     graph.insertVertex(0.1f, 0.1f);
@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(graph_add_nodes)
 
 BOOST_AUTO_TEST_CASE(graph_get_value, * boost::unit_test::tolerance((float)0.00001))
 {
-    spoonie::Graph graph = spoonie::Graph();
+    wolf::Graph graph = wolf::Graph();
     
     graph.insertVertex(0.2f, 0.2f);
     
@@ -44,8 +44,8 @@ BOOST_AUTO_TEST_CASE(graph_get_value, * boost::unit_test::tolerance((float)0.000
 
 BOOST_AUTO_TEST_CASE(graph_set_tension)
 {
-    spoonie::Graph graph = spoonie::Graph();
-    spoonie::Graph graphWithTension = spoonie::Graph();
+    wolf::Graph graph = wolf::Graph();
+    wolf::Graph graphWithTension = wolf::Graph();
 
     graphWithTension.setTensionAtIndex(0, 14.0f);
 

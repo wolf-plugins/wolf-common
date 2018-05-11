@@ -45,7 +45,7 @@ void NanoKnob::setRange(float min, float max) noexcept
     fMin = min;
     fMax = max;
 
-    fValue = spoonie::clamp(fValue, min, max);
+    fValue = wolf::clamp(fValue, min, max);
 }
 
 void NanoKnob::setStep(float step) noexcept
@@ -66,7 +66,7 @@ float NanoKnob::getMax() noexcept
 // NOTE: value is assumed to be scaled if using log
 void NanoKnob::setValue(float value, bool sendCallback) noexcept
 {
-    value = spoonie::clamp(value, fMin, fMax);
+    value = wolf::clamp(value, fMin, fMax);
 
     if (d_isEqual(fValue, value))
         return;

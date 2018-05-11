@@ -33,7 +33,7 @@ void NanoWheel::setRange(int min, int max) noexcept
     fMin = min;
     fMax = max;
 
-    fValue = spoonie::clamp(fValue, min, max);
+    fValue = wolf::clamp(fValue, min, max);
 }
 
 void NanoWheel::setCallback(Callback *callback) noexcept
@@ -43,7 +43,7 @@ void NanoWheel::setCallback(Callback *callback) noexcept
 
 void NanoWheel::setValue(int value, bool sendCallback) noexcept
 {
-    value = spoonie::clamp(value, fMin, fMax);
+    value = wolf::clamp(value, fMin, fMax);
 
     if (fValue == value)
         return;
@@ -142,7 +142,7 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
                 fLeftMouseDownLocation.setY(ev.pos.getY());
             }
 
-            setValue(fValue + spoonie::clamp(value, -1, 1), true);
+            setValue(fValue + wolf::clamp(value, -1, 1), true);
         }
 
         return true;

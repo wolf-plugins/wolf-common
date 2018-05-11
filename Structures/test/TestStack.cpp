@@ -11,7 +11,7 @@ BOOST_AUTO_TEST_SUITE(stack_suite)
 
 BOOST_AUTO_TEST_CASE(stack_count_increment)
 {
-    spoonie::Stack<int> stack = spoonie::Stack<int>(3);
+    wolf::Stack<int> stack = wolf::Stack<int>(3);
 
     stack.push(1);
     stack.push(2);
@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(stack_count_increment)
 
 BOOST_AUTO_TEST_CASE(stack_count_decrement)
 {
-    spoonie::Stack<int> stack = spoonie::Stack<int>(3);
+    wolf::Stack<int> stack = wolf::Stack<int>(3);
     
     stack.push(1);
     stack.push(2);
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(stack_count_decrement)
 
 BOOST_AUTO_TEST_CASE(stack_pop_good_item)
 {
-    spoonie::Stack<int> stack = spoonie::Stack<int>(3);
+    wolf::Stack<int> stack = wolf::Stack<int>(3);
     
     stack.push(1);
     stack.push(2);
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(stack_pop_good_item)
 
 BOOST_AUTO_TEST_CASE(stack_peek_good_item)
 {
-    spoonie::Stack<int> stack = spoonie::Stack<int>(3);
+    wolf::Stack<int> stack = wolf::Stack<int>(3);
     
     stack.push(1);
     stack.push(2);

@@ -60,7 +60,7 @@ void Animation::pause()
 
 void Animation::seek(float time)
 {
-	fCurrentTime = spoonie::clamp(time, 0.0f, fDuration);
+	fCurrentTime = wolf::clamp(time, 0.0f, fDuration);
 	fTimeLastRun = std::chrono::steady_clock::now();
 
 	onSeek();
@@ -152,7 +152,7 @@ void FloatTransition::run()
 	synchronize();
 
 	//Just some cheap lerp for now
-	*fCurrentValue = spoonie::lerp(fInitialValue, fTargetValue, fCurrentTime / fDuration);
+	*fCurrentValue = wolf::lerp(fInitialValue, fTargetValue, fCurrentTime / fDuration);
 
 	pauseIfDone();
 }

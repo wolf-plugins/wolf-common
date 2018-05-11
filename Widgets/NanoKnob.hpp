@@ -1,5 +1,5 @@
-#ifndef SPOONIE_NANO_KNOB_HPP_INCLUDED
-#define SPOONIE_NANO_KNOB_HPP_INCLUDED
+#ifndef WOLF_NANO_KNOB_HPP_INCLUDED
+#define WOLF_NANO_KNOB_HPP_INCLUDED
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"

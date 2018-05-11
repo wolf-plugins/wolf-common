@@ -80,7 +80,7 @@ GraphVertexType GraphVertex::getType()
 
 bool GraphVertex::contains(Point<int> pos)
 {
-    return spoonie::pointInCircle(surface, pos);
+    return wolf::pointInCircle(surface, pos);
 }
 
 bool GraphTensionHandle::contains(Point<int> pos)
@@ -90,7 +90,7 @@ bool GraphTensionHandle::contains(Point<int> pos)
 
     Circle<int> surface(getX(), getY(), 6.0f);
 
-    return spoonie::pointInCircle(surface, pos);
+    return wolf::pointInCircle(surface, pos);
 }
 
 void GraphNode::idleCallback()
@@ -140,7 +140,7 @@ float GraphTensionHandle::getX() const
     return (leftVertex->getX() + rightVertex->getX()) / 2.0f;
 }
 
-spoonie::Graph *GraphNode::getLineEditor() const
+wolf::Graph *GraphNode::getLineEditor() const
 {
     return &parent->lineEditor;
 }
@@ -158,7 +158,7 @@ float GraphTensionHandle::getY() const
     float tension = vertex->getTension();
 
     //calculate value for generic curve
-    return spoonie::Graph::getOutValue(0.5f, tension, 0.0f, leftVertex->getY() / parent->getHeight(), 1.0f, rightVertex->getY() / parent->getHeight()) * parent->getHeight();
+    return wolf::Graph::getOutValue(0.5f, tension, 0.0f, leftVertex->getY() / parent->getHeight(), 1.0f, rightVertex->getY() / parent->getHeight()) * parent->getHeight();
 }
 
 GraphVertex *GraphVertex::getVertexAtLeft() const
@@ -193,11 +193,11 @@ Point<int> GraphVertex::clampVertexPosition(const Point<int> point) const
     if (!isLockedX())
     {
         //clamp to neighbouring vertices
-        x = spoonie::clamp<int>(point.getX(), leftVertex->getX() + 1, rightVertex->getX() - 1);
+        x = wolf::clamp<int>(point.getX(), leftVertex->getX() + 1, rightVertex->getX() - 1);
     }
 
     //clamp to graph
-    y = spoonie::clamp<int>(y, 0, parent->getHeight());
+    y = wolf::clamp<int>(y, 0, parent->getHeight());
 
     return Point<int>(x, y);
 }
@@ -212,10 +212,10 @@ void GraphVertex::updateGraph()
     const float width = parent->getWidth();
     const float height = parent->getHeight();
 
-    const float normalizedX = spoonie::normalize(surface.getX(), width);
-    const float normalizedY = spoonie::normalize(surface.getY(), height);
+    const float normalizedX = wolf::normalize(surface.getX(), width);
+    const float normalizedY = wolf::normalize(surface.getY(), height);
 
-    spoonie::Graph *lineEditor = &parent->lineEditor;
+    wolf::Graph *lineEditor = &parent->lineEditor;
 
     lineEditor->getVertexAtIndex(index)->setPosition(normalizedX, normalizedY);
 
@@ -230,7 +230,7 @@ bool GraphVertex::onMotion(const Widget::MotionEvent &ev)
         return true;
     }
 
-    Point<int> pos = spoonie::flipY(ev.pos, parent->getHeight());
+    Point<int> pos = wolf::flipY(ev.pos, parent->getHeight());
 
     Point<int> clampedPosition = clampVertexPosition(pos);
     surface.setPos(clampedPosition);
@@ -260,7 +260,7 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
 
     const float resistance = 4.0f;
 
-    Point<int> pos = spoonie::flipY(ev.pos, parent->getHeight());
+    Point<int> pos = wolf::flipY(ev.pos, parent->getHeight());
 
     const GraphVertex *leftVertex = vertex;
     const GraphVertex *rightVertex = vertex->getVertexAtRight();
@@ -290,9 +290,9 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
         mouseDownPosition = pos;
     }
 
-    tension = spoonie::clamp(tension + difference / resistance, -100.0f, 100.0f);
+    tension = wolf::clamp(tension + difference / resistance, -100.0f, 100.0f);
 
-    spoonie::Graph *lineEditor = getLineEditor();
+    wolf::Graph *lineEditor = getLineEditor();
     lineEditor->getVertexAtIndex(vertex->getIndex())->tension = tension;
 
     parent->ui->setState("graph", lineEditor->serialize());
@@ -385,7 +385,7 @@ bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
 
     if (grabbed)
     {
-        mouseDownPosition = spoonie::flipY(ev.pos, parent->getHeight());
+        mouseDownPosition = wolf::flipY(ev.pos, parent->getHeight());
 
         window.hideCursor();
         window.clipCursor(Rectangle<int>(getAbsoluteX(), 0, 0, (int)window.getHeight()));

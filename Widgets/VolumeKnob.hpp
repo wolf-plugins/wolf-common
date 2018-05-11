@@ -1,5 +1,5 @@
-#ifndef SPOONIE_VOLUME_KNOB_HPP_INCLUDED
-#define SPOONIE_VOLUME_KNOB_HPP_INCLUDED
+#ifndef WOLF_VOLUME_KNOB_HPP_INCLUDED
+#define WOLF_VOLUME_KNOB_HPP_INCLUDED
 
 #include "NanoKnob.hpp"
 #include "Animation.hpp"

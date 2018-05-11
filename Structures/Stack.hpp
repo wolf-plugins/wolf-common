@@ -1,11 +1,11 @@
 #include <cassert>
 
-#ifndef SPOONIE_STACK_H_INCLUDED
-#define SPOONIE_STACK_H_INCLUDED
+#ifndef WOLF_STACK_H_INCLUDED
+#define WOLF_STACK_H_INCLUDED
 
 START_NAMESPACE_DISTRHO
 
-namespace spoonie
+namespace wolf
 {
 
 template <class T>

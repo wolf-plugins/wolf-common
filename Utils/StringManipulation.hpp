@@ -1,11 +1,11 @@
-#ifndef SPOONIE_STRING_MANIPULATION_DEFINED_H
-#define SPOONIE_STRING_MANIPULATION_DEFINED_H
+#ifndef WOLF_STRING_MANIPULATION_DEFINED_H
+#define WOLF_STRING_MANIPULATION_DEFINED_H
 
 #include <vector>
 #include <string>
 #include <cassert>
 
-namespace spoonie
+namespace wolf
 {
 std::vector<std::string> split(const char *str, char delimiter)
 {

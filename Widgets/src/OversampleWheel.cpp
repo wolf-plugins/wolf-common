@@ -12,13 +12,13 @@ const float outlineWidth = 2.0f;
 
 OversampleWheel::OversampleWheel(Window &parent, Size<uint> size) noexcept : NanoWheel(parent, size)
 {
-    using namespace SPOONIE_FONTS;
+    using namespace WOLF_FONTS;
     createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
 }
 
 OversampleWheel::OversampleWheel(NanoWidget *widget, Size<uint> size) noexcept : NanoWheel(widget, size)
 {
-    using namespace SPOONIE_FONTS;
+    using namespace WOLF_FONTS;
     createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
 }
 

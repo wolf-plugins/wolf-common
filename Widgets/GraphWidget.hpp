@@ -1,5 +1,5 @@
-#ifndef SPOONIE_GRAPH_WIDGET_HPP_INCLUDED
-#define SPOONIE_GRAPH_WIDGET_HPP_INCLUDED
+#ifndef WOLF_GRAPH_WIDGET_HPP_INCLUDED
+#define WOLF_GRAPH_WIDGET_HPP_INCLUDED
 
 #include "ObjectPool.hpp"
 #include "DistrhoUI.hpp"
@@ -138,17 +138,17 @@ private:
   /**
    * The data structure that contains the graph. Kept synchronized with the dsp side of the plugin.
    */
-  spoonie::Graph lineEditor;
+  wolf::Graph lineEditor;
 
   /**
    * Contains the vertex widgets used in the graph.
    */
-  GraphVertex *graphVertices[spoonie::maxVertices];
+  GraphVertex *graphVertices[wolf::maxVertices];
 
   /**
    * Object pool that holds the vertex widgets.
    */
-  spoonie::ObjectPool<GraphVertex> graphVerticesPool;
+  wolf::ObjectPool<GraphVertex> graphVerticesPool;
 
   /**
    * The graph element which currently has mouse focus.

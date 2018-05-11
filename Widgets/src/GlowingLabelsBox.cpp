@@ -67,7 +67,7 @@ float GlowingLabelsBox::getFontSize()
 
 void GlowingLabelsBox::setSelectedIndex(int index)
 {
-    fSelectedIndex = spoonie::clamp(index, 0, getLabelCount() - 1);
+    fSelectedIndex = wolf::clamp(index, 0, getLabelCount() - 1);
 }
 
 int GlowingLabelsBox::getSelectedIndex()

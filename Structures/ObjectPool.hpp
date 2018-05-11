@@ -1,11 +1,11 @@
 #include "Stack.hpp"
 
-#ifndef SPOONIE_OBJECT_POOL_H_INCLUDED
-#define SPOONIE_OBJECT_POOL_H_INCLUDED
+#ifndef WOLF_OBJECT_POOL_H_INCLUDED
+#define WOLF_OBJECT_POOL_H_INCLUDED
 
 START_NAMESPACE_DISTRHO
 
-namespace spoonie
+namespace wolf
 {
 template <class T>
 class ObjectPool
@@ -21,7 +21,7 @@ class ObjectPool
     int numberObjectsLeft();
 
   private:
-    spoonie::Stack<T *> objects;
+    wolf::Stack<T *> objects;
 };
 
 template <class T>

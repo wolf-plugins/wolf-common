@@ -1,5 +1,5 @@
-#ifndef SPOONIE_GRAPH_NODES_HPP_INCLUDED
-#define SPOONIE_GRAPH_NODES_HPP_INCLUDED
+#ifndef WOLF_GRAPH_NODES_HPP_INCLUDED
+#define WOLF_GRAPH_NODES_HPP_INCLUDED
 
 #include <chrono>
 
@@ -47,7 +47,7 @@ protected:
   virtual bool onMouse(const Widget::MouseEvent &ev);
 
   Point<int> getCorrectedPos(Point<int> surface);
-  spoonie::Graph *getLineEditor() const;
+  wolf::Graph *getLineEditor() const;
 
   GraphWidgetInner *parent;
   Color color;

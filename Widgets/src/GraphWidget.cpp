@@ -119,7 +119,7 @@ void GraphWidget::updateInput(const float input)
 GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
     : NanoWidget((NanoWidget *)ui),
       ui(ui),
-      graphVerticesPool(spoonie::maxVertices, this, GraphVertexType::Middle),
+      graphVerticesPool(wolf::maxVertices, this, GraphVertexType::Middle),
       focusedElement(nullptr),
       mouseLeftDown(false),
       mouseRightDown(false),
@@ -133,7 +133,7 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
 
     getParentWindow().addIdleCallback(this);
 
-    using namespace SPOONIE_FONTS;
+    using namespace WOLF_FONTS;
     createFontFromMemory("chivo_italic", (const uchar *)chivo_italic, chivo_italic_size, 0);
 }
 
@@ -153,7 +153,7 @@ void GraphWidgetInner::onResize(const ResizeEvent &ev)
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
         GraphVertex *vertexWidget = graphVertices[i];
-        spoonie::Vertex *logicalVertex = lineEditor.getVertexAtIndex(i);
+        wolf::Vertex *logicalVertex = lineEditor.getVertexAtIndex(i);
 
         vertexWidget->setPos(logicalVertex->x * ev.size.getWidth(), logicalVertex->y * ev.size.getHeight());
     }
@@ -208,7 +208,7 @@ void GraphWidgetInner::rebuildFromString(const char *serializedGraph)
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
         GraphVertex *vertex = graphVerticesPool.getObject();
-        const spoonie::Vertex *lineEditorVertex = lineEditor.getVertexAtIndex(i);
+        const wolf::Vertex *lineEditorVertex = lineEditor.getVertexAtIndex(i);
 
         const int x = lineEditorVertex->x * getWidth();
         const int y = lineEditorVertex->y * getHeight();
@@ -383,8 +383,8 @@ void GraphWidgetInner::drawGraphEdge(int vertexIndex, float lineWidth, Color col
     const float width = getWidth();
     const float height = getHeight();
 
-    const spoonie::Vertex *leftVertex = lineEditor.getVertexAtIndex(vertexIndex);
-    const spoonie::Vertex *rightVertex = lineEditor.getVertexAtIndex(vertexIndex + 1);
+    const wolf::Vertex *leftVertex = lineEditor.getVertexAtIndex(vertexIndex);
+    const wolf::Vertex *rightVertex = lineEditor.getVertexAtIndex(vertexIndex + 1);
 
     beginPath();
 
@@ -523,7 +523,7 @@ void GraphWidgetInner::onNanoDisplay()
 
 bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
 {
-    const Point<int> point = spoonie::flipY(ev.pos, getHeight());
+    const Point<int> point = wolf::flipY(ev.pos, getHeight());
 
     //Testing for mouse hover on tension handles
     for (int i = 0; i < lineEditor.getVertexCount() - 1; ++i)
@@ -535,7 +535,7 @@ bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
             const float delta = graphVertices[i]->getY() < graphVertices[i + 1]->getY() ? -ev.delta.getY() : ev.delta.getY();
             const float oldTension = lineEditor.getVertexAtIndex(i)->tension;
 
-            lineEditor.setTensionAtIndex(i, spoonie::clamp(oldTension + 1.5f * delta, -100.0f, 100.0f));
+            lineEditor.setTensionAtIndex(i, wolf::clamp(oldTension + 1.5f * delta, -100.0f, 100.0f));
 
             ui->setState("graph", lineEditor.serialize());
             repaint();
@@ -581,7 +581,7 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
 {
     int i = lineEditor.getVertexCount();
 
-    if (i == spoonie::maxVertices)
+    if (i == wolf::maxVertices)
         return nullptr;
 
     while ((i > 0) && (pos.getX() < graphVertices[i - 1]->getX()))
@@ -601,8 +601,8 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
     const float width = getWidth();
     const float height = getHeight();
 
-    const float normalizedX = spoonie::normalize(pos.getX(), width);
-    const float normalizedY = spoonie::normalize(pos.getY(), height);
+    const float normalizedX = wolf::normalize(pos.getX(), width);
+    const float normalizedY = wolf::normalize(pos.getY(), height);
 
     lineEditor.insertVertex(normalizedX, normalizedY);
 
@@ -636,7 +636,7 @@ GraphNode *GraphWidgetInner::getHoveredNode(Point<int> cursorPos)
 
 bool GraphWidgetInner::leftClick(const MouseEvent &ev)
 {
-    const Point<int> point = spoonie::flipY(ev.pos, getHeight());
+    const Point<int> point = wolf::flipY(ev.pos, getHeight());
 
     if (mouseRightDown)
         return true;
@@ -674,7 +674,7 @@ bool GraphWidgetInner::middleClick(const MouseEvent &)
 
 bool GraphWidgetInner::rightClick(const MouseEvent &ev)
 {
-    const Point<int> point = spoonie::flipY(ev.pos, getHeight());
+    const Point<int> point = wolf::flipY(ev.pos, getHeight());
 
     if (mouseLeftDown)
         return true;
@@ -722,7 +722,7 @@ bool GraphWidgetInner::onMouse(const MouseEvent &ev)
 
 bool GraphWidgetInner::onMotion(const MotionEvent &ev)
 {
-    const Point<int> point = spoonie::flipY(ev.pos, getHeight());
+    const Point<int> point = wolf::flipY(ev.pos, getHeight());
     GraphNode *hoveredNode = getHoveredNode(point);
 
     if (contains(ev.pos) || hoveredNode != nullptr)
