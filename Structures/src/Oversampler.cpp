@@ -2,17 +2,24 @@
 
 START_NAMESPACE_DISTRHO
 
-Oversampler::Oversampler() : fRatio(1),
+Oversampler::Oversampler() : fRatio(-1),
                              fSampleRate(44100),
                              fNumSamples(512),
-                             fLowPass1(),
-                             fLowPass2(),
                              fCurrentCapacity(fNumSamples),
-                             fRequiredCapacity(fNumSamples)
+                             fRequiredCapacity(fNumSamples),
+                             fNumInputSamples(512)
 {
     fBuffer = (float **)malloc(sizeof(float *) * 2);
+
     fBuffer[0] = (float *)malloc(fNumSamples * sizeof(float));
+    memset(fBuffer[0], 0, fRequiredCapacity);
+
     fBuffer[1] = (float *)malloc(fNumSamples * sizeof(float));
+    memset(fBuffer[1], 0, fRequiredCapacity);
+
+    fInput = (float **)malloc(sizeof(float *) * 2);
+    fInput[0] = (float *)malloc(fNumInputSamples * sizeof(float));
+    fInput[1] = (float *)malloc(fNumInputSamples * sizeof(float));
 }
 
 Oversampler::~Oversampler()
@@ -20,6 +27,10 @@ Oversampler::~Oversampler()
     free(fBuffer[1]);
     free(fBuffer[0]);
     free(fBuffer);
+
+    free(fInput[1]);
+    free(fInput[0]);
+    free(fInput);
 }
 
 float **Oversampler::upsample(int ratio, uint32_t numSamples, double sampleRate, const float **audio)
@@ -28,13 +39,19 @@ float **Oversampler::upsample(int ratio, uint32_t numSamples, double sampleRate,
     {
         fSampleRate = sampleRate * ratio;
 
-        fFilterCenter = sampleRate / 2.0f - 4000; //FIXME
+        fUpsamplers[0].setup(sampleRate, fSampleRate, 1, 16);
+        fUpsamplers[1].setup(sampleRate, fSampleRate, 1, 16);
 
-        fLowPass1.reset();
-        fLowPass1.setup(8, fSampleRate, fFilterCenter);
+        fDownsamplers[0].setup(fSampleRate, sampleRate, 1, 16);
+        fDownsamplers[1].setup(fSampleRate, sampleRate, 1, 16);
+    }
 
-        fLowPass2.reset();
-        fLowPass2.setup(8, fSampleRate, fFilterCenter);
+    if (fNumInputSamples < numSamples)
+    {
+        fInput[0] = (float *)realloc(fInput[0], numSamples * sizeof(float));
+        fInput[1] = (float *)realloc(fInput[1], numSamples * sizeof(float));
+
+        fNumInputSamples = numSamples;
     }
 
     fRatio = ratio;
@@ -50,24 +67,33 @@ float **Oversampler::upsample(int ratio, uint32_t numSamples, double sampleRate,
         fCurrentCapacity = fRequiredCapacity;
     }
 
-    for (uint32_t i = 0; i < numSamples; ++i)
+    memset(fBuffer[0], 0, fRequiredCapacity);
+    memset(fBuffer[1], 0, fRequiredCapacity);
+    
+    /* if(fRatio == 1)
     {
-        const int index = i * fRatio; //TODO: find a better name for this variable
-
-        fBuffer[0][index] = audio[0][i];
-        fBuffer[1][index] = audio[1][i];
-
-        for (int j = 1; j < fRatio; ++j)
+        for (uint32_t i = 0; i < fNumSamples; ++i)
         {
-            fBuffer[0][index + j] = 0.0f;
-            fBuffer[1][index + j] = 0.0f;
+            fBuffer[0][i] = audio[0][i];
+            fBuffer[1][i] = audio[1][i];
         }
-    }
 
-    if (fRatio > 1)
+        return fBuffer;
+    } */
+
+    for (uint32_t i = 0; i < 2; ++i)
     {
-        lowPass1();
-        gainBoost();
+        for (uint32_t j = 0; j < fNumSamples; ++j)
+        {
+            fInput[i][j] = audio[i][j];
+        }
+
+        fUpsamplers[i].inp_data = fInput[i];
+        fUpsamplers[i].out_data = fBuffer[i];
+        fUpsamplers[i].inp_count = fNumSamples;
+        fUpsamplers[i].out_count = fRequiredCapacity;
+
+        fUpsamplers[i].process();
     }
 
     return fBuffer;
@@ -75,32 +101,14 @@ float **Oversampler::upsample(int ratio, uint32_t numSamples, double sampleRate,
 
 void Oversampler::downsample(float **targetBuffer)
 {
-    if (fRatio > 1)
-        lowPass2();
-
-    for (uint32_t i = 0; i < fNumSamples; ++i)
+    for (int i = 0; i < 2; ++i)
     {
-        targetBuffer[0][i] = fBuffer[0][i * fRatio];
-        targetBuffer[1][i] = fBuffer[1][i * fRatio];
-    }
-}
+        fDownsamplers[i].inp_data = fBuffer[i];
+        fDownsamplers[i].out_data = targetBuffer[i];
+        fDownsamplers[i].inp_count = fRequiredCapacity;
+        fDownsamplers[i].out_count = fNumSamples;
 
-void Oversampler::lowPass1()
-{
-    fLowPass1.process(fRequiredCapacity, fBuffer);
-}
-
-void Oversampler::lowPass2()
-{
-    fLowPass2.process(fRequiredCapacity, fBuffer);
-}
-
-void Oversampler::gainBoost()
-{
-    for (uint32_t i = 0; i < fRequiredCapacity; ++i)
-    {
-        fBuffer[0][i] *= fRatio;
-        fBuffer[1][i] *= fRatio;
+        fDownsamplers[i].process();
     }
 }
 
