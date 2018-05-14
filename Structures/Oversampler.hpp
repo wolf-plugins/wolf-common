@@ -4,7 +4,6 @@
 #include "DspFilters/Dsp.h"
 #include "src/DistrhoDefines.h"
 #include "extra/LeakDetector.hpp"
-#include "resampler.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -21,25 +20,21 @@ class Oversampler
     void lowPass1();
     void lowPass2();
 
-    void reverse();
     void gainBoost();
 
   private:
     int fRatio;
     double fSampleRate;
     uint32_t fNumSamples;
-
-    Resampler fUpsamplers[2];
-    Resampler fDownsamplers[2];
+    Dsp::SimpleFilter<Dsp::Butterworth::LowPass<8>, 2> fLowPass1;
+    Dsp::SimpleFilter<Dsp::Butterworth::LowPass<8>, 2> fLowPass2;
 
     uint32_t fCurrentCapacity;
     uint32_t fRequiredCapacity;
-
     float **fBuffer;
 
-    float **fInput;
-    uint32_t fNumInputSamples;
-    
+    float fFilterCenter;
+
     DISTRHO_LEAK_DETECTOR(Oversampler)
 };
 
