@@ -60,4 +60,20 @@ void ResetGraphButton::drawHover()
     closePath();
 }
 
+void ResetGraphButton::draw()
+{
+    switch (getButtonState())
+    {
+    case kNanoStateDown:
+        drawDown();
+        break;
+    case kNanoStateHover:
+        drawHover();
+        break;
+    default:
+        drawUp();
+        break;
+    }
+}
+
 END_NAMESPACE_DISTRHO

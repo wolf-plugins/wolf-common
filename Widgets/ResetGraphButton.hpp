@@ -11,9 +11,11 @@ public:
     explicit ResetGraphButton(NanoWidget *widget, Size<uint> size) noexcept;
 
 protected:
-    void drawUp() override;
-    void drawDown() override;
-    void drawHover() override;
+    void draw() override;
+    
+    void drawUp();
+    void drawDown();
+    void drawHover();
 
 private:
     DISTRHO_LEAK_DETECTOR(ResetGraphButton)

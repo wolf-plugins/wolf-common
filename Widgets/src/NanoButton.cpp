@@ -5,7 +5,7 @@ START_NAMESPACE_DISTRHO
 
 NanoButton::NanoButton(NanoWidget *parent, Size<uint> size) noexcept
     : NanoWidget(parent),
-      state(kNanoStateNormal),
+      fState(kNanoStateNormal),
       fHasFocus(false),
       fIsHovered(false)
 {
@@ -19,23 +19,17 @@ void NanoButton::setCallback(Callback *callback) noexcept
 
 void NanoButton::onNanoDisplay()
 {
-    switch (state)
-    {
-    case kNanoStateDown:
-        drawDown();
-        break;
-    case kNanoStateHover:
-        drawHover();
-        break;
-    default:
-        drawUp();
-        break;
-    }
+    draw();
 }
 
-void NanoButton::setButtonState(State state)
+NanoButton::ButtonState NanoButton::getButtonState()
 {
-    this->state = state;
+    return fState;
+}
+
+void NanoButton::setButtonState(ButtonState state)
+{
+    fState = state;
 
     repaint();
 }
@@ -129,7 +123,7 @@ bool NanoButton::onMotion(const MotionEvent &ev)
 
     if (hover)
     {
-        if (state == kNanoStateNormal)
+        if (fState == kNanoStateNormal)
         {
             setButtonState(kNanoStateHover);
             getParentWindow().setCursorStyle(Window::CursorStyle::Pointer);
@@ -137,7 +131,7 @@ bool NanoButton::onMotion(const MotionEvent &ev)
 
         return true;
     }
-    else if (state == kNanoStateHover)
+    else if (fState == kNanoStateHover)
     {
         setButtonState(kNanoStateNormal);
         getParentWindow().setCursorStyle(Window::CursorStyle::Default);

@@ -16,10 +16,18 @@ public:
         virtual void nanoButtonClicked(NanoButton* nanoButton) = 0;
     };
 
+    enum ButtonState {
+        kNanoStateNormal = 0,
+        kNanoStateHover,
+        kNanoStateDown
+    };
+
     explicit NanoButton(Window& parent, Size<uint> size) noexcept;
     explicit NanoButton(NanoWidget* widget, Size<uint> size) noexcept;
 
     void setCallback(Callback* callback) noexcept;
+
+    ButtonState getButtonState();
 
 protected:
     void onNanoDisplay() override;
@@ -31,19 +39,11 @@ protected:
     bool onMouse(const MouseEvent&) override;
     bool onMotion(const MotionEvent&) override;
 
-    virtual void drawUp() = 0;
-    virtual void drawDown() = 0;
-    virtual void drawHover() = 0;
+    virtual void draw() = 0;
 
 private:
-    enum State {
-        kNanoStateNormal = 0,
-        kNanoStateHover,
-        kNanoStateDown
-    };
-
-    void setButtonState(State state);
-    State state;
+    void setButtonState(ButtonState state);
+    ButtonState fState;
 
     bool fHasFocus;
     bool fIsHovered;
