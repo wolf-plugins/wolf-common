@@ -95,6 +95,12 @@ protected:
 
   void updateInput(const float input);
 
+  void setWarpAmount(const float warpAmount);
+  
+  void setWarpType(const wolf::WarpType warpType);
+
+  void positionGraphNodes();
+  
   /**
    * Draw a vertical line to indicate the input volume on the graph.
    */
@@ -187,6 +193,8 @@ public:
   void rebuildFromString(const char * serializedGraph);
   void reset();
   void updateInput(const float input);
+  void setWarpAmount(const float warpAmount);
+  void setWarpType(const wolf::WarpType warpType);
 
 protected:
   void onResize(const ResizeEvent &ev) override;

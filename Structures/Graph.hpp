@@ -7,7 +7,7 @@ START_NAMESPACE_DISTRHO
 
 namespace wolf
 {
-  /**
+/**
    * The max number of vertices that can be in the graph at the same time.
    */
 const int maxVertices = 99;
@@ -17,17 +17,48 @@ enum CurveType //TODO: implement more curve types
   Exponential
 };
 
-struct Vertex
+enum WarpType 
 {
+  None,
+  BendPlus,
+  BendMinus,
+  BendPlusMinus,
+  SkewPlus,
+  SkewMinus,
+  SkewPlusMinus
+};
+
+class Vertex
+{
+  friend class Graph;
+
+public:
+  Vertex();
+  Vertex(float posX, float posY, float tension = 0.0f, CurveType type = CurveType::Exponential);
+
+  float getX() const;
+  float getY() const;
+  float getTension() const;
+  CurveType getType() const;
+
+  void setX(float x);
+  void setY(float y);
+  void setPosition(float x, float y);
+  void setTension(float tension);
+  void setType(CurveType type);
+
+protected:
+  void setWarpAmount(float warp);
+  void setWarpType(WarpType warpType);
+
+private:
   float x;
   float y;
   float tension;
   CurveType type;
 
-  Vertex();
-  Vertex(float posX, float posY, float tension = 0.0f, CurveType type = CurveType::Exponential);
-
-  void setPosition(float x, float y);
+  float warpAmount;
+  WarpType warpType; 
 };
 
 class Graph
@@ -37,7 +68,7 @@ public:
 
   void insertVertex(float x, float y, float tension = 0.0f, CurveType type = CurveType::Exponential);
   void removeVertex(int index);
-  Vertex* getVertexAtIndex(int index);
+  Vertex *getVertexAtIndex(int index);
 
   void setTensionAtIndex(int index, float tension);
 
@@ -61,27 +92,31 @@ public:
   /**
    * Save the graph into a string.
    */
-  const char* serialize();
+  const char *serialize();
 
   bool getBipolarMode();
   void setBipolarMode(bool bipolarMode);
 
+  void setWarpAmount(float warp);
+  void setWarpType(WarpType warpType);
+
   /**
    * Rebuild the graph from a string.
    */
-  void rebuildFromString(const char* serializedGraph);
-  
+  void rebuildFromString(const char *serializedGraph);
+
 private:
   Vertex vertices[maxVertices];
   int vertexCount;
-
+  float warpAmount;
+  WarpType warpType;
   bool bipolarMode;
 
   //format: x,y,tension,type;
   char serializationBuffer[(sizeof(char) * 256 + 4) * maxVertices + 1];
 };
 
-}
+} // namespace wolf
 
 END_NAMESPACE_DISTRHO
 

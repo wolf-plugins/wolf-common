@@ -116,6 +116,16 @@ void GraphWidget::updateInput(const float input)
     fGraphWidgetInner->updateInput(input);
 }
 
+void GraphWidget::setWarpAmount(const float warpAmount)
+{
+    fGraphWidgetInner->setWarpAmount(warpAmount);
+}
+
+void GraphWidget::setWarpType(const wolf::WarpType warpType)
+{
+    fGraphWidgetInner->setWarpType(warpType);
+}
+
 GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
     : NanoWidget((NanoWidget *)ui),
       ui(ui),
@@ -150,13 +160,20 @@ void GraphWidgetInner::onResize(const ResizeEvent &ev)
     if (ev.oldSize.isNull())
         return;
 
+    positionGraphNodes();
+}
+
+void GraphWidgetInner::positionGraphNodes()
+{
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
         GraphVertex *vertexWidget = graphVertices[i];
         wolf::Vertex *logicalVertex = lineEditor.getVertexAtIndex(i);
 
-        vertexWidget->setPos(logicalVertex->x * ev.size.getWidth(), logicalVertex->y * ev.size.getHeight());
+        vertexWidget->setPos(logicalVertex->getX() * getWidth(), logicalVertex->getY() * getHeight());
     }
+
+    repaint();
 }
 
 void GraphWidgetInner::initializeDefaultVertices()
@@ -210,10 +227,6 @@ void GraphWidgetInner::rebuildFromString(const char *serializedGraph)
         GraphVertex *vertex = graphVerticesPool.getObject();
         const wolf::Vertex *lineEditorVertex = lineEditor.getVertexAtIndex(i);
 
-        const int x = lineEditorVertex->x * getWidth();
-        const int y = lineEditorVertex->y * getHeight();
-
-        vertex->setPos(x, y);
         vertex->index = i;
 
         if (i == 0)
@@ -225,6 +238,8 @@ void GraphWidgetInner::rebuildFromString(const char *serializedGraph)
 
         graphVertices[i] = vertex;
     }
+
+    positionGraphNodes();
 }
 
 void GraphWidgetInner::updateAnimations()
@@ -391,18 +406,18 @@ void GraphWidgetInner::drawGraphEdge(int vertexIndex, float lineWidth, Color col
     strokeColor(color);
     strokeWidth(lineWidth);
 
-    moveTo(leftVertex->x * width, leftVertex->y * height);
+    moveTo(leftVertex->getX() * width, leftVertex->getY() * height);
 
-    const float edgeLength = (rightVertex->x - leftVertex->x) * width;
+    const float edgeLength = (rightVertex->getX() - leftVertex->getX()) * width;
 
     for (int i = 0; i <= edgeLength; ++i)
     {
-        const float normalizedX = leftVertex->x + i / width;
+        const float normalizedX = leftVertex->getX() + i / width;
 
         lineTo(normalizedX * width, lineEditor.getValueAt(normalizedX) * height);
     }
 
-    lineTo(rightVertex->x * width, rightVertex->y * height);
+    lineTo(rightVertex->getX() * width, rightVertex->getY() * height);
 
     stroke();
 
@@ -445,6 +460,18 @@ void GraphWidgetInner::drawAlignmentLines()
 void GraphWidgetInner::updateInput(const float input)
 {
     fInput = input;
+}
+
+void GraphWidgetInner::setWarpAmount(const float warpAmount)
+{
+    lineEditor.setWarpAmount(warpAmount);
+    positionGraphNodes();
+}
+
+void GraphWidgetInner::setWarpType(const wolf::WarpType warpType)
+{
+    lineEditor.setWarpType(warpType);
+    positionGraphNodes();
 }
 
 void GraphWidgetInner::drawInputIndicator()
@@ -533,7 +560,7 @@ bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
         if (tensionHandle->contains(point))
         {
             const float delta = graphVertices[i]->getY() < graphVertices[i + 1]->getY() ? -ev.delta.getY() : ev.delta.getY();
-            const float oldTension = lineEditor.getVertexAtIndex(i)->tension;
+            const float oldTension = lineEditor.getVertexAtIndex(i)->getTension();
 
             lineEditor.setTensionAtIndex(i, wolf::clamp(oldTension + 1.5f * delta, -100.0f, 100.0f));
 
@@ -593,7 +620,9 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
     }
 
     GraphVertex *vertex = graphVerticesPool.getObject();
-    vertex->setPos(pos);
+
+    //switches back 
+    //vertex->setPos(pos);
     vertex->index = i;
 
     graphVertices[i] = vertex;
@@ -605,8 +634,10 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
     const float normalizedY = wolf::normalize(pos.getY(), height);
 
     lineEditor.insertVertex(normalizedX, normalizedY);
-
+    
     ui->setState("graph", lineEditor.serialize());
+
+    positionGraphNodes();
 
     return vertex;
 }

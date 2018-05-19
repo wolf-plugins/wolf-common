@@ -147,7 +147,7 @@ wolf::Graph *GraphNode::getLineEditor() const
 
 float GraphVertex::getTension()
 {
-    return getLineEditor()->getVertexAtIndex(index)->tension;
+    return getLineEditor()->getVertexAtIndex(index)->getTension();
 }
 
 float GraphTensionHandle::getY() const
@@ -293,7 +293,7 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
     tension = wolf::clamp(tension + difference / resistance, -100.0f, 100.0f);
 
     wolf::Graph *lineEditor = getLineEditor();
-    lineEditor->getVertexAtIndex(vertex->getIndex())->tension = tension;
+    lineEditor->getVertexAtIndex(vertex->getIndex())->setTension(tension);
 
     parent->ui->setState("graph", lineEditor->serialize());
 
