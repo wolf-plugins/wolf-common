@@ -36,7 +36,7 @@ private:
     float fFontSize;
     NanoVG::FontId fFontId;
 
-    DISTRHO_LEAK_DETECTOR(GlowingLabelsBox)
+    DISTRHO_LEAK_DETECTOR(LabelContainer)
 };
 
 END_NAMESPACE_DISTRHO
