@@ -3,12 +3,8 @@
 
 START_NAMESPACE_DISTRHO
 
-GlowingLabelsBox::GlowingLabelsBox(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(widget),
-                                                                                   fSelectedIndex(0)
+GlowingLabelsBox::GlowingLabelsBox(NanoWidget *widget, Size<uint> size) noexcept : LabelContainer(widget, size)
 {
-    setSize(size);
-
-    loadSharedResources();
 }
 
 void GlowingLabelsBox::onNanoDisplay()
@@ -44,60 +40,15 @@ void GlowingLabelsBox::onNanoDisplay()
         fontFace(NANOVG_DEJAVU_SANS_TTF);
         fontSize(labelSize);
 
-        const Color fontColor = (i == fSelectedIndex) ? Color(235, 196, 74, 255) : Color(158, 158, 158, 255);
+        const Color fontColor = (i == getSelectedIndex()) ? Color(235, 196, 74, 255) : Color(158, 158, 158, 255);
 
         fillColor(fontColor);
         textAlign(ALIGN_LEFT | ALIGN_TOP);
 
-        text(labelMarginLeft, labelVerticalSpacing * i + labelMarginTop, fLabels[i], NULL);
+        text(labelMarginLeft, labelVerticalSpacing * i + labelMarginTop, getLabels()[i], NULL);
 
         closePath();
     }
-}
-
-void GlowingLabelsBox::setFontSize(float fontSize)
-{
-    fFontSize = fontSize;
-}
-
-float GlowingLabelsBox::getFontSize()
-{
-    return fFontSize;
-}
-
-void GlowingLabelsBox::setSelectedIndex(int index)
-{
-    fSelectedIndex = wolf::clamp(index, 0, getLabelCount() - 1);
-}
-
-int GlowingLabelsBox::getSelectedIndex()
-{
-    return fSelectedIndex;
-}
-
-int GlowingLabelsBox::getLabelCount()
-{
-    return fLabels.size();
-}
-
-void GlowingLabelsBox::setLabels(std::vector<const char *> labels)
-{
-    fLabels = labels;
-}
-
-std::vector<const char *> GlowingLabelsBox::getLabels()
-{
-    return fLabels;
-}
-
-void GlowingLabelsBox::setFontId(NanoVG::FontId fontId)
-{
-    fFontId = fontId;
-}
-
-NanoVG::FontId GlowingLabelsBox::getFontId()
-{
-    return fFontId;
 }
 
 END_NAMESPACE_DISTRHO
