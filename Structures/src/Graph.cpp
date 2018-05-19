@@ -320,10 +320,13 @@ void Graph::insertVertex(float x, float y, float tension, CurveType type)
         --i;
     }
 
-    vertices[i] = Vertex(x, y, tension, type);
-    vertices[i].setWarpAmount(warpAmount);
-    vertices[i].setWarpType(warpType);
-    vertices[i].setPosition(x, y);
+    Vertex vertex = Vertex(x, y, tension, type);
+
+    vertex.setWarpAmount(warpAmount);
+    vertex.setWarpType(warpType);
+    vertex.setPosition(x, y);
+
+    vertices[i] = vertex;
 
     ++vertexCount;
 }
@@ -404,8 +407,11 @@ void Graph::rebuildFromString(const char *serializedGraph)
         const float tension = wolf::parseHexFloat(++rest, &rest);
         const CurveType type = static_cast<CurveType>(std::strtol(++rest, &rest, 10));
 
-        vertices[i++] = Vertex(x, y, tension, type);
-        vertices[i].setWarpAmount(warpAmount);
+        Vertex vertex = Vertex(x, y, tension, type);
+        vertex.setWarpAmount(warpAmount);
+        vertex.setWarpType(warpType);
+
+        vertices[i++] = vertex;
 
     } while (strcmp(++rest, "\0") != 0);
 
