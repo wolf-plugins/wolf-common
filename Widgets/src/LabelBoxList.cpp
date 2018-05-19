@@ -15,4 +15,18 @@ void LabelBoxList::onNanoDisplay()
     fLabelBox.setAbsolutePos(getAbsolutePos());
 }
 
+void LabelBoxList::goNext()
+{
+    const int index = wolf::modulo(getSelectedIndex() + 1, getLabelCount());
+
+    setSelectedIndex(index);
+}
+
+void LabelBoxList::goPrevious()
+{
+    const int index = wolf::modulo(getSelectedIndex() - 1, getLabelCount());
+
+    setSelectedIndex(index);
+}
+
 END_NAMESPACE_DISTRHO

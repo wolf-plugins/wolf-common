@@ -45,6 +45,12 @@ T normalizeBipolar(const T &value, const T &min, const T &max)
     return 2 * normalize(value, min, max) - 1;
 }
 
+inline int modulo(int a, int b) 
+{
+    const int result = a % b;
+    return result >= 0 ? result : result + b;
+}
+
 template <typename T, typename U>
 bool pointInCircle(DGL_NAMESPACE::Circle<T> circle, DGL_NAMESPACE::Point<U> point)
 {

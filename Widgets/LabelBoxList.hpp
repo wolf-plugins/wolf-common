@@ -13,7 +13,9 @@ class LabelBoxList : public LabelContainer
 {
   public:
     explicit LabelBoxList(NanoWidget *widget, Size<uint> size) noexcept;
-
+    void goNext();
+    void goPrevious();
+    
   protected:
     void onNanoDisplay() override;
 
