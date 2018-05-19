@@ -12,7 +12,13 @@ START_NAMESPACE_DISTRHO
 namespace wolf
 {
 
-Vertex::Vertex() {}
+Vertex::Vertex() :  x(0),
+                    y(0),
+                    tension(0),
+                    type(Exponential),
+                    warpAmount(0),
+                    warpType(None)
+{}
 
 Vertex::Vertex(float posX, float posY, float tension, CurveType type) : x(posX),
                                                                         y(posY),
@@ -195,7 +201,8 @@ void Vertex::setWarpType(WarpType warpType)
 
 Graph::Graph() : vertexCount(0),
                  bipolarMode(false),
-                 warpAmount(0.0f)
+                 warpAmount(0.0f),
+                 warpType(None)
 {
     insertVertex(0.0f, 0.0f);
     insertVertex(1.0f, 1.0f);
