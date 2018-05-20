@@ -12,13 +12,14 @@ START_NAMESPACE_DISTRHO
 namespace wolf
 {
 
-Vertex::Vertex() :  x(0),
-                    y(0),
-                    tension(0),
-                    type(Exponential),
-                    warpAmount(0),
-                    warpType(None)
-{}
+Vertex::Vertex() : x(0),
+                   y(0),
+                   tension(0),
+                   type(Exponential),
+                   warpAmount(0),
+                   warpType(None)
+{
+}
 
 Vertex::Vertex(float posX, float posY, float tension, CurveType type) : x(posX),
                                                                         y(posY),
@@ -29,25 +30,36 @@ Vertex::Vertex(float posX, float posY, float tension, CurveType type) : x(posX),
 {
 }
 
-//TODO
-static float bendPlus(float x, float warpAmount)
+static float powerScale(float input, float tension, float maxExponent, float p1x, float p1y, float p2x, float p2y, bool inverse)
 {
-    return -1.0f;
-}
+    assert(exponent >= 1);
 
-static float invBendPlus(float x, float warpAmount)
-{
-    return -1.0f;
-}
+    const bool tensionIsPositive = tension >= 0.0f;
 
-static float bendMinus(float x, float warpAmount)
-{
-    return -1.0f;
-}
+    tension = std::abs(tension);
 
-static float invBendMinus(float x, float warpAmount)
-{
-    return -1.0f;
+    const float deltaX = p2x - p1x;
+    const float deltaY = p2y - p1y;
+
+    float exponent = 1 + tension * (maxExponent - 1);
+
+    if (inverse)
+    {
+        exponent = 1.0f / exponent;
+    }
+
+    float result;
+
+    if (tensionIsPositive)
+    {
+        result = deltaY * std::pow((input - p1x) / deltaX, exponent) + p1y;
+    }
+    else
+    {
+        result = 1 - (deltaY * std::pow(1 - (input - p1x) / deltaX, exponent) + p1y) + p2y - (1 - p1y);
+    }
+
+    return result;
 }
 
 static float skewPlus(float x, float warpAmount)
@@ -70,6 +82,38 @@ static float invSkewMinus(float x, float warpAmount)
     return std::pow(x, 1.0f / (warpAmount * 2 + 1));
 }
 
+static float bendPlus(float x, float warpAmount, bool inverse)
+{
+    if (x < 0.5f)
+    {
+        return powerScale(x, -warpAmount, 3, 0.0f, 0.0f, 0.5f, 0.5f, inverse);
+    }
+    else if (x > 0.5f)
+    {
+        return powerScale(x, warpAmount, 3, 0.5f, 0.5f, 1.0f, 1.0f, inverse);
+    }
+    else
+    {
+        return x;
+    }
+}
+
+static float bendMinus(float x, float warpAmount, bool inverse)
+{
+    if (x < 0.5f)
+    {
+        return powerScale(x, warpAmount, 3, 0.0f, 0.0f, 0.5f, 0.5f, inverse);
+    }
+    else if (x > 0.5f)
+    {
+        return powerScale(x, -warpAmount, 3, 0.5f, 0.5f, 1.0f, 1.0f, inverse);
+    }
+    else
+    {
+        return x;
+    }
+}
+
 float Vertex::getX() const
 {
     switch (warpType)
@@ -77,11 +121,24 @@ float Vertex::getX() const
     case None:
         return x;
     case BendPlus:
-        return x;
+        return bendPlus(x, warpAmount, false);
     case BendMinus:
-        return x;
+        return bendMinus(x, warpAmount, false);
     case BendPlusMinus:
-        return x;
+    {
+        if (warpAmount < 0.5f)
+        {
+            return bendPlus(x, (0.5f - warpAmount) * 2, false);
+        }
+        else if (warpAmount > 0.5f)
+        {
+            return bendMinus(x, (warpAmount - 0.5f) * 2, false);
+        }
+        else
+        {
+            return x;
+        }
+    }
     case SkewPlus:
         return skewPlus(x, warpAmount);
     case SkewMinus:
@@ -131,13 +188,24 @@ void Vertex::setX(float x)
         this->x = x;
         break;
     case BendPlus:
-        this->x = x;
+        this->x = bendPlus(x, warpAmount, true);
         break;
     case BendMinus:
-        this->x = x;
+        this->x = bendMinus(x, warpAmount, true);
         break;
     case BendPlusMinus:
-        this->x = x;
+        if (warpAmount < 0.5f)
+        {
+            this->x = bendPlus(x, (0.5f - warpAmount) * 2, true);
+        }
+        else if (warpAmount > 0.5f)
+        {
+            this->x = bendMinus(x, (warpAmount - 0.5f) * 2, true);
+        }
+        else
+        {
+            this->x = x;
+        }
         break;
     case SkewPlus:
         this->x = invSkewPlus(x, warpAmount);
@@ -210,6 +278,8 @@ Graph::Graph() : vertexCount(0),
 
 float Graph::getOutValue(float input, float tension, float p1x, float p1y, float p2x, float p2y)
 {
+    //TODO: replace this with powerScale()
+
     const float inputSign = input >= 0 ? 1 : -1;
     const bool tensionIsPositive = tension >= 0.0f;
 
