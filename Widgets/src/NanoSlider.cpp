@@ -9,9 +9,12 @@ NanoSlider::NanoSlider(NanoWidget *parent, Size<uint> size) noexcept
       fLeftMouseDown(false),
       fLeftMouseDownLocation(Point<int>(0, 0)),
       fIsHovered(true),
+      fHandle(0,0,18,30),
       fValue(0),
       fMin(0),
-      fMax(0)
+      fMax(0),
+      fSocketMarginBottom(0.0f),
+      fSocketMarginTop(0.0f)
 {
     setSize(size);
 }
@@ -51,7 +54,20 @@ int NanoSlider::getValue() noexcept
 
 void NanoSlider::onNanoDisplay()
 {
+    fHandle.setPos(getWidth() / 2.0f - fHandle.getWidth() / 2.0f, fSocketMarginTop / 2.0f);
+
     draw();
+}
+
+void NanoSlider::setHandleSize(const float width, const float height)
+{
+    fHandle.setSize(width, height);
+}
+
+void NanoSlider::setSocketMargin(const float top, const float bottom)
+{
+    fSocketMarginBottom = bottom;
+    fSocketMarginTop = top;
 }
 
 bool NanoSlider::onScroll(const ScrollEvent &ev)
@@ -77,7 +93,10 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
         {
             fLeftMouseDown = false;
 
-            window.setCursorPos(this);
+            const float handleCenterX = getAbsoluteX() + fHandle.getX() + fHandle.getWidth() / 2.0f;
+            const float handleCenterY = getAbsoluteY() + fHandle.getY() + fHandle.getHeight() / 2.0f;
+
+            window.setCursorPos(handleCenterX, handleCenterY);
             window.showCursor();
             getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
 
@@ -87,7 +106,7 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
         return false;
     }
 
-    if (contains(ev.pos))
+    if (fHandle.contains(ev.pos))
     {
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
@@ -136,7 +155,7 @@ bool NanoSlider::onMotion(const MotionEvent &ev)
         return true;
     }
 
-    if (contains(ev.pos))
+    if (fHandle.contains(ev.pos))
     {
         if (!fIsHovered)
         {

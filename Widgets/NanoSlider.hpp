@@ -24,6 +24,9 @@ class NanoSlider : public NanoWidget
 
     void setCallback(Callback *callback) noexcept;
 
+    void setHandleSize(const float width, const float height);
+    void setSocketMargin(const float top, const float bottom);
+
   protected:
     void onNanoDisplay() override;
 
@@ -33,6 +36,11 @@ class NanoSlider : public NanoWidget
 
     virtual void draw() = 0;
 
+    Rectangle<int> fHandle;
+
+    float fSocketMarginTop;
+    float fSocketMarginBottom;
+    
   private:
     Callback *fCallback;
 
@@ -40,6 +48,7 @@ class NanoSlider : public NanoWidget
     Point<int> fLeftMouseDownLocation;
 
     bool fIsHovered;
+    bool fHandleIsHovered; 
 
     int fValue;
     int fMin;
