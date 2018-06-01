@@ -45,6 +45,8 @@ protected:
   bool onScroll(const ScrollEvent &ev) override;
   bool onMouse(const MouseEvent &ev) override;
   bool onMotion(const MotionEvent &ev) override;
+  void onFocusOut() override;
+
   void idleCallback() override;
 
   void onMouseLeave();
@@ -199,7 +201,7 @@ public:
 protected:
   void onResize(const ResizeEvent &ev) override;
   void onNanoDisplay() override;
-
+  
 private:
   ScopedPointer<GraphWidgetInner> fGraphWidgetInner;
   Margin fMargin;

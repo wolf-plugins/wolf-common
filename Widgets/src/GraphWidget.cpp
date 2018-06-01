@@ -788,6 +788,22 @@ bool GraphWidgetInner::onMotion(const MotionEvent &ev)
     return true;
 }
 
+void GraphWidgetInner::onFocusOut()
+{
+    if (focusedElement != nullptr)
+    {
+        focusedElement->grabbed = false;
+        focusedElement = nullptr;
+    }
+
+    hovered = false;
+    mouseLeftDown = false;
+    mouseRightDown = false;
+    
+    getParentWindow().showCursor();
+    repaint();
+}
+
 void GraphWidgetInner::onMouseLeave()
 {
     getParentWindow().setCursorStyle(Window::CursorStyle::Default);
