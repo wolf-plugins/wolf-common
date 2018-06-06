@@ -250,6 +250,14 @@ int GraphVertex::getIndex()
     return index;
 }
 
+void GraphTensionHandle::reset()
+{
+    wolf::Graph *lineEditor = getLineEditor();
+    lineEditor->getVertexAtIndex(vertex->getIndex())->setTension(0);
+
+    parent->ui->setState("graph", lineEditor->serialize());
+}
+
 bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
 {
     if (!grabbed)

@@ -62,6 +62,7 @@ public:
 
   GraphTensionHandle(GraphWidgetInner *parent, GraphVertex *vertex);
 
+  void reset();
   void render() override;
   bool contains(Point<int> pos) override;
 
@@ -86,7 +87,6 @@ class GraphVertex : public GraphNode
 public:
   GraphVertex(GraphWidgetInner *parent, GraphVertexType type);
 
-  void reset();
   void render() override;
 
   /**
