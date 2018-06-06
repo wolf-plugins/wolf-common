@@ -10,23 +10,49 @@
 
 START_NAMESPACE_DISTRHO
 
-class RightClickMenu :  private Window,
-                        private NanoWidget
+class RightClickMenuEntry
 {
-public:
-    RightClickMenu(NanoWidget *parent, Size<uint> size) noexcept;
+  public:
+    RightClickMenuEntry(int id, const char *label, bool enabled = true) noexcept;
+
+    int getId();
+    bool getEnabled();
+    const char *getLabel();
+
+  private:
+    int fId;
+    bool fEnabled;
+    const char *fLabel;
+
+    Rectangle<float> fBounds;
+};
+
+class RightClickMenu : private Window,
+                       private NanoWidget
+{
+  public:
+    RightClickMenu(NanoWidget *parent) noexcept;
     ~RightClickMenu();
 
     void show(int posX, int posY);
     void close();
-    
-protected:
+    void setTitle(const char *title);
+    void setEntries(std::vector<RightClickMenuEntry> entries);
+
+  protected:
     void onNanoDisplay() override;
-    void setEntries(std::vector<const char *> entries);
+    void onFocusOut() override;
+    bool onMouse(const MouseEvent &ev) override;
+
+    Rectangle<float> getBoundsOfEntry(const int index);
     
-private:
-    std::vector<const char *> fEntries;
+  private:
+    std::vector<RightClickMenuEntry> fEntries;
+    const char *fTitle;
     NanoWidget *fParent;
+
+    float fFontSize;
+    float fLongestWidth;
 };
 
 #endif

@@ -32,7 +32,7 @@ Vertex::Vertex(float posX, float posY, float tension, CurveType type) : x(posX),
 
 static float powerScale(float input, float tension, float maxExponent, float p1x, float p1y, float p2x, float p2y, bool inverse)
 {
-    assert(exponent >= 1);
+    assert(maxExponent >= 1);
 
     const bool tensionIsPositive = tension >= 0.0f;
 
