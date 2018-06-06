@@ -100,6 +100,8 @@ protected:
   void setWarpAmount(const float warpAmount);
   
   void setWarpType(const wolf::WarpType warpType);
+	
+  void setMustHideVertices(const bool hide);
 
   void positionGraphNodes();
   
@@ -173,6 +175,11 @@ private:
    * The radius size of the vertices in the graph.
    */
   const float absoluteVertexSize = 7.0f;
+  
+  /**
+   * Determines whether or not the vertices in the graph must be hidden.
+   */
+  bool mustHideVertices;
 
   bool hovered;
 
@@ -197,11 +204,12 @@ public:
   void updateInput(const float input);
   void setWarpAmount(const float warpAmount);
   void setWarpType(const wolf::WarpType warpType);
+  void setMustHideVertices(const bool hide);
 
 protected:
   void onResize(const ResizeEvent &ev) override;
   void onNanoDisplay() override;
-  
+
 private:
   ScopedPointer<GraphWidgetInner> fGraphWidgetInner;
   Margin fMargin;

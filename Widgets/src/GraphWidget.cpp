@@ -85,7 +85,8 @@ void GraphWidget::onNanoDisplay()
     if (fGraphWidgetInner->focusedElement != nullptr && dynamic_cast<GraphVertex *>(fGraphWidgetInner->focusedElement))
         fGraphWidgetInner->drawAlignmentLines();
 
-    fGraphWidgetInner->drawVertices();
+    if (!fGraphWidgetInner->mustHideVertices)
+        fGraphWidgetInner->drawVertices();
 }
 
 void GraphWidget::onResize(const ResizeEvent &ev)
@@ -126,6 +127,11 @@ void GraphWidget::setWarpType(const wolf::WarpType warpType)
     fGraphWidgetInner->setWarpType(warpType);
 }
 
+void GraphWidget::setMustHideVertices(const bool hide)
+{
+    fGraphWidgetInner->setMustHideVertices(hide);
+}
+
 GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
     : NanoWidget((NanoWidget *)ui),
       ui(ui),
@@ -135,7 +141,8 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
       mouseRightDown(false),
       hovered(false),
       maxInput(0.0f),
-      fInput(0.0f)
+      fInput(0.0f),
+      mustHideVertices(false)
 {
     setSize(size);
 
@@ -474,6 +481,12 @@ void GraphWidgetInner::setWarpType(const wolf::WarpType warpType)
     positionGraphNodes();
 }
 
+void GraphWidgetInner::setMustHideVertices(const bool hide)
+{
+    mustHideVertices = hide;
+    repaint();
+}
+
 void GraphWidgetInner::drawInputIndicator()
 {
     const float width = getWidth();
@@ -760,6 +773,9 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
 
 bool GraphWidgetInner::onMouse(const MouseEvent &ev)
 {
+    if (mustHideVertices)
+        return false;
+
     switch (ev.button)
     {
     case 1:
@@ -775,6 +791,9 @@ bool GraphWidgetInner::onMouse(const MouseEvent &ev)
 
 bool GraphWidgetInner::onMotion(const MotionEvent &ev)
 {
+    if (mustHideVertices)
+        return false;
+
     const Point<int> point = wolf::flipY(ev.pos, getHeight());
     GraphNode *hoveredNode = getHoveredNode(point);
 
