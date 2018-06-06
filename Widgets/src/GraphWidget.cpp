@@ -621,7 +621,7 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
 
     GraphVertex *vertex = graphVerticesPool.getObject();
 
-    //switches back 
+    //switches back
     //vertex->setPos(pos);
     vertex->index = i;
 
@@ -634,7 +634,7 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
     const float normalizedY = wolf::normalize(pos.getY(), height);
 
     lineEditor.insertVertex(normalizedX, normalizedY);
-    
+
     ui->setState("graph", lineEditor.serialize());
 
     positionGraphNodes();
@@ -714,18 +714,30 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
 
     if (focusedElement == nullptr)
     {
-	GraphNode* node = getHoveredNode(point);
+        GraphNode *node = getHoveredNode(point);
 
         if (node != nullptr)
-	{
-		//check if tension handle, if true, reset tension
-		GraphTensionHandle* tensionHandle = dynamic_cast<GraphTensionHandle *>(node);
+        {
+            //check if tension handle, if true, reset tension
+            GraphTensionHandle *tensionHandle = dynamic_cast<GraphTensionHandle *>(node);
 
-		if (tensionHandle != nullptr)
-			tensionHandle.reset();	
-		else
-			return true;
-	}
+            if (tensionHandle != nullptr)
+            {
+                tensionHandle->reset();
+
+                //if the handle is not on the cursor anymore, we reset the cursor style
+                node = getHoveredNode(point);
+
+                if (node == nullptr)
+                {
+                    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+                }
+
+                repaint();
+            }
+
+            return true;
+        }
 
         if (ev.press && contains(ev.pos))
         {
@@ -809,7 +821,7 @@ void GraphWidgetInner::onFocusOut()
     hovered = false;
     mouseLeftDown = false;
     mouseRightDown = false;
-    
+
     getParentWindow().showCursor();
     repaint();
 }

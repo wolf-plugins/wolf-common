@@ -105,6 +105,8 @@ public:
 
   float getTension();
   int getIndex();
+  
+  void reset();
 
   GraphVertex *getVertexAtLeft() const;
   GraphVertex *getVertexAtRight() const;
