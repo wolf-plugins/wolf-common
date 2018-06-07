@@ -12,14 +12,21 @@ namespace wolf
    */
 const int maxVertices = 99;
 
-enum CurveType //TODO: implement more curve types
+enum CurveType
 {
-  Exponential
+  SingleCurve = 0,
+  SingleCurve2,
+  DoubleCurve,
+  DoubleCurve2,
+  StairsCurve,
+  WaveCurve,
+  SawCurve,
+  SquareCurve
 };
 
 enum WarpType 
 {
-  None,
+  None = 0,
   BendPlus,
   BendMinus,
   BendPlusMinus,
@@ -34,7 +41,7 @@ class Vertex
 
 public:
   Vertex();
-  Vertex(float posX, float posY, float tension = 0.0f, CurveType type = CurveType::Exponential);
+  Vertex(float posX, float posY, float tension = 0.0f, CurveType type = CurveType::SingleCurve);
 
   float getX() const;
   float getY() const;
@@ -66,7 +73,7 @@ class Graph
 public:
   Graph();
 
-  void insertVertex(float x, float y, float tension = 0.0f, CurveType type = CurveType::Exponential);
+  void insertVertex(float x, float y, float tension = 0.0f, CurveType type = CurveType::SingleCurve);
   void removeVertex(int index);
   Vertex *getVertexAtIndex(int index);
 
@@ -77,7 +84,7 @@ public:
    */
   int getVertexCount();
 
-  static float getOutValue(float input, float tension, float p1x, float p1y, float p2x, float p2y);
+  static float getOutValue(float input, float tension, float p1x, float p1y, float p2x, float p2y, CurveType type);
 
   /**
    * Get the y value at x in the graph. 

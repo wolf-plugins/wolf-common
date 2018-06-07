@@ -15,7 +15,7 @@ namespace wolf
 Vertex::Vertex() : x(0),
                    y(0),
                    tension(0),
-                   type(Exponential),
+                   type(SingleCurve),
                    warpAmount(0),
                    warpType(None)
 {
@@ -34,12 +34,15 @@ static float powerScale(float input, float tension, float maxExponent, float p1x
 {
     assert(maxExponent >= 1);
 
+    const float inputSign = input >= 0 ? 1 : -1;
     const bool tensionIsPositive = tension >= 0.0f;
 
     tension = std::abs(tension);
 
     const float deltaX = p2x - p1x;
     const float deltaY = p2y - p1y;
+
+    input = std::abs(input);
 
     float exponent = 1 + tension * (maxExponent - 1);
 
@@ -59,7 +62,7 @@ static float powerScale(float input, float tension, float maxExponent, float p1x
         result = 1 - (deltaY * std::pow(1 - (input - p1x) / deltaX, exponent) + p1y) + p2y - (1 - p1y);
     }
 
-    return result;
+    return inputSign * result;
 }
 
 static float skewPlus(float x, float warpAmount)
@@ -276,40 +279,51 @@ Graph::Graph() : vertexCount(0),
     insertVertex(1.0f, 1.0f);
 }
 
-float Graph::getOutValue(float input, float tension, float p1x, float p1y, float p2x, float p2y)
+float Graph::getOutValue(float input, float tension, float p1x, float p1y, float p2x, float p2y, CurveType type)
 {
-    //TODO: replace this with powerScale()
-
     const float inputSign = input >= 0 ? 1 : -1;
-    const bool tensionIsPositive = tension >= 0.0f;
-
+    
     if (p1x == p2x)
     {
         return inputSign * p2y;
     }
 
-    const float x = p2x - p1x;
-    const float y = p2y - p1y;
+    //should probably be stored as a normalized value instead
+    tension /= 100.0f;
 
-    input = std::abs(input);
+    const bool tensionIsPositive = tension >= 0.0f;
 
-    tension /= 100; //FIXME: should be stored as normalized value
-
-    float result;
-
-    //FIXME: smoothing should be done in the ui, not here
+    //make the curve bend more slowly when the tension is near 0
     if (tensionIsPositive)
     {
         tension = std::pow(tension, 1.2f);
-        result = y * std::pow((input - p1x) / x, 1 + (tension * 14)) + p1y;
     }
     else
     {
         tension = -std::pow(-tension, 1.2f);
-        result = 1 - (y * std::pow(1 - (input - p1x) / x, 1 + (-tension * 14)) + p1y) + p2y - (1 - p1y);
     }
 
-    return inputSign * result;
+    switch(type)
+    {
+        case SingleCurve:
+        {
+            return powerScale(input, tension, 15.0f, p1x, p1y, p2x, p2y, false);
+        }
+        case DoubleCurve:
+        {
+            const float middleX = p1x + (p2x - p1x) / 2.0f;
+            const float middleY = p1y + (p2y - p1y) / 2.0f;
+
+            if(input > middleX)
+            {
+                return powerScale(input, -tension, 15.0f, middleX, middleY, p2x, p2y, false);
+            }
+            else
+            {
+                return powerScale(input, tension, 15.0f, p1x, p1y, middleX, middleY, false);
+            }
+        }
+    }
 }
 
 float Graph::getValueAt(float x)
@@ -354,7 +368,7 @@ float Graph::getValueAt(float x)
     const float p2x = vertices[left].getX();
     const float p2y = vertices[left].getY();
 
-    return getOutValue(x, vertices[left - 1].getTension(), p1x, p1y, p2x, p2y);
+    return getOutValue(x, vertices[left - 1].getTension(), p1x, p1y, p2x, p2y, vertices[left - 1].getType());
 }
 
 void Graph::setWarpAmount(float warp)

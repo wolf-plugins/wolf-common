@@ -158,7 +158,18 @@ float GraphTensionHandle::getY() const
     float tension = vertex->getTension();
 
     //calculate value for generic curve
-    return wolf::Graph::getOutValue(0.5f, tension, 0.0f, leftVertex->getY() / parent->getHeight(), 1.0f, rightVertex->getY() / parent->getHeight()) * parent->getHeight();
+    float input = 0.5f;
+
+    float p1x = 0.0f;
+    float p1y = leftVertex->getY() / parent->getHeight();
+    float p2x = 1.0f;
+    float p2y = rightVertex->getY() / parent->getHeight();
+
+    const int index = leftVertex->getIndex();
+
+    wolf::CurveType curveType = getLineEditor()->getVertexAtIndex(index)->getType();
+
+    return wolf::Graph::getOutValue(0.5f, tension, p1x, p1y, p2x, p2y, curveType) * parent->getHeight();
 }
 
 GraphVertex *GraphVertex::getVertexAtLeft() const
