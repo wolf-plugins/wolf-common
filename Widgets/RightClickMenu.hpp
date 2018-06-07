@@ -19,18 +19,41 @@ class RightClickMenuEntry
     bool getEnabled();
     const char *getLabel();
 
+    void getSelected();
+    void setSelected();
+
+    bool isSection();
+
+  protected:
+      bool fIsSection;
+
   private:
     int fId;
     bool fEnabled;
     const char *fLabel;
 
+    bool fSelected;
+    
     Rectangle<float> fBounds;
 };
 
-class RightClickMenu : private Window,
-                       private NanoWidget
+class RightClickMenuSection : public RightClickMenuEntry
 {
   public:
+    RightClickMenuSection(const char *label) noexcept;
+};
+
+class RightClickMenu : private Window,
+                       public NanoWidget
+{
+  public:
+    class Callback
+    {
+      public:
+        virtual ~Callback() {}
+        virtual void rightClickMenuEntrySelected(RightClickMenuEntry *rightClickMenuEntry) = 0;
+    };
+
     RightClickMenu(NanoWidget *parent) noexcept;
     ~RightClickMenu();
 
@@ -38,11 +61,18 @@ class RightClickMenu : private Window,
     void close();
     void setTitle(const char *title);
     void setEntries(std::vector<RightClickMenuEntry> entries);
+    void setBorderColor(const Color color);
+    void setRegularFontSize(float fontSize);
+    void setSectionFontSize(float fontSize);
+
+    void setCallback(Callback *callback) noexcept;
 
   protected:
     void onNanoDisplay() override;
     void onFocusOut() override;
     bool onMouse(const MouseEvent &ev) override;
+
+    void adaptSize();
 
     Rectangle<float> getBoundsOfEntry(const int index);
     
@@ -52,7 +82,13 @@ class RightClickMenu : private Window,
     NanoWidget *fParent;
 
     float fFontSize;
+    float fSectionFontSize;
+
     float fLongestWidth;
+    Color fBorderColor;
+    Margin fMargin;
+
+    Callback *fCallback;
 };
 
 #endif
