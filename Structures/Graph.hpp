@@ -15,9 +15,7 @@ const int maxVertices = 99;
 enum CurveType
 {
   SingleCurve = 0,
-  SingleCurve2,
   DoubleCurve,
-  DoubleCurve2,
   StairsCurve,
   WaveCurve,
   SawCurve,

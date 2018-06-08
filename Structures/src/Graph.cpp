@@ -282,7 +282,7 @@ Graph::Graph() : vertexCount(0),
 float Graph::getOutValue(float input, float tension, float p1x, float p1y, float p2x, float p2y, CurveType type)
 {
     const float inputSign = input >= 0 ? 1 : -1;
-    
+
     if (p1x == p2x)
     {
         return inputSign * p2y;
@@ -303,26 +303,42 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
         tension = -std::pow(-tension, 1.2f);
     }
 
-    switch(type)
+    switch (type)
     {
-        case SingleCurve:
-        {
-            return powerScale(input, tension, 15.0f, p1x, p1y, p2x, p2y, false);
-        }
-        case DoubleCurve:
-        {
-            const float middleX = p1x + (p2x - p1x) / 2.0f;
-            const float middleY = p1y + (p2y - p1y) / 2.0f;
+    case SingleCurve:
+    {
+        return powerScale(input, tension, 15.0f, p1x, p1y, p2x, p2y, false);
+    }
+    case DoubleCurve:
+    {
+        const float middleX = p1x + (p2x - p1x) / 2.0f;
+        const float middleY = p1y + (p2y - p1y) / 2.0f;
 
-            if(input > middleX)
-            {
-                return powerScale(input, -tension, 15.0f, middleX, middleY, p2x, p2y, false);
-            }
-            else
-            {
-                return powerScale(input, tension, 15.0f, p1x, p1y, middleX, middleY, false);
-            }
+        if (input > middleX)
+        {
+            return powerScale(input, -tension, 15.0f, middleX, middleY, p2x, p2y, false);
         }
+        else
+        {
+            return powerScale(input, tension, 15.0f, p1x, p1y, middleX, middleY, false);
+        }
+    }
+    case StairsCurve:
+    {
+        return 0; //TODO
+    }
+    case WaveCurve:
+    {
+        const float deltaX = p2x - p1x;
+        const float deltaY = p2y - p1y;
+
+        tension = std::floor(tension * 100.f);
+
+        const float frequency = (0.5f + tension) / deltaX;
+        const float wave = -std::cos(frequency * M_PI * 2.0f * input) / 2.0f + 0.5f;
+
+        return inputSign * (wave * deltaY + p1y);
+    }
     }
 }
 
