@@ -303,6 +303,9 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
         tension = -std::pow(-tension, 1.2f);
     }
 
+    const float deltaX = p2x - p1x;
+    const float deltaY = p2y - p1y;
+
     switch (type)
     {
     case SingleCurve:
@@ -311,8 +314,8 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
     }
     case DoubleCurve:
     {
-        const float middleX = p1x + (p2x - p1x) / 2.0f;
-        const float middleY = p1y + (p2y - p1y) / 2.0f;
+        const float middleX = p1x + deltaX / 2.0f;
+        const float middleY = p1y + deltaY / 2.0f;
 
         if (input > middleX)
         {
@@ -329,13 +332,15 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
     }
     case WaveCurve:
     {
-        const float deltaX = p2x - p1x;
-        const float deltaY = p2y - p1y;
-
         tension = std::floor(tension * 100.f);
 
         const float frequency = (0.5f + tension) / deltaX;
-        const float wave = -std::cos(frequency * M_PI * 2.0f * input) / 2.0f + 0.5f;
+        float wave = -std::cos(frequency * M_PI * 2.0f * input) / 2.0f + 0.5f;
+
+        if (!tensionIsPositive)
+        {
+            wave = M_2_PI * std::asin(wave);
+        }
 
         return inputSign * (wave * deltaY + p1y);
     }
