@@ -327,8 +327,16 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
         }
     }
     case StairsCurve:
-    {
-        return 0; //TODO
+    {   
+        if(tension == 0.0f)
+            return input;
+
+        input = std::abs(input);
+
+        const int numSteps = std::floor(2.0f / std::pow(tension, 2.0f));
+        const float step = 1.0f / numSteps * deltaX;
+
+        return inputSign * std::floor(input / step) * 1.0f / (numSteps - 1) * deltaY;
     }
     case WaveCurve:
     {
