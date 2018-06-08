@@ -412,6 +412,7 @@ void GraphWidgetInner::drawGraphEdge(int vertexIndex, float lineWidth, Color col
 
     strokeColor(color);
     strokeWidth(lineWidth);
+    lineJoin(ROUND);
 
     moveTo(leftVertex->getX() * width, leftVertex->getY() * height);
 
