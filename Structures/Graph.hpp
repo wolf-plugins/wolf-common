@@ -17,9 +17,7 @@ enum CurveType
   SingleCurve = 0,
   DoubleCurve,
   StairsCurve,
-  WaveCurve,
-  SawCurve,
-  SquareCurve
+  WaveCurve
 };
 
 enum WarpType 

@@ -6,6 +6,7 @@
 #include "Graph.hpp"
 #include "Layout.hpp"
 #include "Widget.hpp"
+#include "RightClickMenu.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -15,7 +16,8 @@ class GraphNode;
 class GraphWidget;
 
 class GraphWidgetInner : public NanoWidget,
-                         public IdleCallback
+                         public IdleCallback,
+                         public RightClickMenu::Callback
 {
   friend class GraphNode;
   friend class GraphVertex;
@@ -48,6 +50,8 @@ protected:
   void onFocusOut() override;
 
   void idleCallback() override;
+  
+  void rightClickMenuEntrySelected(RightClickMenuEntry *rightClickMenuEntry);
 
   void onMouseLeave();
 
@@ -98,13 +102,13 @@ protected:
   void updateInput(const float input);
 
   void setWarpAmount(const float warpAmount);
-  
+
   void setWarpType(const wolf::WarpType warpType);
-	
+
   void setMustHideVertices(const bool hide);
 
   void positionGraphNodes();
-  
+
   /**
    * Draw a vertical line to indicate the input volume on the graph.
    */
@@ -175,7 +179,7 @@ private:
    * The radius size of the vertices in the graph.
    */
   const float absoluteVertexSize = 7.0f;
-  
+
   /**
    * Determines whether or not the vertices in the graph must be hidden.
    */
@@ -188,6 +192,9 @@ private:
 
   float fInput;
 
+  ScopedPointer<RightClickMenu> fRightClickMenu;
+  GraphNode *fNodeSelectedByRightClick;
+
   GraphWidget *parent;
 
   DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWidgetInner)
@@ -199,7 +206,7 @@ public:
   GraphWidget(UI *ui, Size<uint> size);
   ~GraphWidget();
 
-  void rebuildFromString(const char * serializedGraph);
+  void rebuildFromString(const char *serializedGraph);
   void reset();
   void updateInput(const float input);
   void setWarpAmount(const float warpAmount);

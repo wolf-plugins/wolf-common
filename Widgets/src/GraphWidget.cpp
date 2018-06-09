@@ -150,6 +150,21 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
 
     getParentWindow().addIdleCallback(this);
 
+    fRightClickMenu = new RightClickMenu(this);
+    fRightClickMenu->setTitle("Curve type");
+
+    fRightClickMenu->setEntries(
+        {RightClickMenuSection("Node"),
+         RightClickMenuEntry(-1, "Delete"),
+
+         RightClickMenuSection("Curve Type"),
+         RightClickMenuEntry(0, "Single Power"),
+         RightClickMenuEntry(1, "Double Power"),
+         RightClickMenuEntry(2, "Stairs"),
+         RightClickMenuEntry(3, "Wave")});
+
+    fRightClickMenu->setCallback(this);
+
     using namespace WOLF_FONTS;
     createFontFromMemory("chivo_italic", (const uchar *)chivo_italic, chivo_italic_size, 0);
 }
@@ -717,6 +732,22 @@ bool GraphWidgetInner::middleClick(const MouseEvent &)
     return false;
 }
 
+void GraphWidgetInner::rightClickMenuEntrySelected(RightClickMenuEntry *rightClickMenuEntry)
+{
+    GraphVertex *vertex = static_cast<GraphVertex*>(fNodeSelectedByRightClick);
+
+    if(rightClickMenuEntry->getId() == -1)
+    {
+        lineEditor.removeVertex(vertex->getIndex());
+    }
+    else
+    {
+        lineEditor.getVertexAtIndex(vertex->getIndex())->setType((wolf::CurveType)rightClickMenuEntry->getId());
+    }
+
+    repaint();
+}
+
 bool GraphWidgetInner::rightClick(const MouseEvent &ev)
 {
     const Point<int> point = wolf::flipY(ev.pos, getHeight());
@@ -748,6 +779,14 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
                 }
 
                 repaint();
+            }
+
+            //else, show curve selection menu
+            else
+            {
+                fNodeSelectedByRightClick = node;
+
+                fRightClickMenu->show(ev.pos.getX(), ev.pos.getY());
             }
 
             return true;
