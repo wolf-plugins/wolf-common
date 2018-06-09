@@ -738,14 +738,15 @@ void GraphWidgetInner::rightClickMenuEntrySelected(RightClickMenuEntry *rightCli
 
     if(rightClickMenuEntry->getId() == -1)
     {
-        lineEditor.removeVertex(vertex->getIndex());
+        removeVertex(vertex->getIndex());
     }
     else
     {
         lineEditor.getVertexAtIndex(vertex->getIndex())->setType((wolf::CurveType)rightClickMenuEntry->getId());
+        
+        ui->setState("graph", lineEditor.serialize());
+        repaint();
     }
-
-    repaint();
 }
 
 bool GraphWidgetInner::rightClick(const MouseEvent &ev)
