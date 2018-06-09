@@ -328,15 +328,36 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
     }
     case StairsCurve:
     {   
-        if(tension == 0.0f)
-            return input;
+        if(tension == 0.0f) //straight line
+            return input * (p2y - p1y) / (p2x - p1x) + p1y;
 
         input = std::abs(input);
 
-        const int numSteps = std::floor(2.0f / std::pow(tension, 2.0f));
+        int numSteps = std::floor(2.0f / std::pow(tension, 2.0f));
+        
+        if(!tensionIsPositive)
+        {
+            numSteps -= 1;
+        }
+
         const float step = 1.0f / numSteps * deltaX;
 
-        return inputSign * std::floor(input / step) * 1.0f / (numSteps - 1) * deltaY;
+        float result;
+
+        if (tensionIsPositive)
+        {
+            result = std::floor(input / step) * 1.0f / (numSteps - 1) * deltaY + p1y;
+        }
+        else //I'm sure this can be simplified
+        {
+            result = std::floor(input / step) * 1.0f / (numSteps + 1) * deltaY + 1.0f / (numSteps + 1) * deltaY + p1y;
+        }
+
+        //clamped to avoid some overshoot, might not be necessary
+        const float minY = std::min(p1y, p2y);
+        const float maxY = std::max(p1y, p2y);
+
+        return inputSign * wolf::clamp(result, minY, maxY);
     }
     case WaveCurve:
     {
