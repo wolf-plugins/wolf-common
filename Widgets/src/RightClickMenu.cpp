@@ -3,34 +3,39 @@
 
 START_NAMESPACE_DISTRHO
 
-RightClickMenuEntry::RightClickMenuEntry(int id, const char *label, bool enabled) noexcept : fId(id),
-                                                                                             fLabel(label),
-                                                                                             fEnabled(enabled),
-                                                                                             fIsSection(false)
+RightClickMenuItem::RightClickMenuItem(int id, const char *label, bool enabled) noexcept : fId(id),
+                                                                                           fLabel(label),
+                                                                                           fEnabled(enabled),
+                                                                                           fIsSection(false)
 {
 }
 
-int RightClickMenuEntry::getId()
+int RightClickMenuItem::getId()
 {
     return fId;
 }
 
-const char *RightClickMenuEntry::getLabel()
+const char *RightClickMenuItem::getLabel()
 {
     return fLabel;
 }
 
-bool RightClickMenuEntry::getEnabled()
+bool RightClickMenuItem::getEnabled()
 {
     return fEnabled;
 }
 
-bool RightClickMenuEntry::isSection()
+void RightClickMenuItem::setEnabled(bool enabled)
+{
+    fEnabled = enabled;
+}
+
+bool RightClickMenuItem::isSection()
 {
     return fIsSection;
 }
 
-RightClickMenuSection::RightClickMenuSection(const char *label) noexcept : RightClickMenuEntry(-1, label, false)
+RightClickMenuSection::RightClickMenuSection(const char *label) noexcept : RightClickMenuItem(-1, label, false)
 {
     fIsSection = true;
 }
@@ -41,7 +46,8 @@ RightClickMenu::RightClickMenu(NanoWidget *parent) noexcept : Window(parent->get
                                                               fFontSize(17.0f),
                                                               fSectionFontSize(14.0f),
                                                               fBorderColor(Color(161, 67, 198, 255)),
-                                                              fMargin(Margin(7, 15, 7, 13))
+                                                              fMargin(Margin(7, 15, 7, 13)),
+                                                              fLongestWidth(0.0f)
 {
     Window::setResizable(false);
     Window::setBorderless(true);
@@ -59,6 +65,8 @@ void RightClickMenu::show(int posX, int posY)
     //we don't want the mouse to intersect with the popup straight away, so we add a bit of margin
     posX += 2;
     posY += 2;
+
+    adaptSize();
 
     Window::hideFromTaskbar();
 
@@ -87,11 +95,6 @@ void RightClickMenu::close()
     Window::close();
 }
 
-void RightClickMenu::setTitle(const char *title)
-{
-    fTitle = title;
-}
-
 void RightClickMenu::setBorderColor(const Color color)
 {
     fBorderColor = color;
@@ -107,45 +110,99 @@ void RightClickMenu::setSectionFontSize(float fontSize)
     fSectionFontSize = fontSize;
 }
 
-Rectangle<float> RightClickMenu::getBoundsOfEntry(const int index)
+Rectangle<float> RightClickMenu::getBoundsOfItem(const int index)
 {
     fontSize(fFontSize);
     textAlign(ALIGN_LEFT | ALIGN_TOP);
 
     Rectangle<float> bounds;
 
-    textBounds(0 + fMargin.left, index * fFontSize + fMargin.top, fEntries[index].getLabel(), NULL, bounds);
+    textBounds(0 + fMargin.left, index * fFontSize + fMargin.top, fItems[index].getLabel(), NULL, bounds);
 
     return bounds;
 }
 
+void RightClickMenu::setSectionEnabled(int index, bool enabled)
+{
+    DISTRHO_SAFE_ASSERT(index >= 0)
+
+    int sectionCount = -1;
+
+    for (size_t i = 0; i < fItems.size(); ++i)
+    {
+        if (fItems[i].isSection())
+        {
+            ++sectionCount;
+
+            if (sectionCount == index)
+            {
+                ++i;
+
+                while (i < fItems.size() && !fItems[i].isSection())
+                {
+                    fItems[i].setEnabled(enabled);
+                    ++i;
+                }
+
+                return;
+            }
+        }
+    }
+}
+
 void RightClickMenu::adaptSize()
 {
-    const Size<uint> size = Size<uint>(fLongestWidth + fMargin.left + fMargin.right + 12, fEntries.size() * fFontSize + fMargin.top + fMargin.bottom);
+    findLongestItem();
+
+    const Size<uint> size = Size<uint>(fLongestWidth + fMargin.left + fMargin.right + 12, fItems.size() * fFontSize + fMargin.top + fMargin.bottom);
 
     Window::setSize(size);
     NanoWidget::setSize(size);
 }
 
-void RightClickMenu::setEntries(std::vector<RightClickMenuEntry> entries)
+RightClickMenuItem *RightClickMenu::getItemById(int id)
 {
-    fEntries = entries;
-
-    //find the longest entry
-
-    fLongestWidth = 0.0f;
-
-    for (size_t i = 0; i < fEntries.size(); ++i)
+    //TODO: optimize with binary search or something
+    for (size_t i = 0; i < fItems.size(); ++i)
     {
-        const float entryWidth = getBoundsOfEntry(i).getWidth();
-
-        if (entryWidth > fLongestWidth)
+        if (fItems[i].getId() == id)
         {
-            fLongestWidth = entryWidth;
+            return &fItems[i];
         }
     }
 
-    adaptSize();
+    return nullptr;
+}
+
+void RightClickMenu::findLongestItem()
+{
+    fLongestWidth = 0.0f;
+
+    for (size_t i = 0; i < fItems.size(); ++i)
+    {
+        const float itemWidth = getBoundsOfItem(i).getWidth();
+
+        if (itemWidth > fLongestWidth)
+        {
+            fLongestWidth = itemWidth;
+        }
+    }
+}
+
+void RightClickMenu::addSection(const char *sectionName)
+{
+    RightClickMenuSection section = RightClickMenuSection(sectionName);
+
+    fItems.push_back(section);
+}
+
+void RightClickMenu::addItem(int id, const char *label)
+{
+    DISTRHO_SAFE_ASSERT(id >= 0)
+
+    RightClickMenuItem item = RightClickMenuItem(id, label, true);
+
+    fItems.push_back(item);
 }
 
 void RightClickMenu::setCallback(Callback *callback) noexcept
@@ -164,7 +221,7 @@ void RightClickMenu::onNanoDisplay()
 
     fontSize(fFontSize);
     textAlign(ALIGN_LEFT | ALIGN_TOP);
-    textBounds(0, 0, fEntries[0].getLabel(), NULL, bounds);
+    textBounds(0, 0, fItems[0].getLabel(), NULL, bounds);
 
     fillColor(Color(39, 39, 39, 255));
 
@@ -181,11 +238,11 @@ void RightClickMenu::onNanoDisplay()
 
     translate(fMargin.left, fMargin.top);
 
-    for (size_t i = 0; i < fEntries.size(); ++i)
+    for (size_t i = 0; i < fItems.size(); ++i)
     {
         beginPath();
 
-        if (fEntries[i].isSection())
+        if (fItems[i].isSection())
         {
             fontSize(fSectionFontSize);
         }
@@ -194,7 +251,7 @@ void RightClickMenu::onNanoDisplay()
             fontSize(fFontSize);
         }
 
-        if (fEntries[i].getEnabled() == true)
+        if (fItems[i].getEnabled() == true)
         {
             fillColor(Color(255, 255, 255, 255));
         }
@@ -203,7 +260,7 @@ void RightClickMenu::onNanoDisplay()
             fillColor(Color(170, 170, 170, 255));
         }
 
-        text(fEntries[i].isSection() ? 0 : 12, verticalOffset, fEntries[i].getLabel(), NULL);
+        text(fItems[i].isSection() ? 0 : 12, verticalOffset, fItems[i].getLabel(), NULL);
         verticalOffset += bounds.getHeight();
 
         closePath();
@@ -214,11 +271,11 @@ bool RightClickMenu::onMouse(const MouseEvent &ev)
 {
     if (ev.press == false)
     {
-        for (size_t i = 0; i < fEntries.size(); ++i)
+        for (size_t i = 0; i < fItems.size(); ++i)
         {
-            if (fEntries[i].getEnabled() == true && getBoundsOfEntry(i).contains(Point<float>(ev.pos.getX(), ev.pos.getY())))
+            if (fItems[i].getEnabled() == true && getBoundsOfItem(i).contains(Point<float>(ev.pos.getX(), ev.pos.getY())))
             {
-                fCallback->rightClickMenuEntrySelected(&fEntries[i]);
+                fCallback->rightClickMenuItemSelected(&fItems[i]);
 
                 close();
 

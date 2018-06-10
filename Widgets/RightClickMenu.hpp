@@ -10,85 +10,89 @@
 
 START_NAMESPACE_DISTRHO
 
-class RightClickMenuEntry
+class RightClickMenuItem
 {
-  public:
-    RightClickMenuEntry(int id, const char *label, bool enabled = true) noexcept;
+public:
+  RightClickMenuItem(int id, const char *label, bool enabled = true) noexcept;
 
-    int getId();
-    bool getEnabled();
-    const char *getLabel();
+  int getId();
+  bool getEnabled();
+  void setEnabled(bool enabled);
 
-    void getSelected();
-    void setSelected();
+  const char *getLabel();
 
-    bool isSection();
+  void getSelected();
+  void setSelected();
 
-  protected:
-      bool fIsSection;
+  bool isSection();
 
-  private:
-    int fId;
-    bool fEnabled;
-    const char *fLabel;
+protected:
+  bool fIsSection;
 
-    bool fSelected;
-    
-    Rectangle<float> fBounds;
+private:
+  int fId;
+  bool fEnabled;
+  const char *fLabel;
+
+  bool fSelected;
+
+  Rectangle<float> fBounds;
 };
 
-class RightClickMenuSection : public RightClickMenuEntry
+class RightClickMenuSection : public RightClickMenuItem
 {
-  public:
-    RightClickMenuSection(const char *label) noexcept;
+public:
+  RightClickMenuSection(const char *label) noexcept;
 };
 
 class RightClickMenu : private Window,
                        public NanoWidget
 {
+public:
+  class Callback
+  {
   public:
-    class Callback
-    {
-      public:
-        virtual ~Callback() {}
-        virtual void rightClickMenuEntrySelected(RightClickMenuEntry *rightClickMenuEntry) = 0;
-    };
+    virtual ~Callback() {}
+    virtual void rightClickMenuItemSelected(RightClickMenuItem *rightClickMenuItem) = 0;
+  };
 
-    RightClickMenu(NanoWidget *parent) noexcept;
-    ~RightClickMenu();
+  RightClickMenu(NanoWidget *parent) noexcept;
+  ~RightClickMenu();
 
-    void show(int posX, int posY);
-    void close();
-    void setTitle(const char *title);
-    void setEntries(std::vector<RightClickMenuEntry> entries);
-    void setBorderColor(const Color color);
-    void setRegularFontSize(float fontSize);
-    void setSectionFontSize(float fontSize);
+  void show(int posX, int posY);
+  void close();
+  void addItem(int id, const char *label);
+  void addSection(const char *sectionName);
+  void setBorderColor(const Color color);
+  void setRegularFontSize(float fontSize);
+  void setSectionFontSize(float fontSize);
+  RightClickMenuItem *getItemById(int id);
+  void setCallback(Callback *callback) noexcept;
+  void setSectionEnabled(int index, bool enabled);
+  
+protected:
+  void onNanoDisplay() override;
+  void onFocusOut() override;
+  bool onMouse(const MouseEvent &ev) override;
 
-    void setCallback(Callback *callback) noexcept;
+  void adaptSize();
 
-  protected:
-    void onNanoDisplay() override;
-    void onFocusOut() override;
-    bool onMouse(const MouseEvent &ev) override;
+  Rectangle<float> getBoundsOfItem(const int index);
 
-    void adaptSize();
+private:
+  void findLongestItem();
 
-    Rectangle<float> getBoundsOfEntry(const int index);
-    
-  private:
-    std::vector<RightClickMenuEntry> fEntries;
-    const char *fTitle;
-    NanoWidget *fParent;
+  std::vector<RightClickMenuItem> fItems;
+  NanoWidget *fParent;
 
-    float fFontSize;
-    float fSectionFontSize;
+  float fFontSize;
+  float fSectionFontSize;
 
-    float fLongestWidth;
-    Color fBorderColor;
-    Margin fMargin;
+  float fLongestWidth;
+  Color fBorderColor;
+  Margin fMargin;
 
-    Callback *fCallback;
+  Callback *fCallback;
 };
 
 #endif

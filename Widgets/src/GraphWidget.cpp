@@ -151,17 +151,15 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
     getParentWindow().addIdleCallback(this);
 
     fRightClickMenu = new RightClickMenu(this);
-    fRightClickMenu->setTitle("Curve type");
 
-    fRightClickMenu->setEntries(
-        {RightClickMenuSection("Node"),
-         RightClickMenuEntry(-1, "Delete"),
+    fRightClickMenu->addSection("Node");
+    fRightClickMenu->addItem(deleteNodeItem, "Delete");
 
-         RightClickMenuSection("Curve Type"),
-         RightClickMenuEntry(0, "Single Power"),
-         RightClickMenuEntry(1, "Double Power"),
-         RightClickMenuEntry(2, "Stairs"),
-         RightClickMenuEntry(3, "Wave")});
+    fRightClickMenu->addSection("Curve Type");
+    fRightClickMenu->addItem(singlePowerCurveItem, "Single Power");
+    fRightClickMenu->addItem(doublePowerCurveItem, "Double Power");
+    fRightClickMenu->addItem(stairsCurveItem, "Stairs");
+    fRightClickMenu->addItem(waveCurveItem, "Wave");
 
     fRightClickMenu->setCallback(this);
 
@@ -650,8 +648,6 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
 
     GraphVertex *vertex = graphVerticesPool.getObject();
 
-    //switches back
-    //vertex->setPos(pos);
     vertex->index = i;
 
     graphVertices[i] = vertex;
@@ -732,18 +728,18 @@ bool GraphWidgetInner::middleClick(const MouseEvent &)
     return false;
 }
 
-void GraphWidgetInner::rightClickMenuEntrySelected(RightClickMenuEntry *rightClickMenuEntry)
+void GraphWidgetInner::rightClickMenuItemSelected(RightClickMenuItem *rightClickMenuItem)
 {
-    GraphVertex *vertex = static_cast<GraphVertex*>(fNodeSelectedByRightClick);
+    GraphVertex *vertex = static_cast<GraphVertex *>(fNodeSelectedByRightClick);
 
-    if(rightClickMenuEntry->getId() == -1)
+    if (rightClickMenuItem->getId() == deleteNodeItem)
     {
         removeVertex(vertex->getIndex());
     }
     else
     {
-        lineEditor.getVertexAtIndex(vertex->getIndex())->setType((wolf::CurveType)rightClickMenuEntry->getId());
-        
+        lineEditor.getVertexAtIndex(vertex->getIndex())->setType((wolf::CurveType)(rightClickMenuItem->getId() - 1));
+
         ui->setState("graph", lineEditor.serialize());
         repaint();
     }
@@ -786,6 +782,13 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
             else
             {
                 fNodeSelectedByRightClick = node;
+                
+                GraphVertexType vertexType = static_cast<GraphVertex*>(node)->getType();
+                const bool mustEnableDelete = vertexType == GraphVertexType::Middle;
+                const bool mustEnableCurveTypeSection = vertexType != GraphVertexType::Right;
+
+                fRightClickMenu->getItemById(deleteNodeItem)->setEnabled(mustEnableDelete);
+                fRightClickMenu->setSectionEnabled(1, mustEnableCurveTypeSection);
 
                 fRightClickMenu->show(ev.pos.getX(), ev.pos.getY());
             }

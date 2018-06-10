@@ -39,6 +39,15 @@ public:
   void reset();
 
 protected:
+  enum GraphRightClickMenuItems
+  {
+    deleteNodeItem = 0,
+    singlePowerCurveItem,
+    doublePowerCurveItem,
+    stairsCurveItem,
+    waveCurveItem
+  };
+
   /**
    * DPF stuff
    */
@@ -51,7 +60,7 @@ protected:
 
   void idleCallback() override;
   
-  void rightClickMenuEntrySelected(RightClickMenuEntry *rightClickMenuEntry);
+  void rightClickMenuItemSelected(RightClickMenuItem *rightClickMenuItem);
 
   void onMouseLeave();
 
