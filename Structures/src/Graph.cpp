@@ -365,7 +365,9 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
         tension = std::floor(tension * 100.f);
 
         const float frequency = (0.5f + tension) / deltaX;
-        float wave = -std::cos(frequency * M_PI * 2.0f * input) / 2.0f + 0.5f;
+        const float phase = p1x * frequency * 2.0f * M_PI;
+
+        float wave = -std::cos(frequency * M_PI * 2.0f * input - phase) / 2.0f + 0.5f;
 
         if (!tensionIsPositive)
         {
