@@ -257,7 +257,7 @@ void RightClickMenu::onNanoDisplay()
         }
         else
         {
-            fillColor(Color(170, 170, 170, 255));
+            fillColor(Color(100, 100, 100, 255));
         }
 
         text(fItems[i].isSection() ? 0 : 12, verticalOffset, fItems[i].getLabel(), NULL);

@@ -738,7 +738,7 @@ void GraphWidgetInner::rightClickMenuItemSelected(RightClickMenuItem *rightClick
     }
     else
     {
-        lineEditor.getVertexAtIndex(vertex->getIndex())->setType((wolf::CurveType)(rightClickMenuItem->getId() - 1));
+        lineEditor.getVertexAtIndex(vertex->getIndex() - 1)->setType((wolf::CurveType)(rightClickMenuItem->getId() - 1));
 
         ui->setState("graph", lineEditor.serialize());
         repaint();
@@ -785,7 +785,7 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
                 
                 GraphVertexType vertexType = static_cast<GraphVertex*>(node)->getType();
                 const bool mustEnableDelete = vertexType == GraphVertexType::Middle;
-                const bool mustEnableCurveTypeSection = vertexType != GraphVertexType::Right;
+                const bool mustEnableCurveTypeSection = vertexType != GraphVertexType::Left;
 
                 fRightClickMenu->getItemById(deleteNodeItem)->setEnabled(mustEnableDelete);
                 fRightClickMenu->setSectionEnabled(1, mustEnableCurveTypeSection);
