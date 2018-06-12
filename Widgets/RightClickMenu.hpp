@@ -13,14 +13,15 @@ START_NAMESPACE_DISTRHO
 class RightClickMenuItem
 {
 public:
-  RightClickMenuItem(int id, const char *label, bool enabled = true) noexcept;
+  RightClickMenuItem(int id, const char *label, const char *comment = "", bool enabled = true) noexcept;
 
   int getId();
   bool getEnabled();
   void setEnabled(bool enabled);
-
   const char *getLabel();
-
+  const char *getComment();
+  bool hasComment();
+  
   void getSelected();
   void setSelected();
 
@@ -33,6 +34,7 @@ private:
   int fId;
   bool fEnabled;
   const char *fLabel;
+  const char *fComment;
 
   bool fSelected;
 
@@ -61,7 +63,7 @@ public:
 
   void show(int posX, int posY);
   void close();
-  void addItem(int id, const char *label);
+  void addItem(int id, const char *label, const char *comment = "");
   void addSection(const char *sectionName);
   void setBorderColor(const Color color);
   void setRegularFontSize(float fontSize);
@@ -78,6 +80,7 @@ protected:
   void adaptSize();
 
   Rectangle<float> getBoundsOfItem(const int index);
+  Rectangle<float> getBoundsOfItemComment(const int index);
 
 private:
   void findLongestItem();

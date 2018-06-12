@@ -3,10 +3,11 @@
 
 START_NAMESPACE_DISTRHO
 
-RightClickMenuItem::RightClickMenuItem(int id, const char *label, bool enabled) noexcept : fId(id),
-                                                                                           fLabel(label),
-                                                                                           fEnabled(enabled),
-                                                                                           fIsSection(false)
+RightClickMenuItem::RightClickMenuItem(int id, const char *label, const char *comment, bool enabled) noexcept : fId(id),
+                                                                                                                fLabel(label),
+                                                                                                                fComment(comment),
+                                                                                                                fEnabled(enabled),
+                                                                                                                fIsSection(false)
 {
 }
 
@@ -18,6 +19,11 @@ int RightClickMenuItem::getId()
 const char *RightClickMenuItem::getLabel()
 {
     return fLabel;
+}
+
+const char *RightClickMenuItem::getComment()
+{
+    return fComment;
 }
 
 bool RightClickMenuItem::getEnabled()
@@ -35,7 +41,7 @@ bool RightClickMenuItem::isSection()
     return fIsSection;
 }
 
-RightClickMenuSection::RightClickMenuSection(const char *label) noexcept : RightClickMenuItem(-1, label, false)
+RightClickMenuSection::RightClickMenuSection(const char *label) noexcept : RightClickMenuItem(-1, label, "", false)
 {
     fIsSection = true;
 }
@@ -110,6 +116,19 @@ void RightClickMenu::setSectionFontSize(float fontSize)
     fSectionFontSize = fontSize;
 }
 
+Rectangle<float> RightClickMenu::getBoundsOfItemComment(const int index)
+{
+    fontSize(fSectionFontSize);
+    textAlign(ALIGN_LEFT | ALIGN_TOP);
+
+    Rectangle<float> bounds;
+    Rectangle<float> itemBounds = getBoundsOfItem(index);
+
+    textBounds(itemBounds.getX() + itemBounds.getWidth(), index * fFontSize + fMargin.top, fItems[index].getComment(), NULL, bounds);
+
+    return bounds;
+}
+
 Rectangle<float> RightClickMenu::getBoundsOfItem(const int index)
 {
     fontSize(fFontSize);
@@ -174,13 +193,23 @@ RightClickMenuItem *RightClickMenu::getItemById(int id)
     return nullptr;
 }
 
+bool RightClickMenuItem::hasComment()
+{
+    return strcmp(fComment, "") != 0;
+}
+
 void RightClickMenu::findLongestItem()
 {
     fLongestWidth = 0.0f;
 
     for (size_t i = 0; i < fItems.size(); ++i)
     {
-        const float itemWidth = getBoundsOfItem(i).getWidth();
+        float itemWidth = getBoundsOfItem(i).getWidth();
+
+        if (fItems[i].hasComment())
+        {
+            itemWidth += getBoundsOfItemComment(i).getWidth();
+        }
 
         if (itemWidth > fLongestWidth)
         {
@@ -196,11 +225,11 @@ void RightClickMenu::addSection(const char *sectionName)
     fItems.push_back(section);
 }
 
-void RightClickMenu::addItem(int id, const char *label)
+void RightClickMenu::addItem(int id, const char *label, const char *comment)
 {
     DISTRHO_SAFE_ASSERT(id >= 0)
 
-    RightClickMenuItem item = RightClickMenuItem(id, label, true);
+    RightClickMenuItem item = RightClickMenuItem(id, label, comment, true);
 
     fItems.push_back(item);
 }
@@ -261,6 +290,15 @@ void RightClickMenu::onNanoDisplay()
         }
 
         text(fItems[i].isSection() ? 0 : 12, verticalOffset, fItems[i].getLabel(), NULL);
+        
+        if (fItems[i].hasComment())
+        {            
+            fontSize(fSectionFontSize); //FIXME: wrong font size?
+            fillColor(Color(100, 100, 100, 255));
+
+            text(getBoundsOfItem(i).getWidth() + 12 + 4, verticalOffset, fItems[i].getComment(), NULL);
+        }
+
         verticalOffset += bounds.getHeight();
 
         closePath();

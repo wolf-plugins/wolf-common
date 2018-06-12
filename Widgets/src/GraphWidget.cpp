@@ -154,7 +154,7 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
     fRightClickMenu = new RightClickMenu(this);
 
     fRightClickMenu->addSection("Node");
-    fRightClickMenu->addItem(deleteNodeItem, "Delete");
+    fRightClickMenu->addItem(deleteNodeItem, "Delete", "(double L-click)");
 
     fRightClickMenu->addSection("Curve Type");
     fRightClickMenu->addItem(singlePowerCurveItem, "Single Power");
