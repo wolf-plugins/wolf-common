@@ -8,8 +8,9 @@ START_NAMESPACE_DISTRHO
 class OversampleWheel : public NanoWheel
 {
 public:
-    explicit OversampleWheel(Window &parent, Size<uint> size) noexcept;
     explicit OversampleWheel(NanoWidget *widget, Size<uint> size) noexcept;
+
+    void setFontSize(float size);
 
 protected:
     void draw() override;
@@ -19,6 +20,8 @@ protected:
     void drawOutline();
     
 private:
+    float fFontSize;
+
     DISTRHO_LEAK_DETECTOR(OversampleWheel)
 };
 

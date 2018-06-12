@@ -8,15 +8,11 @@ const float trianglesVerticalMargin = 5.0f;
 const float trianglesHorizontalMargin = 4.0f;
 const float trianglesWidth = 8.0f;
 const float trianglesHeight = 6.0f;
+const float textMarginRight = 3.0f;
 const float outlineWidth = 2.0f;
 
-OversampleWheel::OversampleWheel(Window &parent, Size<uint> size) noexcept : NanoWheel(parent, size)
-{
-    using namespace WOLF_FONTS;
-    createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
-}
-
-OversampleWheel::OversampleWheel(NanoWidget *widget, Size<uint> size) noexcept : NanoWheel(widget, size)
+OversampleWheel::OversampleWheel(NanoWidget *widget, Size<uint> size) noexcept : NanoWheel(widget, size),
+                                                                                 fFontSize(18.0f)
 {
     using namespace WOLF_FONTS;
     createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
@@ -102,16 +98,16 @@ void OversampleWheel::drawText()
         beginPath();
 
         fontFace("chivo_bold");
-        fontSize(22.0f);
+        fontSize(fFontSize);
         fillColor(Color(193, 219, 240, 255));
         textAlign(ALIGN_RIGHT | ALIGN_CENTER);
 
-        text(std::round(width - trianglesWidth - trianglesHorizontalMargin - 5), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
+        text(std::round(width - trianglesWidth - trianglesHorizontalMargin - textMarginRight), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
 
         fontBlur(5.0f);
         fillColor(Color(255, 255, 255, 80));
 
-        text(std::round(width - trianglesWidth - trianglesHorizontalMargin - 5), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
+        text(std::round(width - trianglesWidth - trianglesHorizontalMargin - textMarginRight), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
 
         closePath();
     }
@@ -141,7 +137,7 @@ void OversampleWheel::draw()
 
     //background
     drawBackground();
-    
+
     //line at top of display
     beginPath();
 
