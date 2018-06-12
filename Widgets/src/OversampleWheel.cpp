@@ -143,7 +143,7 @@ void OversampleWheel::draw()
 
     const float widthLineTopDisplay = 1.4f;
 
-    strokeColor(Color(72, 137, 208, 255));
+    strokeColor(Color(72, 137, 208, 150));
     strokeWidth(widthLineTopDisplay);
 
     moveTo(outlineWidth, outlineWidth);
