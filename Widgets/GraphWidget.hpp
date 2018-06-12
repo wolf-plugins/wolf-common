@@ -203,6 +203,7 @@ private:
 
   ScopedPointer<RightClickMenu> fRightClickMenu;
   GraphNode *fNodeSelectedByRightClick;
+  wolf::CurveType fLastCurveTypeSelected;
 
   GraphWidget *parent;
 

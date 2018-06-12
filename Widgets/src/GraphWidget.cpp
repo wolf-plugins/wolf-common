@@ -142,7 +142,8 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
       hovered(false),
       maxInput(0.0f),
       fInput(0.0f),
-      mustHideVertices(false)
+      mustHideVertices(false),
+      fLastCurveTypeSelected(wolf::SingleCurve)
 {
     setSize(size);
 
@@ -658,7 +659,7 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
     const float normalizedX = wolf::normalize(pos.getX(), width);
     const float normalizedY = wolf::normalize(pos.getY(), height);
 
-    lineEditor.insertVertex(normalizedX, normalizedY);
+    lineEditor.insertVertex(normalizedX, normalizedY, 0, fLastCurveTypeSelected);
 
     ui->setState("graph", lineEditor.serialize());
 
@@ -738,7 +739,10 @@ void GraphWidgetInner::rightClickMenuItemSelected(RightClickMenuItem *rightClick
     }
     else
     {
-        lineEditor.getVertexAtIndex(vertex->getIndex())->setType((wolf::CurveType)(rightClickMenuItem->getId() - 1));
+        wolf::CurveType type = (wolf::CurveType)(rightClickMenuItem->getId() - 1);
+
+        lineEditor.getVertexAtIndex(vertex->getIndex())->setType(type);
+        fLastCurveTypeSelected = type;
 
         ui->setState("graph", lineEditor.serialize());
         repaint();
@@ -782,8 +786,8 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
             else
             {
                 fNodeSelectedByRightClick = node;
-                
-                GraphVertexType vertexType = static_cast<GraphVertex*>(node)->getType();
+
+                GraphVertexType vertexType = static_cast<GraphVertex *>(node)->getType();
                 const bool mustEnableDelete = vertexType == GraphVertexType::Middle;
                 const bool mustEnableCurveTypeSection = vertexType != GraphVertexType::Right;
 
