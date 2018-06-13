@@ -794,7 +794,7 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
                 fRightClickMenu->getItemById(deleteNodeItem)->setEnabled(mustEnableDelete);
                 fRightClickMenu->setSectionEnabled(1, mustEnableCurveTypeSection);
 
-                fRightClickMenu->show(ev.pos.getX(), ev.pos.getY());
+                fRightClickMenu->show(getAbsoluteX() + ev.pos.getX(), getAbsoluteY() + ev.pos.getY());
             }
 
             return true;
