@@ -376,27 +376,15 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
 
         return inputSign * (wave * deltaY + p1y);
     }
+    default:
+        //¯\_(ツ)_/¯
+        break;
     }
 }
 
 float Graph::getValueAt(float x)
 {
     const float absX = std::abs(x);
-
-    if (absX > 1.0f)
-    {
-        if (bipolarMode)
-        {
-            const bool positiveInput = x >= 0.0f;
-            const float vertexY = vertices[positiveInput ? getVertexCount() - 1 : 0].getY();
-
-            return absX * (-1.0f + vertexY * 2.0f);
-        }
-        else
-        {
-            return x * vertices[getVertexCount() - 1].getY();
-        }
-    }
 
     //binary search
     int left = 0;
