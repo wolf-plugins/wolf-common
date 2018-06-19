@@ -888,8 +888,9 @@ void GraphWidgetInner::onFocusOut()
     hovered = false;
     mouseLeftDown = false;
     mouseRightDown = false;
-
+    
     getParentWindow().showCursor();
+
     repaint();
 }
 
