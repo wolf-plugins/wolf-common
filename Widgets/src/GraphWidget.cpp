@@ -117,14 +117,24 @@ void GraphWidget::updateInput(const float input)
     fGraphWidgetInner->updateInput(input);
 }
 
-void GraphWidget::setWarpAmount(const float warpAmount)
+void GraphWidget::setHorizontalWarpAmount(const float warpAmount)
 {
-    fGraphWidgetInner->setWarpAmount(warpAmount);
+    fGraphWidgetInner->setHorizontalWarpAmount(warpAmount);
 }
 
-void GraphWidget::setWarpType(const wolf::WarpType warpType)
+void GraphWidget::setHorizontalWarpType(const wolf::WarpType warpType)
 {
-    fGraphWidgetInner->setWarpType(warpType);
+    fGraphWidgetInner->setHorizontalWarpType(warpType);
+}
+
+void GraphWidget::setVerticalWarpAmount(const float warpAmount)
+{
+    fGraphWidgetInner->setVerticalWarpAmount(warpAmount);
+}
+
+void GraphWidget::setVerticalWarpType(const wolf::WarpType warpType)
+{
+    fGraphWidgetInner->setVerticalWarpType(warpType);
 }
 
 void GraphWidget::setMustHideVertices(const bool hide)
@@ -484,15 +494,27 @@ void GraphWidgetInner::updateInput(const float input)
     fInput = input;
 }
 
-void GraphWidgetInner::setWarpAmount(const float warpAmount)
+void GraphWidgetInner::setHorizontalWarpAmount(const float warpAmount)
 {
-    lineEditor.setWarpAmount(warpAmount);
+    lineEditor.setHorizontalWarpAmount(warpAmount);
     positionGraphNodes();
 }
 
-void GraphWidgetInner::setWarpType(const wolf::WarpType warpType)
+void GraphWidgetInner::setHorizontalWarpType(const wolf::WarpType warpType)
 {
-    lineEditor.setWarpType(warpType);
+    lineEditor.setHorizontalWarpType(warpType);
+    positionGraphNodes();
+}
+
+void GraphWidgetInner::setVerticalWarpAmount(const float warpAmount)
+{
+    lineEditor.setVerticalWarpAmount(warpAmount);
+    positionGraphNodes();
+}
+
+void GraphWidgetInner::setVerticalWarpType(const wolf::WarpType warpType)
+{
+    lineEditor.setVerticalWarpType(warpType);
     positionGraphNodes();
 }
 

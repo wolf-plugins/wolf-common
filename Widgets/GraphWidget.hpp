@@ -110,9 +110,11 @@ protected:
 
   void updateInput(const float input);
 
-  void setWarpAmount(const float warpAmount);
+  void setHorizontalWarpAmount(const float warpAmount);
+  void setHorizontalWarpType(const wolf::WarpType warpType);
 
-  void setWarpType(const wolf::WarpType warpType);
+  void setVerticalWarpAmount(const float warpAmount);
+  void setVerticalWarpType(const wolf::WarpType warpType);
 
   void setMustHideVertices(const bool hide);
 
@@ -219,8 +221,13 @@ public:
   void rebuildFromString(const char *serializedGraph);
   void reset();
   void updateInput(const float input);
-  void setWarpAmount(const float warpAmount);
-  void setWarpType(const wolf::WarpType warpType);
+
+  void setHorizontalWarpAmount(const float warpAmount);
+  void setHorizontalWarpType(const wolf::WarpType warpType);
+
+  void setVerticalWarpAmount(const float warpAmount);
+  void setVerticalWarpType(const wolf::WarpType warpType);
+
   void setMustHideVertices(const bool hide);
 
 protected:
