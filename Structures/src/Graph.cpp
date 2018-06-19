@@ -16,18 +16,17 @@ Vertex::Vertex() : x(0),
                    y(0),
                    tension(0),
                    type(SingleCurve),
-                   warpAmount(0),
-                   warpType(None)
+                   warpAmountPtr(nullptr),
+                   warpTypePtr(nullptr)
 {
 }
 
-Vertex::Vertex(float posX, float posY, float tension, CurveType type) : x(posX),
-                                                                        y(posY),
-                                                                        tension(tension),
-                                                                        type(type),
-                                                                        warpAmount(0.0f),
-                                                                        warpType(None)
+Vertex::Vertex(float posX, float posY, float tension, CurveType type, float *warpAmountPtr, WarpType *warpTypePtr) : tension(tension),
+                                                                                                                     type(type),
+                                                                                                                     warpAmountPtr(warpAmountPtr),
+                                                                                                                     warpTypePtr(warpTypePtr)
 {
+    setPosition(posX, posY);
 }
 
 static float powerScale(float input, float tension, float maxExponent, float p1x, float p1y, float p2x, float p2y, bool inverse)
@@ -119,6 +118,9 @@ static float bendMinus(float x, float warpAmount, bool inverse)
 
 float Vertex::getX() const
 {
+    const float warpAmount = *warpAmountPtr;
+    const WarpType warpType = *warpTypePtr;
+
     switch (warpType)
     {
     case None:
@@ -184,6 +186,9 @@ CurveType Vertex::getType() const
 
 void Vertex::setX(float x)
 {
+    const float warpAmount = *warpAmountPtr;
+    const WarpType warpType = *warpTypePtr;
+
     //we revert the effects of warp to set the correct value
     switch (warpType)
     {
@@ -258,16 +263,6 @@ void Vertex::setTension(float tension)
 void Vertex::setType(CurveType type)
 {
     this->type = type;
-}
-
-void Vertex::setWarpAmount(float warp)
-{
-    this->warpAmount = warp;
-}
-
-void Vertex::setWarpType(WarpType warpType)
-{
-    this->warpType = warpType;
 }
 
 Graph::Graph() : vertexCount(0),
@@ -414,22 +409,12 @@ float Graph::getValueAt(float x)
 
 void Graph::setWarpAmount(float warp)
 {
-    warpAmount = warp;
-
-    for (int i = 0; i < vertexCount; ++i)
-    {
-        vertices[i].setWarpAmount(warp);
-    }
+    this->warpAmount = warp;
 }
 
 void Graph::setWarpType(WarpType warpType)
 {
     this->warpType = warpType;
-
-    for (int i = 0; i < vertexCount; ++i)
-    {
-        vertices[i].setWarpType(warpType);
-    }
 }
 
 void Graph::insertVertex(float x, float y, float tension, CurveType type)
@@ -445,11 +430,7 @@ void Graph::insertVertex(float x, float y, float tension, CurveType type)
         --i;
     }
 
-    Vertex vertex = Vertex(x, y, tension, type);
-
-    vertex.setWarpAmount(warpAmount);
-    vertex.setWarpType(warpType);
-    vertex.setPosition(x, y);
+    Vertex vertex = Vertex(x, y, tension, type, &warpAmount, &warpType);
 
     vertices[i] = vertex;
 
@@ -532,9 +513,7 @@ void Graph::rebuildFromString(const char *serializedGraph)
         const float tension = wolf::parseHexFloat(++rest, &rest);
         const CurveType type = static_cast<CurveType>(std::strtol(++rest, &rest, 10));
 
-        Vertex vertex = Vertex(x, y, tension, type);
-        vertex.setWarpAmount(warpAmount);
-        vertex.setWarpType(warpType);
+        Vertex vertex = Vertex(x, y, tension, type, &warpAmount, &warpType);
 
         vertices[i++] = vertex;
 

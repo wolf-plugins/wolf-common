@@ -33,11 +33,8 @@ enum WarpType
 
 class Vertex
 {
-  friend class Graph;
-
 public:
-  Vertex();
-  Vertex(float posX, float posY, float tension = 0.0f, CurveType type = CurveType::SingleCurve);
+  friend class Graph;
 
   float getX() const;
   float getY() const;
@@ -51,8 +48,8 @@ public:
   void setType(CurveType type);
 
 protected:
-  void setWarpAmount(float warp);
-  void setWarpType(WarpType warpType);
+  Vertex();
+  Vertex(float posX, float posY, float tension, CurveType type, float *warpAmountPtr, WarpType *warpTypePtr);
 
 private:
   float x;
@@ -60,8 +57,8 @@ private:
   float tension;
   CurveType type;
 
-  float warpAmount;
-  WarpType warpType; 
+  float *warpAmountPtr;
+  WarpType *warpTypePtr;
 };
 
 class Graph
@@ -111,8 +108,10 @@ public:
 private:
   Vertex vertices[maxVertices];
   int vertexCount;
+
   float warpAmount;
   WarpType warpType;
+
   bool bipolarMode;
 
   //format: x,y,tension,type;
