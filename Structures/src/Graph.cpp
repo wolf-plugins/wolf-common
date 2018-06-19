@@ -20,11 +20,12 @@ Vertex::Vertex() : x(0),
 {
 }
 
-Vertex::Vertex(float posX, float posY, float tension, CurveType type, Graph *graphPtr) : tension(tension),
+Vertex::Vertex(float posX, float posY, float tension, CurveType type, Graph *graphPtr) : x(posX),
+                                                                                         y(posY),
+                                                                                         tension(tension),
                                                                                          type(type),
                                                                                          graphPtr(graphPtr)
 {
-    setPosition(posX, posY);
 }
 
 static float powerScale(float input, float tension, float maxExponent, float p1x, float p1y, float p2x, float p2y, bool inverse)
@@ -457,7 +458,8 @@ void Graph::insertVertex(float x, float y, float tension, CurveType type)
     }
 
     Vertex vertex = Vertex(x, y, tension, type, this);
-
+    vertex.setPosition(x, y);
+    
     vertices[i] = vertex;
 
     ++vertexCount;
