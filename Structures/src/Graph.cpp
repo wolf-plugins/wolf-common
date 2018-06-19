@@ -16,15 +16,13 @@ Vertex::Vertex() : x(0),
                    y(0),
                    tension(0),
                    type(SingleCurve),
-                   warpAmountPtr(nullptr),
-                   warpTypePtr(nullptr)
+                   graphPtr(nullptr)
 {
 }
 
-Vertex::Vertex(float posX, float posY, float tension, CurveType type, float *warpAmountPtr, WarpType *warpTypePtr) : tension(tension),
-                                                                                                                     type(type),
-                                                                                                                     warpAmountPtr(warpAmountPtr),
-                                                                                                                     warpTypePtr(warpTypePtr)
+Vertex::Vertex(float posX, float posY, float tension, CurveType type, Graph *graphPtr) : tension(tension),
+                                                                                         type(type),
+                                                                                         graphPtr(graphPtr)
 {
     setPosition(posX, posY);
 }
@@ -116,62 +114,63 @@ static float bendMinus(float x, float warpAmount, bool inverse)
     }
 }
 
-float Vertex::getX() const
+float Vertex::warpCoordinate(const float coordinate, const float warpAmount, const WarpType warpType) const
 {
-    const float warpAmount = *warpAmountPtr;
-    const WarpType warpType = *warpTypePtr;
-
     switch (warpType)
     {
     case None:
-        return x;
+        return coordinate;
     case BendPlus:
-        return bendPlus(x, warpAmount, false);
+        return bendPlus(coordinate, warpAmount, false);
     case BendMinus:
-        return bendMinus(x, warpAmount, false);
+        return bendMinus(coordinate, warpAmount, false);
     case BendPlusMinus:
     {
         if (warpAmount < 0.5f)
         {
-            return bendPlus(x, (0.5f - warpAmount) * 2, false);
+            return bendPlus(coordinate, (0.5f - warpAmount) * 2, false);
         }
         else if (warpAmount > 0.5f)
         {
-            return bendMinus(x, (warpAmount - 0.5f) * 2, false);
+            return bendMinus(coordinate, (warpAmount - 0.5f) * 2, false);
         }
         else
         {
-            return x;
+            return coordinate;
         }
     }
     case SkewPlus:
-        return skewPlus(x, warpAmount);
+        return skewPlus(coordinate, warpAmount);
     case SkewMinus:
-        return skewMinus(x, warpAmount);
+        return skewMinus(coordinate, warpAmount);
     case SkewPlusMinus:
     {
         if (warpAmount < 0.5f)
         {
-            return skewPlus(x, (0.5f - warpAmount) * 2);
+            return skewPlus(coordinate, (0.5f - warpAmount) * 2);
         }
         else if (warpAmount > 0.5f)
         {
-            return skewMinus(x, (warpAmount - 0.5f) * 2);
+            return skewMinus(coordinate, (warpAmount - 0.5f) * 2);
         }
         else
         {
-            return x;
+            return coordinate;
         }
     }
     default:
-        return x;
+        return coordinate;
     }
+}
+
+float Vertex::getX() const
+{
+    return warpCoordinate(x, graphPtr->getHorizontalWarpAmount(), graphPtr->getHorizontalWarpType());
 }
 
 float Vertex::getY() const
 {
-    //TODO: warp
-    return y;
+    return warpCoordinate(y, graphPtr->getVerticalWarpAmount(), graphPtr->getVerticalWarpType());
 }
 
 float Vertex::getTension() const
@@ -184,69 +183,62 @@ CurveType Vertex::getType() const
     return type;
 }
 
-void Vertex::setX(float x)
+float Vertex::unwarpCoordinate(float coordinate, const float warpAmount, const WarpType warpType) const
 {
-    const float warpAmount = *warpAmountPtr;
-    const WarpType warpType = *warpTypePtr;
-
     //we revert the effects of warp to set the correct value
     switch (warpType)
     {
     case None:
-        this->x = x;
-        break;
+        return coordinate;
     case BendPlus:
-        this->x = bendPlus(x, warpAmount, true);
-        break;
+        return bendPlus(coordinate, warpAmount, true);
     case BendMinus:
-        this->x = bendMinus(x, warpAmount, true);
-        break;
+        return bendMinus(coordinate, warpAmount, true);
     case BendPlusMinus:
         if (warpAmount < 0.5f)
         {
-            this->x = bendPlus(x, (0.5f - warpAmount) * 2, true);
+            return bendPlus(coordinate, (0.5f - warpAmount) * 2, true);
         }
         else if (warpAmount > 0.5f)
         {
-            this->x = bendMinus(x, (warpAmount - 0.5f) * 2, true);
+            return bendMinus(coordinate, (warpAmount - 0.5f) * 2, true);
         }
         else
         {
-            this->x = x;
+            return coordinate;
         }
-        break;
     case SkewPlus:
-        this->x = invSkewPlus(x, warpAmount);
-        break;
+        return invSkewPlus(coordinate, warpAmount);
     case SkewMinus:
-        this->x = invSkewMinus(x, warpAmount);
-        break;
+        return invSkewMinus(coordinate, warpAmount);
     case SkewPlusMinus:
     {
         if (warpAmount < 0.5f)
         {
-            this->x = invSkewPlus(x, (0.5f - warpAmount) * 2);
+            return invSkewPlus(coordinate, (0.5f - warpAmount) * 2);
         }
         else if (warpAmount > 0.5f)
         {
-            this->x = invSkewMinus(x, (warpAmount - 0.5f) * 2);
+            return invSkewMinus(coordinate, (warpAmount - 0.5f) * 2);
         }
         else
         {
-            this->x = x;
+            return coordinate;
         }
-        break;
     }
     default:
-        this->x = x;
-        break;
+        return coordinate;
     }
+}
+
+void Vertex::setX(float x)
+{
+    this->x = unwarpCoordinate(x, graphPtr->getHorizontalWarpAmount(), graphPtr->getHorizontalWarpType());
 }
 
 void Vertex::setY(float y)
 {
-    //TODO: see above
-    this->y = y;
+    this->y = unwarpCoordinate(y, graphPtr->getVerticalWarpAmount(), graphPtr->getVerticalWarpType());
 }
 
 void Vertex::setPosition(float x, float y)
@@ -267,8 +259,10 @@ void Vertex::setType(CurveType type)
 
 Graph::Graph() : vertexCount(0),
                  bipolarMode(false),
-                 warpAmount(0.0f),
-                 warpType(None)
+                 horizontalWarpAmount(0.0f),
+                 verticalWarpAmount(0.0f),
+                 horizontalWarpType(None),
+                 verticalWarpType(None)
 {
     insertVertex(0.0f, 0.0f);
     insertVertex(1.0f, 1.0f);
@@ -409,14 +403,44 @@ float Graph::getValueAt(float x)
     return getOutValue(x, vertices[left - 1].getTension(), p1x, p1y, p2x, p2y, vertices[left - 1].getType());
 }
 
-void Graph::setWarpAmount(float warp)
+void Graph::setHorizontalWarpAmount(float warp)
 {
-    this->warpAmount = warp;
+    this->horizontalWarpAmount = warp;
 }
 
-void Graph::setWarpType(WarpType warpType)
+float Graph::getHorizontalWarpAmount() const
 {
-    this->warpType = warpType;
+    return this->horizontalWarpAmount;
+}
+
+void Graph::setVerticalWarpAmount(float warp)
+{
+    this->verticalWarpAmount = warp;
+}
+
+float Graph::getVerticalWarpAmount() const
+{
+    return this->verticalWarpAmount;
+}
+
+void Graph::setHorizontalWarpType(WarpType warpType)
+{
+    this->horizontalWarpType = warpType;
+}
+
+WarpType Graph::getHorizontalWarpType() const
+{
+    return this->horizontalWarpType;
+}
+
+void Graph::setVerticalWarpType(WarpType warpType)
+{
+    this->verticalWarpType = warpType;
+}
+
+WarpType Graph::getVerticalWarpType() const
+{
+    return this->verticalWarpType;
 }
 
 void Graph::insertVertex(float x, float y, float tension, CurveType type)
@@ -432,7 +456,7 @@ void Graph::insertVertex(float x, float y, float tension, CurveType type)
         --i;
     }
 
-    Vertex vertex = Vertex(x, y, tension, type, &warpAmount, &warpType);
+    Vertex vertex = Vertex(x, y, tension, type, this);
 
     vertices[i] = vertex;
 
@@ -515,7 +539,7 @@ void Graph::rebuildFromString(const char *serializedGraph)
         const float tension = wolf::parseHexFloat(++rest, &rest);
         const CurveType type = static_cast<CurveType>(std::strtol(++rest, &rest, 10));
 
-        Vertex vertex = Vertex(x, y, tension, type, &warpAmount, &warpType);
+        Vertex vertex = Vertex(x, y, tension, type, this);
 
         vertices[i++] = vertex;
 

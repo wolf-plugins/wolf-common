@@ -31,6 +31,8 @@ enum WarpType
   SkewPlusMinus
 };
 
+class Graph;
+
 class Vertex
 {
 public:
@@ -49,7 +51,10 @@ public:
 
 protected:
   Vertex();
-  Vertex(float posX, float posY, float tension, CurveType type, float *warpAmountPtr, WarpType *warpTypePtr);
+  Vertex(float posX, float posY, float tension, CurveType type, Graph *graphPtr);
+
+  float warpCoordinate(const float coordinate, const float warpAmount, const WarpType warpType) const;
+  float unwarpCoordinate(float coordinate, const float warpAmount, const WarpType warpType) const;
 
 private:
   float x;
@@ -57,8 +62,7 @@ private:
   float tension;
   CurveType type;
 
-  float *warpAmountPtr;
-  WarpType *warpTypePtr;
+  Graph *graphPtr;
 };
 
 class Graph
@@ -97,8 +101,22 @@ public:
   bool getBipolarMode();
   void setBipolarMode(bool bipolarMode);
 
-  void setWarpAmount(float warp);
-  void setWarpType(WarpType warpType);
+  /**
+   * warp getter/setters
+   */
+  //-------------------------------------------
+  void setHorizontalWarpAmount(float warp);
+  float getHorizontalWarpAmount() const;
+
+  void setVerticalWarpAmount(float warp);
+  float getVerticalWarpAmount() const;
+
+  void setHorizontalWarpType(WarpType warpType);
+  WarpType getHorizontalWarpType() const;
+
+  void setVerticalWarpType(WarpType warpType);
+  WarpType getVerticalWarpType() const;
+  //-------------------------------------------
 
   /**
    * Rebuild the graph from a string.
@@ -109,8 +127,11 @@ private:
   Vertex vertices[maxVertices];
   int vertexCount;
 
-  float warpAmount;
-  WarpType warpType;
+  float horizontalWarpAmount;
+  float verticalWarpAmount;
+
+  WarpType horizontalWarpType;
+  WarpType verticalWarpType;
 
   bool bipolarMode;
 
