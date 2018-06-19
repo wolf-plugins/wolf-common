@@ -20,7 +20,7 @@ enum CurveType
   WaveCurve
 };
 
-enum WarpType 
+enum WarpType
 {
   None = 0,
   BendPlus,

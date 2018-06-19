@@ -381,6 +381,8 @@ float Graph::getValueAt(float x)
 {
     const float absX = std::abs(x);
 
+    DISTRHO_SAFE_ASSERT_RETURN(absX <= 1.0f, x);
+
     //binary search
     int left = 0;
     int right = vertexCount - 1;
