@@ -294,6 +294,7 @@ void GraphWidgetInner::drawGrid()
     const float lineWidth = 1.0f;
 
     const int squaresPerRow = 8.0f;
+    const int gridMiddleLineIndex = squaresPerRow / 2.0f;
 
     const float verticalStep = width / squaresPerRow;
     const float horizontalStep = height / squaresPerRow;
@@ -301,6 +302,8 @@ void GraphWidgetInner::drawGrid()
     const Color gridForegroundColor = WolfShaperConfig::grid_foreground;
     const Color gridBackgroundColor = WolfShaperConfig::grid_background;
     const Color subGridColor = WolfShaperConfig::sub_grid;
+    const Color gridMiddleLineHorizontalColor = WolfShaperConfig::grid_middle_line_horizontal;
+    const Color gridMiddleLineVerticalColor = WolfShaperConfig::grid_middle_line_vertical;
 
     //vertical
     for (int i = 0; i < squaresPerRow + 1; ++i)
@@ -332,7 +335,7 @@ void GraphWidgetInner::drawGrid()
         //foreground
         beginPath();
         strokeWidth(lineWidth);
-        strokeColor(gridForegroundColor);
+        strokeColor(i == gridMiddleLineIndex ? gridMiddleLineVerticalColor : gridForegroundColor);
 
         moveTo(posX, 0.0f);
         lineTo(posX, height);
@@ -376,7 +379,7 @@ void GraphWidgetInner::drawGrid()
         moveTo(0.0f, posY);
         lineTo(width, posY);
 
-        strokeColor(gridForegroundColor);
+        strokeColor(i == gridMiddleLineIndex ? gridMiddleLineHorizontalColor : gridForegroundColor);
 
         stroke();
         closePath();
