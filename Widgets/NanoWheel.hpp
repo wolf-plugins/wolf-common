@@ -3,10 +3,11 @@
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class NanoWheel : public NanoWidget
+class NanoWheel : public WolfWidget
 {
   public:
     class Callback
@@ -16,7 +17,6 @@ class NanoWheel : public NanoWidget
         virtual void nanoWheelValueChanged(NanoWheel *nanoWheel, int value) = 0;
     };
 
-    explicit NanoWheel(Window &parent, Size<uint> size) noexcept;
     explicit NanoWheel(NanoWidget *widget, Size<uint> size) noexcept;
 
     void setValue(int value, bool sendCallback = false) noexcept;

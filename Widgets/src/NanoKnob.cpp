@@ -3,23 +3,8 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoKnob::NanoKnob(Window &parent, Size<uint> size) noexcept
-    : NanoWidget(parent),
-      fMin(0.0f),
-      fMax(1.0f),
-      fStep(0.0f),
-      fValue(0.5f),
-      fUsingLog(false),
-      fLeftMouseDown(false),
-      fColor(Color(255, 0, 0, 255)),
-      fIsHovered(false),
-      fCallback(nullptr)
-{
-    setSize(size);
-}
-
 NanoKnob::NanoKnob(NanoWidget *widget, Size<uint> size) noexcept
-    : NanoWidget(widget),
+    : WolfWidget(widget),
       fMin(0.0f),
       fMax(1.0f),
       fStep(0.0f),
@@ -116,6 +101,7 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
         if (fLeftMouseDown == true)
         {
             fLeftMouseDown = false;
+            setFocus(false);
 
             window.unclipCursor();
             window.setCursorPos(this);
@@ -134,7 +120,8 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
     {
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
-
+        
+        setFocus(true);
         window.hideCursor();
         window.clipCursor(Rectangle<int>(getAbsoluteX() + getWidth() / 2.0f, 0, 0, (int)window.getHeight()));
 

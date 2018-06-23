@@ -4,20 +4,8 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoWheel::NanoWheel(Window &parent, Size<uint> size) noexcept
-    : NanoWidget(parent),
-      fLeftMouseDown(false),
-      fLeftMouseDownLocation(Point<int>(0, 0)),
-      fIsHovered(true),
-      fValue(0),
-      fMin(0),
-      fMax(0)
-{
-    setSize(size);
-}
-
 NanoWheel::NanoWheel(NanoWidget *parent, Size<uint> size) noexcept
-    : NanoWidget(parent),
+    : WolfWidget(parent),
       fLeftMouseDown(false),
       fLeftMouseDownLocation(Point<int>(0, 0)),
       fIsHovered(true),
@@ -114,6 +102,9 @@ bool NanoWheel::onMouse(const MouseEvent &ev)
 
 bool NanoWheel::onMotion(const MotionEvent &ev)
 {
+    if (!canBeFocused())
+        return false;
+
     if (fLeftMouseDown)
     {
         const float tension = 40.0f;
@@ -129,12 +120,10 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
 
             if (ev.pos.getY() + getAbsoluteY() >= windowHeight - 1)
             {
-                window.setCursorPos(getAbsoluteX(), 2);
                 fLeftMouseDownLocation.setY(-getAbsoluteY() + 2);
             }
             else if (ev.pos.getY() + getAbsoluteY() == 0)
             {
-                window.setCursorPos(getAbsoluteX(), windowHeight - 2);
                 fLeftMouseDownLocation.setY(windowHeight - getAbsoluteY() - 2);
             }
             else

@@ -8,24 +8,23 @@ START_NAMESPACE_DISTRHO
 
 class WolfWidget : public NanoWidget
 {
-    void setDescription();
-    const char* getDescription();
+public:
+  WolfWidget(NanoWidget *widget) noexcept;
 
-  protected:
-    bool onMotion() override;
-    bool onMouse() override;
+  void setDescription(const char *description);
+  const char *getDescription();
 
-    virtual void onMouseEnter();
-    virtual void onMouseLeave();
+  bool canBeFocused();
+  void setFocus(bool focus);
 
-    void mouseWarp(); //TODO: design this
-    
-    //fancy way of dealing with double-click ? mouse up, mouse down?
-    //WolfWidget::onMotion vs NanoWidget::onMotion ?
-  private:
-    WolfWidget* fFocusedWidget; //only one focused widget at a time
+protected:
+  void mouseWarp(); //TODO: design this
 
-    DISTRHO_LEAK_DETECTOR(WolfWidget)
+private:
+  int *fFocusedWidgetId; //only one focused widget at a time
+  const char *fDescription;
+
+  DISTRHO_LEAK_DETECTOR(WolfWidget)
 };
 
 END_NAMESPACE_DISTRHO

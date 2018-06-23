@@ -4,10 +4,11 @@
 #include "Widget.hpp"
 #include "NanoVG.hpp"
 #include "Window.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class NanoKnob : public NanoWidget
+class NanoKnob : public WolfWidget
 {
 public:
   class Callback
@@ -17,7 +18,6 @@ public:
     virtual void nanoKnobValueChanged(NanoKnob *nanoKnob, const float value) = 0;
   };
 
-  explicit NanoKnob(Window &parent, Size<uint> size) noexcept;
   explicit NanoKnob(NanoWidget *widget, Size<uint> size) noexcept;
 
   float getValue() const noexcept;
