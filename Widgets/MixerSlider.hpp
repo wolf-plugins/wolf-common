@@ -15,7 +15,7 @@ protected:
 
     void drawBackground();
     void drawSocket();
-    void drawHandle();
+    
 private:
     DISTRHO_LEAK_DETECTOR(MixerSlider)
 };

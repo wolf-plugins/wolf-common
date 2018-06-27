@@ -4,27 +4,65 @@
 
 START_NAMESPACE_DISTRHO
 
+SliderHandle::SliderHandle(NanoWidget *parent, Size<uint> size) noexcept : NanoWidget(parent)
+{
+    setSize(size);
+}
+
+void SliderHandle::onNanoDisplay()
+{
+    const float handleCenterY = getHeight() / 2.0f;
+
+    beginPath();
+
+    fillColor(Color(215, 215, 215, 255));
+    strokeColor(Color(35, 35, 35, 255));
+    strokeWidth(1.0f);
+
+    rect(0, 0, getWidth(), getHeight());
+
+    fill();
+    stroke();
+
+    closePath();
+
+    beginPath();
+
+    strokeColor(Color(0, 0, 0, 255));
+    strokeWidth(1.0f);
+
+    moveTo(0, handleCenterY);
+    lineTo(getWidth(), handleCenterY);
+
+    stroke();
+
+    closePath();
+}
+
 NanoSlider::NanoSlider(NanoWidget *parent, Size<uint> size) noexcept
     : NanoWidget(parent),
       fLeftMouseDown(false),
       fLeftMouseDownLocation(Point<int>(0, 0)),
       fIsHovered(true),
-      fHandle(0,0,18,30),
       fValue(0),
       fMin(0),
-      fMax(0),
+      fMax(1),
       fSocketMarginBottom(0.0f),
       fSocketMarginTop(0.0f)
 {
     setSize(size);
+
+    fHandle = new SliderHandle(this, Size<uint>(16, 26));
 }
 
-void NanoSlider::setRange(int min, int max) noexcept
+void NanoSlider::setRange(float min, float max) noexcept
 {
     fMin = min;
     fMax = max;
 
     fValue = wolf::clamp(fValue, min, max);
+
+    positionHandle();
 }
 
 void NanoSlider::setCallback(Callback *callback) noexcept
@@ -32,7 +70,7 @@ void NanoSlider::setCallback(Callback *callback) noexcept
     fCallback = callback;
 }
 
-void NanoSlider::setValue(int value, bool sendCallback) noexcept
+void NanoSlider::setValue(float value, bool sendCallback) noexcept
 {
     value = wolf::clamp(value, fMin, fMax);
 
@@ -41,27 +79,37 @@ void NanoSlider::setValue(int value, bool sendCallback) noexcept
 
     fValue = value;
 
+    positionHandle();
+
     if (sendCallback && fCallback != nullptr)
         fCallback->nanoSliderValueChanged(this, fValue);
 
     repaint();
 }
 
-int NanoSlider::getValue() noexcept
+void NanoSlider::positionHandle()
+{
+    const float range = fMax - fMin;
+
+    fHandle->setAbsoluteY((fValue - fMin) / range * getHeight() + getAbsoluteY() + fSocketMarginTop - fSocketMarginBottom - fHandle->getHeight() / 2.0f);
+}
+
+float NanoSlider::getValue() noexcept
 {
     return fValue;
 }
 
 void NanoSlider::onNanoDisplay()
 {
-    fHandle.setPos(getWidth() / 2.0f - fHandle.getWidth() / 2.0f, fSocketMarginTop / 2.0f);
+    const float posX = getWidth() / 2.0f - fHandle->getWidth() / 2.0f;
+    fHandle->setAbsoluteX(getAbsoluteX() + posX);
 
     draw();
 }
 
 void NanoSlider::setHandleSize(const float width, const float height)
 {
-    fHandle.setSize(width, height);
+    fHandle->setSize(width, height);
 }
 
 void NanoSlider::setSocketMargin(const float top, const float bottom)
@@ -93,8 +141,8 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
         {
             fLeftMouseDown = false;
 
-            const float handleCenterX = getAbsoluteX() + fHandle.getX() + fHandle.getWidth() / 2.0f;
-            const float handleCenterY = getAbsoluteY() + fHandle.getY() + fHandle.getHeight() / 2.0f;
+            const float handleCenterX = fHandle->getAbsoluteX() + fHandle->getWidth() / 2.0f;
+            const float handleCenterY = fHandle->getAbsoluteY() + fHandle->getHeight() / 2.0f;
 
             window.setCursorPos(handleCenterX, handleCenterY);
             window.showCursor();
@@ -106,7 +154,7 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
         return false;
     }
 
-    if (fHandle.contains(ev.pos))
+    if (fHandle->contains(ev.pos))
     {
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
@@ -123,9 +171,9 @@ bool NanoSlider::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float tension = 40.0f;
+        const float tension = 2.6f; //bigger value means slower handle movement
 
-        const int value = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / tension;
+        const float value = -(fLeftMouseDownLocation.getY() - ev.pos.getY()) / tension;
 
         if (value != 0)
         {
@@ -149,13 +197,13 @@ bool NanoSlider::onMotion(const MotionEvent &ev)
                 fLeftMouseDownLocation.setY(ev.pos.getY());
             }
 
-            setValue(fValue + wolf::clamp(value, -1, 1), true);
+            setValue(fValue + value, true);
         }
 
         return true;
     }
 
-    if (fHandle.contains(ev.pos))
+    if (fHandle->contains(ev.pos))
     {
         if (!fIsHovered)
         {

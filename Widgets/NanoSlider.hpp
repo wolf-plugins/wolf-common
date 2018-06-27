@@ -6,55 +6,71 @@
 
 START_NAMESPACE_DISTRHO
 
+class SliderHandle : public NanoWidget
+{
+public:
+  explicit SliderHandle(NanoWidget *widget, Size<uint> size) noexcept;
+
+protected:
+  void onNanoDisplay() override;
+
+private:
+  DISTRHO_LEAK_DETECTOR(SliderHandle)
+};
+
 class NanoSlider : public NanoWidget
 {
+public:
+  friend class SliderHandle;
+
+  class Callback
+  {
   public:
-    class Callback
-    {
-      public:
-        virtual ~Callback() {}
-        virtual void nanoSliderValueChanged(NanoSlider *nanoSlider, int value) = 0;
-    };
+    virtual ~Callback() {}
+    virtual void nanoSliderValueChanged(NanoSlider *nanoSlider, float value) = 0;
+  };
 
-    explicit NanoSlider(NanoWidget *widget, Size<uint> size) noexcept;
+  explicit NanoSlider(NanoWidget *widget, Size<uint> size) noexcept;
 
-    void setValue(int value, bool sendCallback = false) noexcept;
-    int getValue() noexcept;
-    void setRange(int min, int max) noexcept;
+  void setValue(float value, bool sendCallback = false) noexcept;
+  float getValue() noexcept;
+  void setRange(float min, float max) noexcept;
 
-    void setCallback(Callback *callback) noexcept;
+  void setCallback(Callback *callback) noexcept;
 
-    void setHandleSize(const float width, const float height);
-    void setSocketMargin(const float top, const float bottom);
+  void setHandleSize(const float width, const float height);
+  void setSocketMargin(const float top, const float bottom);
 
-  protected:
-    void onNanoDisplay() override;
+protected:
+  void onNanoDisplay() override;
 
-    bool onScroll(const ScrollEvent &ev) override;
-    bool onMouse(const MouseEvent &) override;
-    bool onMotion(const MotionEvent &) override;
+  bool onScroll(const ScrollEvent &ev) override;
+  bool onMouse(const MouseEvent &) override;
+  bool onMotion(const MotionEvent &) override;
 
-    virtual void draw() = 0;
+  void positionHandle();
 
-    Rectangle<int> fHandle;
+  virtual void draw() = 0;
 
-    float fSocketMarginTop;
-    float fSocketMarginBottom;
-    
-  private:
-    Callback *fCallback;
+  ScopedPointer<SliderHandle> fHandle;
 
-    bool fLeftMouseDown;
-    Point<int> fLeftMouseDownLocation;
+  float fSocketMarginTop;
+  float fSocketMarginBottom;
 
-    bool fIsHovered;
-    bool fHandleIsHovered; 
+private:
+  Callback *fCallback;
 
-    int fValue;
-    int fMin;
-    int fMax;
+  bool fLeftMouseDown;
+  Point<int> fLeftMouseDownLocation;
 
-    DISTRHO_LEAK_DETECTOR(NanoSlider)
+  bool fIsHovered;
+  bool fHandleIsHovered;
+
+  float fValue;
+  float fMin;
+  float fMax;
+
+  DISTRHO_LEAK_DETECTOR(NanoSlider)
 };
 
 END_NAMESPACE_DISTRHO

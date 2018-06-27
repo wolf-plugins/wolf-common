@@ -10,7 +10,6 @@ void MixerSlider::draw()
 {
     drawBackground();
     drawSocket();
-    drawHandle();
 }
 
 void MixerSlider::drawBackground()
@@ -70,38 +69,6 @@ void MixerSlider::drawSocket()
     fill();
 
     closePath();
-}
-
-void MixerSlider::drawHandle()
-{
-    const float width = getWidth();
-    const float height = getHeight();
-    const float handleCenterY = fHandle.getY() + fHandle.getHeight() / 2.0f;
-
-    beginPath();
-
-    fillColor(Color(215,215,215, 255));
-    strokeColor(Color(35,35,35,255));
-    strokeWidth(1.0f);
-
-    rect(fHandle.getX(), fHandle.getY(), fHandle.getWidth(), fHandle.getHeight());
-
-    fill();
-    stroke();
-
-    closePath();
-
-    beginPath();
-
-    strokeColor(Color(0,0,0,255));
-    strokeWidth(1.0f);
-
-    moveTo(fHandle.getX(), handleCenterY);
-    lineTo(fHandle.getX() + fHandle.getWidth(), handleCenterY);
-
-    stroke();
-
-    closePath();    
 }
 
 END_NAMESPACE_DISTRHO
