@@ -174,7 +174,7 @@ bool NanoSlider::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float tension = 3.0f; //bigger value means slower handle movement
+        const float tension = 2.8f; //bigger value means slower handle movement
 
         const float value = -(fLeftMouseDownLocation.getY() - ev.pos.getY()) / tension;
 
