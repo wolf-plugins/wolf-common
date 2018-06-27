@@ -154,7 +154,10 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
         return false;
     }
 
-    if (fHandle->contains(ev.pos))
+    Point<int> adaptedPos = Point<int>(ev.pos.getX() + getAbsoluteX() - fHandle->getAbsoluteX(),
+                                       ev.pos.getY() + getAbsoluteY() - fHandle->getAbsoluteY());
+
+    if (fHandle->contains(adaptedPos))
     {
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
@@ -171,7 +174,7 @@ bool NanoSlider::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float tension = 2.6f; //bigger value means slower handle movement
+        const float tension = 3.0f; //bigger value means slower handle movement
 
         const float value = -(fLeftMouseDownLocation.getY() - ev.pos.getY()) / tension;
 
@@ -203,7 +206,10 @@ bool NanoSlider::onMotion(const MotionEvent &ev)
         return true;
     }
 
-    if (fHandle->contains(ev.pos))
+    Point<int> adaptedPos = Point<int>(ev.pos.getX() + getAbsoluteX() - fHandle->getAbsoluteX(),
+                                       ev.pos.getY() + getAbsoluteY() - fHandle->getAbsoluteY());
+
+    if (fHandle->contains(adaptedPos))
     {
         if (!fIsHovered)
         {
