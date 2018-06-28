@@ -8,22 +8,7 @@ MixerSlider::MixerSlider(NanoWidget *widget, Size<uint> size) noexcept : NanoSli
 
 void MixerSlider::draw()
 {
-    drawBackground();
     drawSocket();
-}
-
-void MixerSlider::drawBackground()
-{
-    const float width = getWidth();
-    const float height = getHeight();
-
-    beginPath();
-
-    fillColor(Color(50,52,59, 255));
-    rect(0, 0, width, height);
-    fill();
-
-    closePath();
 }
 
 void MixerSlider::drawSocket()
@@ -38,7 +23,7 @@ void MixerSlider::drawSocket()
     //outline
     beginPath();
 
-    strokeWidth(2.0f);
+    strokeWidth(0.5f);
     strokeColor(Color(71, 71, 71, 255));
 
     roundedRect(centerX - halfSocketWidth - 1.0f, fSocketMarginTop - 1.0f, socketWidth + 2.0f, height - fSocketMarginBottom - fSocketMarginTop + 1.0f, 2.0f);
@@ -55,17 +40,6 @@ void MixerSlider::drawSocket()
 
     roundedRect(centerX - halfSocketWidth, fSocketMarginTop, socketWidth, height - fSocketMarginBottom - fSocketMarginTop, 2.0f);
     stroke();
-    fill();
-
-    closePath();
-
-    //filled part
-    beginPath();
-
-    strokeWidth(1.0f);
-    fillColor(Color(51,52,52,255));
-
-    roundedRect(centerX - halfSocketWidth, fSocketMarginTop, socketWidth, 100, 2.0f);
     fill();
 
     closePath();

@@ -18,7 +18,7 @@ class NanoMeter : public NanoWidget
     void onNanoDisplay() override;
 
   private:
-    const float kSmoothMultiplier = 5.0f;
+    const float kSmoothMultiplier = 8.0f;
 
     Color fColor;
 

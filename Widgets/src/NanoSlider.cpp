@@ -52,7 +52,7 @@ NanoSlider::NanoSlider(NanoWidget *parent, Size<uint> size) noexcept
 {
     setSize(size);
 
-    fHandle = new SliderHandle(this, Size<uint>(16, 26));
+    fHandle = new SliderHandle(this, Size<uint>(16, 31));
 }
 
 void NanoSlider::setRange(float min, float max) noexcept
@@ -123,7 +123,7 @@ bool NanoSlider::onScroll(const ScrollEvent &ev)
     if (!contains(ev.pos))
         return false;
 
-    setValue(getValue() + ev.delta.getY(), true);
+    setValue(getValue() - ev.delta.getY(), true);
 
     return true;
 }
@@ -174,7 +174,7 @@ bool NanoSlider::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float tension = 2.8f; //bigger value means slower handle movement
+        const float tension = 3.0f; //bigger value means slower handle movement
 
         const float value = -(fLeftMouseDownLocation.getY() - ev.pos.getY()) / tension;
 
