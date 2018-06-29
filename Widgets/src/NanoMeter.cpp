@@ -52,65 +52,62 @@ void NanoMeter::onNanoDisplay()
     const float outLeft(fOutLeft);
     const float outRight(fOutRight);
 
+    const float width = getWidth();
+    const float height = getHeight();
+
     const float halfWidth = static_cast<float>(getWidth()) / 2;
     const float redYellowHeight = static_cast<float>(getHeight()) * 0.2f;
     const float yellowBaseHeight = static_cast<float>(getHeight()) * 0.4f;
     const float baseBaseHeight = static_cast<float>(getHeight()) * 0.6f;
 
-    // create gradients
-    Paint fGradient1 = linearGradient(0.0f, 0.0f, 0.0f, redYellowHeight, kColorRed, kColorYellow);
-    Paint fGradient2 = linearGradient(0.0f, redYellowHeight, 0.0f, yellowBaseHeight, kColorYellow, fColor);
-
-    // paint left meter
+    // outline and socket
     beginPath();
-    rect(0.0f, 0.0f, halfWidth - 1.0f, redYellowHeight);
-    fillPaint(fGradient1);
+
+    fillColor(Color(16, 16, 16, 255));
+    strokeColor(Color(62, 71, 72, 255));
+    strokeWidth(1.0f);
+
+    roundedRect(1, 1, width - 2.0f, height - 2.0f, 0.5f);
     fill();
+    stroke();
+
     closePath();
 
+    // glass
     beginPath();
-    rect(0.0f, redYellowHeight - 0.5f, halfWidth - 1.0f, yellowBaseHeight);
-    fillPaint(fGradient2);
+
+    const Color glassTopColor = Color(46, 46, 46, 255);
+    const Color glassBottomColor = Color(30, 30, 30, 255);
+    
+    const Color glassTopOutlineColor = Color(74, 74, 74, 255);
+    const Color glassBottomOutlineColor = Color(74, 74, 74, 120);
+
+    fillPaint(linearGradient(halfWidth, 0, halfWidth, height, glassTopColor, glassBottomColor));
+    strokePaint(linearGradient(halfWidth, 0, halfWidth, height, glassTopOutlineColor, glassBottomOutlineColor));
+
+    strokeWidth(1.0f);
+
+    roundedRect(2.5f, 2.5f, width - 5.0f, height - 5.0f, 0.5f);
     fill();
+    stroke();
+
     closePath();
 
+    // glass reflection
     beginPath();
-    rect(0.0f, redYellowHeight + yellowBaseHeight - 1.5f, halfWidth - 1.0f, baseBaseHeight);
-    fillColor(fColor);
-    fill();
-    closePath();
 
-    // paint left black matching output level
-    beginPath();
-    rect(0.0f, 0.0f, halfWidth - 1.0f, (1.0f - outLeft) * getHeight());
-    fillColor(kColorBlack);
-    fill();
-    closePath();
+    fillColor(94, 94, 101, 27);
 
-    // paint right meter
-    beginPath();
-    rect(halfWidth + 1.0f, 0.0f, halfWidth - 2.0f, redYellowHeight);
-    fillPaint(fGradient1);
-    fill();
-    closePath();
+    const float reflectionRightHeight = 9.f;
 
-    beginPath();
-    rect(halfWidth + 1.0f, redYellowHeight - 0.5f, halfWidth - 2.0f, yellowBaseHeight);
-    fillPaint(fGradient2);
-    fill();
-    closePath();
+    moveTo(2.5f, 2.5f);
+    lineTo(width - 5.f, 2.5f);
+    lineTo(width - 5.f, 2.5f + reflectionRightHeight);
+    lineTo(2.5f, 2.5f + reflectionRightHeight * 2.0f);
+    lineTo(2.5f, 2.5f);
 
-    beginPath();
-    rect(halfWidth + 1.0f, redYellowHeight + yellowBaseHeight - 1.5f, halfWidth - 2.0f, baseBaseHeight);
-    fillColor(fColor);
     fill();
-    closePath();
 
-    // paint right black matching output level
-    beginPath();
-    rect(halfWidth + 1.0f, 0.0f, halfWidth - 2.0f, (1.0f - outRight) * getHeight());
-    fillColor(kColorBlack);
-    fill();
     closePath();
 }
 

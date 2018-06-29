@@ -23,7 +23,7 @@ void MixerSlider::drawSocket()
     //outline
     beginPath();
 
-    strokeWidth(0.5f);
+    strokeWidth(1.0f);
     strokeColor(Color(71, 71, 71, 255));
 
     roundedRect(centerX - halfSocketWidth - 1.0f, fSocketMarginTop - 1.0f, socketWidth + 2.0f, height - fSocketMarginBottom - fSocketMarginTop + 1.0f, 2.0f);
