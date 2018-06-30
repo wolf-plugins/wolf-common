@@ -55,7 +55,7 @@ void NanoMeter::onNanoDisplay()
     const float width = getWidth();
     const float height = getHeight();
 
-    const float halfWidth = static_cast<float>(getWidth()) / 2;
+    const float halfWidth = static_cast<float>(getWidth()) / 2.0f;
     const float redYellowHeight = static_cast<float>(getHeight()) * 0.2f;
     const float yellowBaseHeight = static_cast<float>(getHeight()) * 0.4f;
     const float baseBaseHeight = static_cast<float>(getHeight()) * 0.6f;
@@ -65,9 +65,12 @@ void NanoMeter::onNanoDisplay()
 
     fillColor(Color(16, 16, 16, 255));
     strokeColor(Color(62, 71, 72, 255));
-    strokeWidth(1.0f);
 
-    roundedRect(1, 1, width - 2.0f, height - 2.0f, 0.5f);
+    const float socketStrokeWidth = 1.0f;
+
+    strokeWidth(socketStrokeWidth);
+
+    roundedRect(socketStrokeWidth, socketStrokeWidth, width - socketStrokeWidth * 2.0f, height - socketStrokeWidth * 2.0f, 0.5f);
     fill();
     stroke();
 
@@ -78,16 +81,20 @@ void NanoMeter::onNanoDisplay()
 
     const Color glassTopColor = Color(46, 46, 46, 255);
     const Color glassBottomColor = Color(30, 30, 30, 255);
-    
+
     const Color glassTopOutlineColor = Color(74, 74, 74, 255);
     const Color glassBottomOutlineColor = Color(74, 74, 74, 120);
 
     fillPaint(linearGradient(halfWidth, 0, halfWidth, height, glassTopColor, glassBottomColor));
     strokePaint(linearGradient(halfWidth, 0, halfWidth, height, glassTopOutlineColor, glassBottomOutlineColor));
 
-    strokeWidth(1.0f);
+    const float glassStrokeWidth = 1.0f;
+    const float glassRectXY = glassStrokeWidth + socketStrokeWidth + 0.5f;
+    const float doubleGlassRectXY = glassRectXY * 2.f;
 
-    roundedRect(2.5f, 2.5f, width - 5.0f, height - 5.0f, 0.5f);
+    strokeWidth(glassStrokeWidth);
+
+    roundedRect(glassRectXY, glassRectXY, width - doubleGlassRectXY, height - doubleGlassRectXY, 0.5f);
     fill();
     stroke();
 
@@ -100,15 +107,63 @@ void NanoMeter::onNanoDisplay()
 
     const float reflectionRightHeight = 9.f;
 
-    moveTo(2.5f, 2.5f);
-    lineTo(width - 5.f, 2.5f);
-    lineTo(width - 5.f, 2.5f + reflectionRightHeight);
-    lineTo(2.5f, 2.5f + reflectionRightHeight * 2.0f);
-    lineTo(2.5f, 2.5f);
+    moveTo(glassRectXY, glassRectXY);
+    lineTo(width - doubleGlassRectXY, glassRectXY);
+    lineTo(width - doubleGlassRectXY, glassRectXY + reflectionRightHeight);
+    lineTo(glassRectXY, glassRectXY + reflectionRightHeight * 2.0f);
+    lineTo(glassRectXY, glassRectXY);
 
     fill();
 
     closePath();
+
+    // meters
+    const float metersXY = glassRectXY + 2.0f;
+    const float halfMetersXY = metersXY / 2.0f;
+    const float leftRightMetersMargin = 2.0f;
+    const float meterWidth = halfWidth - leftRightMetersMargin - glassRectXY * 2 + 2.0f;
+    const float baseY = metersXY + redYellowHeight + yellowBaseHeight - 0.25f;
+    const float baseHeight = height - metersXY - baseY;
+    const float meterBottom = height - metersXY;
+
+    // create gradients
+    Paint fGradient1 = linearGradient(0.0f, 0.0f, 0.0f, redYellowHeight, kColorRed, kColorYellow);
+    Paint fGradient2 = linearGradient(0.0f, redYellowHeight, 0.0f, yellowBaseHeight, kColorYellow, fColor);
+
+    for (int i = 0; i < 2; ++i)
+    {
+        translate(i * (meterWidth + leftRightMetersMargin), 0);
+        
+        const float out = i == 0 ? outLeft : outRight;
+
+        const float outputHeight = out * meterBottom;
+        scissor(metersXY, meterBottom - outputHeight, meterWidth, outputHeight);
+
+        beginPath();
+
+        rect(metersXY, metersXY, meterWidth, redYellowHeight);
+        fillPaint(fGradient1);
+        fill();
+
+        closePath();
+
+        beginPath();
+
+        rect(metersXY, metersXY + redYellowHeight - 0.25f, meterWidth, yellowBaseHeight);
+        fillPaint(fGradient2);
+        fill();
+
+        closePath();
+
+        beginPath();
+
+        rect(metersXY, baseY, meterWidth, baseHeight);
+
+        fillPaint(fGradient2);
+        fill();
+
+        closePath();
+    }
 }
 
 END_NAMESPACE_DISTRHO
