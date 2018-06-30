@@ -103,13 +103,13 @@ void NanoMeter::onNanoDisplay()
     // glass reflection
     beginPath();
 
-    fillColor(94, 94, 101, 27);
+    fillColor(94, 94, 101, 37);
 
     const float reflectionRightHeight = 9.f;
 
     moveTo(glassRectXY, glassRectXY);
-    lineTo(width - doubleGlassRectXY, glassRectXY);
-    lineTo(width - doubleGlassRectXY, glassRectXY + reflectionRightHeight);
+    lineTo(width - glassRectXY, glassRectXY);
+    lineTo(width - glassRectXY, glassRectXY + reflectionRightHeight);
     lineTo(glassRectXY, glassRectXY + reflectionRightHeight * 2.0f);
     lineTo(glassRectXY, glassRectXY);
 
@@ -130,10 +130,11 @@ void NanoMeter::onNanoDisplay()
     Paint fGradient1 = linearGradient(0.0f, 0.0f, 0.0f, redYellowHeight, kColorRed, kColorYellow);
     Paint fGradient2 = linearGradient(0.0f, redYellowHeight, 0.0f, yellowBaseHeight, kColorYellow, fColor);
 
+    //left meter, then right one
     for (int i = 0; i < 2; ++i)
     {
         translate(i * (meterWidth + leftRightMetersMargin), 0);
-        
+
         const float out = i == 0 ? outLeft : outRight;
 
         const float outputHeight = out * meterBottom;
