@@ -40,7 +40,7 @@ void SliderHandle::onNanoDisplay()
 }
 
 NanoSlider::NanoSlider(NanoWidget *parent, Size<uint> size) noexcept
-    : NanoWidget(parent),
+    : WolfWidget(parent),
       fLeftMouseDown(false),
       fLeftMouseDownLocation(Point<int>(0, 0)),
       fIsHovered(true),
@@ -146,6 +146,8 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
 
             window.setCursorPos(handleCenterX, handleCenterY);
             window.showCursor();
+            setFocus(false);
+            
             getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
 
             return true;
@@ -162,6 +164,7 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
 
+        setFocus(true);
         window.hideCursor();
 
         return true;
@@ -172,6 +175,9 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
 
 bool NanoSlider::onMotion(const MotionEvent &ev)
 {
+    if(!canBeFocused())
+        return false;
+
     if (fLeftMouseDown)
     {
         const float tension = 3.0f; //bigger value means slower handle movement

@@ -1,8 +1,7 @@
 #ifndef WOLF_NANO_SLIDER_HPP_INCLUDED
 #define WOLF_NANO_SLIDER_HPP_INCLUDED
 
-#include "Widget.hpp"
-#include "NanoVG.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -18,7 +17,7 @@ private:
   DISTRHO_LEAK_DETECTOR(SliderHandle)
 };
 
-class NanoSlider : public NanoWidget
+class NanoSlider : public WolfWidget
 {
 public:
   friend class SliderHandle;

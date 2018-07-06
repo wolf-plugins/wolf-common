@@ -1,12 +1,11 @@
 #ifndef WOLF_NANO_SWITCH_HPP_INCLUDED
 #define WOLF_NANO_SWITCH_HPP_INCLUDED
 
-#include "Widget.hpp"
-#include "NanoVG.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class NanoSwitch : public NanoWidget
+class NanoSwitch : public WolfWidget
 {
   public:
     class Callback
@@ -16,7 +15,6 @@ class NanoSwitch : public NanoWidget
         virtual void nanoSwitchClicked(NanoSwitch *nanoSwitch) = 0;
     };
 
-    explicit NanoSwitch(Window &parent, Size<uint> size) noexcept;
     explicit NanoSwitch(NanoWidget *widget, Size<uint> size) noexcept;
 
     bool isDown() const noexcept;

@@ -4,7 +4,7 @@
 START_NAMESPACE_DISTRHO
 
 NanoSwitch::NanoSwitch(NanoWidget *widget, Size<uint> size) noexcept
-    : NanoWidget(widget),
+    : WolfWidget(widget),
       fIsDown(false),
       fCallback(nullptr),
       fIsHovered(false)
@@ -21,11 +21,11 @@ void NanoSwitch::setDown(bool down) noexcept
 {
     if (fIsDown == down)
         return;
-        
+
     fIsDown = down;
 
     onStateChanged();
-    
+
     repaint();
 }
 
@@ -60,6 +60,9 @@ bool NanoSwitch::onMouse(const MouseEvent &ev)
 
 bool NanoSwitch::onMotion(const MotionEvent &ev)
 {
+    if (!canBeFocused())
+        return false;
+
     if (contains(ev.pos))
     {
         if (!fIsHovered)
