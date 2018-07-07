@@ -10,11 +10,14 @@ class MixerStrip : public NanoWidget
 {
 public:
     explicit MixerStrip(NanoWidget* widget, Size<uint> size) noexcept;
+    NanoVG::Paint generateNoiseTexture();
 
 protected:
     void onNanoDisplay() override;
 
 private:
+    NanoVG::Paint fNoiseTexture;
+    
     DISTRHO_LEAK_DETECTOR(MixerStrip)
 };
 
