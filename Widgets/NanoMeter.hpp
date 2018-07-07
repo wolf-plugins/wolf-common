@@ -13,6 +13,7 @@ class NanoMeter : public NanoWidget
 
     void setOutLeft(float value) noexcept;
     void setOutRight(float value) noexcept;
+    void setEnabled(bool enabled);
 
   protected:
     void onNanoDisplay() override;
@@ -21,7 +22,7 @@ class NanoMeter : public NanoWidget
     const float kSmoothMultiplier = 8.0f;
 
     Color fColor;
-
+    bool fEnabled;
     float fOutLeft, fOutRight;
     DISTRHO_LEAK_DETECTOR(NanoMeter)
 };

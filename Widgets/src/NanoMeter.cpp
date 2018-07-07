@@ -3,6 +3,7 @@
 START_NAMESPACE_DISTRHO
 
 NanoMeter::NanoMeter(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(widget),
+                                                                     fEnabled(true),
                                                                      fOutLeft(0),
                                                                      fOutRight(0)
 {
@@ -43,6 +44,11 @@ void NanoMeter::setOutRight(float value) noexcept
     }
 }
 
+void NanoMeter::setEnabled(bool enabled)
+{
+    fEnabled = enabled;
+}
+
 void NanoMeter::onNanoDisplay()
 {
     static const Color kColorBlack(0, 0, 0);
@@ -66,9 +72,9 @@ void NanoMeter::onNanoDisplay()
     beginPath();
 
     fillColor(Color(0, 0, 0, 255));
-    strokeColor(Color(62, 71, 72, 255));
+    strokeColor(Color(62, 71, 72, 205));
 
-    const float socketStrokeWidth = 1.0f;
+    const float socketStrokeWidth = 1.5f;
 
     strokeWidth(socketStrokeWidth);
 
@@ -81,10 +87,10 @@ void NanoMeter::onNanoDisplay()
     // glass
     beginPath();
 
-    const Color glassTopColor = Color(46, 46, 46, 255);
-    const Color glassBottomColor = Color(30, 30, 30, 255);
+    const Color glassTopColor = Color(32, 32, 32, 255);
+    const Color glassBottomColor = Color(7, 7, 7, 255);
 
-    const Color glassTopOutlineColor = Color(74, 74, 74, 155);
+    const Color glassTopOutlineColor = Color(74, 74, 74, 100);
     const Color glassBottomOutlineColor = Color(74, 74, 74, 0);
 
     fillPaint(linearGradient(halfWidth, 0, halfWidth, height, glassTopColor, glassBottomColor));
@@ -105,7 +111,7 @@ void NanoMeter::onNanoDisplay()
     // glass reflection
     beginPath();
 
-    fillColor(94, 94, 101, 35);
+    fillColor(94, 94, 101, 15);
 
     const float reflectionRightHeight = 9.f;
 
@@ -124,13 +130,16 @@ void NanoMeter::onNanoDisplay()
     const float halfMetersXY = metersXY / 2.0f;
     const float leftRightMetersMargin = 2.0f;
     const float meterWidth = halfWidth - leftRightMetersMargin - glassRectXY * 2 + 2.0f;
-    const float baseY = metersXY + redYellowHeight + yellowBaseHeight - 0.25f;
+    const float baseY = metersXY + redYellowHeight + yellowBaseHeight;
     const float baseHeight = height - metersXY - baseY;
     const float meterBottom = height - metersXY;
 
     // create gradients
     Paint fGradient1 = linearGradient(0.0f, 0.0f, 0.0f, redYellowHeight, kColorRed, kColorYellow);
     Paint fGradient2 = linearGradient(0.0f, redYellowHeight, 0.0f, yellowBaseHeight, kColorYellow, fColor);
+
+    if (!fEnabled)
+        globalAlpha(0.28f);
 
     //left meter, then right one
     for (int i = 0; i < 2; ++i)
@@ -168,7 +177,6 @@ void NanoMeter::onNanoDisplay()
         closePath();
 
         //lines
-
         beginPath();
 
         strokeColor(Color(0, 0, 255, 155));
@@ -180,7 +188,7 @@ void NanoMeter::onNanoDisplay()
             lineTo(width, j);
         }
 
-        stroke();
+        //stroke();
 
         closePath();
     }
