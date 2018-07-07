@@ -115,17 +115,6 @@ void MixerSwitch::draw()
 
     closePath();
 
-    //socket
-    beginPath();
-
-    fillColor(fSocketColor);
-
-    roundedRect(glowMargin, glowMargin, getWidth() - doubleGlowMargin, getHeight() - doubleGlowMargin, 4.0f);
-
-    fill();
-
-    closePath();
-
     //main rectangle
     beginPath();
 
@@ -141,7 +130,7 @@ void MixerSwitch::draw()
 
     fillPaint(fMainRectGradient);
 
-    rect(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight);
+    roundedRect(mainRectTopLeft, mainRectTopLeft, mainRectWidth, mainRectHeight, 2.0f);
 
     fill();
 
