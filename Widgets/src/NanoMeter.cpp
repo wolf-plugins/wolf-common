@@ -60,10 +60,12 @@ void NanoMeter::onNanoDisplay()
     const float yellowBaseHeight = static_cast<float>(getHeight()) * 0.4f;
     const float baseBaseHeight = static_cast<float>(getHeight()) * 0.6f;
 
+    const float meterLedsSpacing = 3;
+
     // outline and socket
     beginPath();
 
-    fillColor(Color(16, 16, 16, 255));
+    fillColor(Color(0, 0, 0, 255));
     strokeColor(Color(62, 71, 72, 255));
 
     const float socketStrokeWidth = 1.0f;
@@ -82,8 +84,8 @@ void NanoMeter::onNanoDisplay()
     const Color glassTopColor = Color(46, 46, 46, 255);
     const Color glassBottomColor = Color(30, 30, 30, 255);
 
-    const Color glassTopOutlineColor = Color(74, 74, 74, 255);
-    const Color glassBottomOutlineColor = Color(74, 74, 74, 120);
+    const Color glassTopOutlineColor = Color(74, 74, 74, 155);
+    const Color glassBottomOutlineColor = Color(74, 74, 74, 0);
 
     fillPaint(linearGradient(halfWidth, 0, halfWidth, height, glassTopColor, glassBottomColor));
     strokePaint(linearGradient(halfWidth, 0, halfWidth, height, glassTopOutlineColor, glassBottomOutlineColor));
@@ -103,7 +105,7 @@ void NanoMeter::onNanoDisplay()
     // glass reflection
     beginPath();
 
-    fillColor(94, 94, 101, 37);
+    fillColor(94, 94, 101, 35);
 
     const float reflectionRightHeight = 9.f;
 
@@ -162,6 +164,23 @@ void NanoMeter::onNanoDisplay()
 
         fillPaint(fGradient2);
         fill();
+
+        closePath();
+
+        //lines
+
+        beginPath();
+
+        strokeColor(Color(0, 0, 255, 155));
+        strokeWidth(1.0f);
+
+        for (int j = 0; j < height; j += meterLedsSpacing)
+        {
+            moveTo(0, j);
+            lineTo(width, j);
+        }
+
+        stroke();
 
         closePath();
     }
