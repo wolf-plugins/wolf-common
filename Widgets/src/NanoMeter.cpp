@@ -60,13 +60,7 @@ void NanoMeter::onNanoDisplay()
 
     const float width = getWidth();
     const float height = getHeight();
-
     const float halfWidth = static_cast<float>(getWidth()) / 2.0f;
-    const float redYellowHeight = static_cast<float>(getHeight()) * 0.2f;
-    const float yellowBaseHeight = static_cast<float>(getHeight()) * 0.4f;
-    const float baseBaseHeight = static_cast<float>(getHeight()) * 0.6f;
-
-    const float meterLedsSpacing = 3;
 
     // outline and socket
     beginPath();
@@ -130,9 +124,17 @@ void NanoMeter::onNanoDisplay()
     const float halfMetersXY = metersXY / 2.0f;
     const float leftRightMetersMargin = 2.0f;
     const float meterWidth = halfWidth - leftRightMetersMargin - glassRectXY * 2 + 2.0f;
+    const float meterHeight = height - metersXY * 2.0f;
+
+    const float redYellowHeight = meterHeight * 0.2f;
+    const float yellowBaseHeight = meterHeight * 0.4f;
+    const float baseBaseHeight = meterHeight * 0.6f;
     const float baseY = metersXY + redYellowHeight + yellowBaseHeight;
     const float baseHeight = height - metersXY - baseY;
+
     const float meterBottom = height - metersXY;
+
+    const float meterLedsSpacing = 3;
 
     // create gradients
     Paint fGradient1 = linearGradient(0.0f, 0.0f, 0.0f, redYellowHeight, kColorRed, kColorYellow);
@@ -153,7 +155,7 @@ void NanoMeter::onNanoDisplay()
 
         beginPath();
 
-        rect(metersXY, metersXY, meterWidth, redYellowHeight);
+        rect(metersXY, metersXY, meterWidth, redYellowHeight + 1.0f);
         fillPaint(fGradient1);
         fill();
 
@@ -161,7 +163,7 @@ void NanoMeter::onNanoDisplay()
 
         beginPath();
 
-        rect(metersXY, metersXY + redYellowHeight - 0.25f, meterWidth, yellowBaseHeight);
+        rect(metersXY, metersXY + redYellowHeight, meterWidth, yellowBaseHeight + 1.0f);
         fillPaint(fGradient2);
         fill();
 
