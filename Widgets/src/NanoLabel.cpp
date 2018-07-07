@@ -11,6 +11,8 @@ NanoLabel::NanoLabel(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(
                                                                      fColor(Color(255, 255, 255, 255))
 {
     setSize(size);
+
+    fFontId = findFont(NANOVG_DEJAVU_SANS_TTF);
 }
 
 void NanoLabel::onNanoDisplay()
