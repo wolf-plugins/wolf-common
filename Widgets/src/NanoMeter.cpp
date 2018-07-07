@@ -9,7 +9,7 @@ NanoMeter::NanoMeter(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(
 {
     setSize(size);
 
-    fColor = Color(82, 238, 248);
+    fColor = Color(31,208,215);
 }
 
 void NanoMeter::setOutLeft(float value) noexcept
@@ -120,9 +120,9 @@ void NanoMeter::onNanoDisplay()
     closePath();
 
     // meters
-    const float metersXY = glassRectXY + 2.0f;
+    const float metersXY = glassRectXY + 1.5f;
     const float halfMetersXY = metersXY / 2.0f;
-    const float leftRightMetersMargin = 2.0f;
+    const float leftRightMetersMargin = 1.0f;
     const float meterWidth = halfWidth - leftRightMetersMargin - glassRectXY * 2 + 2.0f;
     const float meterHeight = height - metersXY * 2.0f;
 
