@@ -4,39 +4,19 @@
 
 START_NAMESPACE_DISTRHO
 
-SliderHandle::SliderHandle(NanoWidget *parent, Size<uint> size) noexcept : NanoWidget(parent)
+SliderHandle::SliderHandle(NanoWidget *parent, Size<uint> size) noexcept : HasDropShadow(parent, Size<uint>(size.getWidth() + 12, size.getHeight() + 12)),
+                                                                           NanoWidget(parent)
 {
     setSize(size);
+
+    fImage = nsvgParseFromFile("/home/spoonie/dsp/Carla-Mixer/resources/Widgets/slider.svg", "px", 75);
 }
 
 void SliderHandle::onNanoDisplay()
 {
-    const float handleCenterY = getHeight() / 2.0f;
+    fDropShadow.setAbsolutePos(getAbsoluteX() - 2, getAbsoluteY() + 7);
 
-    beginPath();
-
-    fillColor(Color(215, 215, 215, 255));
-    strokeColor(Color(35, 35, 35, 255));
-    strokeWidth(1.0f);
-
-    rect(0, 0, getWidth(), getHeight());
-
-    fill();
-    stroke();
-
-    closePath();
-
-    beginPath();
-
-    strokeColor(Color(0, 0, 0, 255));
-    strokeWidth(1.0f);
-
-    moveTo(0, handleCenterY);
-    lineTo(getWidth(), handleCenterY);
-
-    stroke();
-
-    closePath();
+    SVGUtils::nvgDrawSVG(getContext(), fImage);
 }
 
 NanoSlider::NanoSlider(NanoWidget *parent, Size<uint> size) noexcept
@@ -147,7 +127,7 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
             window.setCursorPos(handleCenterX, handleCenterY);
             window.showCursor();
             setFocus(false);
-            
+
             getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
 
             return true;
@@ -175,7 +155,7 @@ bool NanoSlider::onMouse(const MouseEvent &ev)
 
 bool NanoSlider::onMotion(const MotionEvent &ev)
 {
-    if(!canBeFocused())
+    if (!canBeFocused())
         return false;
 
     if (fLeftMouseDown)

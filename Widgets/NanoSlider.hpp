@@ -2,10 +2,13 @@
 #define WOLF_NANO_SLIDER_HPP_INCLUDED
 
 #include "WolfWidget.hpp"
+#include "SVGUtils.hpp"
+#include "DropShadow.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class SliderHandle : public NanoWidget
+class SliderHandle : public HasDropShadow,
+                     public NanoWidget
 {
 public:
   explicit SliderHandle(NanoWidget *widget, Size<uint> size) noexcept;
@@ -14,6 +17,8 @@ protected:
   void onNanoDisplay() override;
 
 private:
+  struct NSVGimage *fImage;
+
   DISTRHO_LEAK_DETECTOR(SliderHandle)
 };
 
