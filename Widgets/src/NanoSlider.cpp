@@ -4,7 +4,7 @@
 
 START_NAMESPACE_DISTRHO
 
-SliderHandle::SliderHandle(NanoWidget *parent, Size<uint> size) noexcept : HasDropShadow(parent, Size<uint>(size.getWidth() + 12, size.getHeight() + 12)),
+SliderHandle::SliderHandle(NanoWidget *parent, Size<uint> size) noexcept : HasDropShadow(parent, Size<uint>(size.getWidth() + 10, size.getHeight() + 16)),
                                                                            NanoWidget(parent)
 {
     setSize(size);
@@ -14,7 +14,7 @@ SliderHandle::SliderHandle(NanoWidget *parent, Size<uint> size) noexcept : HasDr
 
 void SliderHandle::onNanoDisplay()
 {
-    fDropShadow.setAbsolutePos(getAbsoluteX() - 2, getAbsoluteY() + 7);
+    fDropShadow.setAbsolutePos(getAbsoluteX() - 2, getAbsoluteY() + 9);
 
     SVGUtils::nvgDrawSVG(getContext(), fImage);
 }
@@ -69,8 +69,10 @@ void NanoSlider::setValue(float value, bool sendCallback) noexcept
 
 void NanoSlider::positionHandle()
 {
+    const float posX = getWidth() / 2.0f - fHandle->getWidth() / 2.0f;
     const float range = fMax - fMin;
 
+    fHandle->setAbsoluteX(getAbsoluteX() + posX);
     fHandle->setAbsoluteY((fValue - fMin) / range * getHeight() + getAbsoluteY() + fSocketMarginTop - fSocketMarginBottom - fHandle->getHeight() / 2.0f);
 }
 
@@ -81,9 +83,7 @@ float NanoSlider::getValue() noexcept
 
 void NanoSlider::onNanoDisplay()
 {
-    const float posX = getWidth() / 2.0f - fHandle->getWidth() / 2.0f;
-    fHandle->setAbsoluteX(getAbsoluteX() + posX);
-
+    positionHandle();
     draw();
 }
 
