@@ -49,8 +49,6 @@ Ringbuffer<T>::~Ringbuffer()
 template <class T>
 void Ringbuffer<T>::add(const T value)
 {
-    assert(!full());
-
     ++fCount;
     fItems[++fEnd % fCapacity] = value;
 }
