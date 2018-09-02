@@ -77,8 +77,8 @@ void GraphWidget::onNanoDisplay()
 
     fGraphWidgetInner->flipYAxis();
 
-    fGraphWidgetInner->drawGraphLine(5.0f, WolfShaperConfig::graph_edges_background_normal, WolfShaperConfig::graph_edges_background_focused);    //outer
-    fGraphWidgetInner->drawGraphLine(1.1416f, WolfShaperConfig::graph_edges_foreground_normal, WolfShaperConfig::graph_edges_foreground_focused); //inner
+    //fGraphWidgetInner->drawGraphLine(5.0f, WolfShaperConfig::graph_edges_background_normal, WolfShaperConfig::graph_edges_background_focused);    //outer
+    fGraphWidgetInner->drawGraphLine(2.0f, WolfShaperConfig::graph_edges_foreground_normal, WolfShaperConfig::graph_edges_foreground_focused); //inner
 
     fGraphWidgetInner->drawInputIndicator();
 
