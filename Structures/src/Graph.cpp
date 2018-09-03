@@ -307,7 +307,7 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
         const float middleX = p1x + deltaX / 2.0f;
         const float middleY = p1y + deltaY / 2.0f;
 
-        if (input > middleX)
+        if (std::abs(input) > middleX)
         {
             return powerScale(input, -tension, 15.0f, middleX, middleY, p2x, p2y, false);
         }
@@ -365,8 +365,7 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
         return inputSign * (wave * deltaY + p1y);
     }
     default:
-        //¯\_(ツ)_/¯
-        break;
+        return input; //¯\_(ツ)_/¯
     }
 }
 
