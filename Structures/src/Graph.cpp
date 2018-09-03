@@ -318,12 +318,9 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
     }
     case StairsCurve:
     {
-        if (tension == 0.0f) //straight line, y = mx+b
+        if (tension == 0.0f) //straight line
         {
-            const float slope = deltaY / deltaX;
-            const float b = p1y - slope * p1x;
-
-            return slope * input + b;
+            return powerScale(input, tension, 15.0f, p1x, p1y, p2x, p2y, false);
         }
 
         input = std::abs(input);
