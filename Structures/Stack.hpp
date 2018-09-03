@@ -44,7 +44,7 @@ Stack<T>::~Stack()
 template <class T>
 void Stack<T>::push(T item)
 {
-    assert(count < size);
+    DISTRHO_SAFE_ASSERT(count < size);
 
     items[count++] = item;
 }
@@ -52,7 +52,7 @@ void Stack<T>::push(T item)
 template <class T>
 T Stack<T>::pop()
 {
-    assert(count > 0);
+    DISTRHO_SAFE_ASSERT(count > 0);
 
     return items[--count];
 }
@@ -60,7 +60,7 @@ T Stack<T>::pop()
 template <class T>
 T Stack<T>::peek()
 {
-    assert(count > 0);
+    DISTRHO_SAFE_ASSERT(count > 0);
 
     return items[count - 1];
 }

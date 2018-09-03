@@ -30,7 +30,7 @@ Vertex::Vertex(float posX, float posY, float tension, CurveType type, Graph *gra
 
 static float powerScale(float input, float tension, float maxExponent, float p1x, float p1y, float p2x, float p2y, bool inverse)
 {
-    assert(maxExponent >= 1);
+    DISTRHO_SAFE_ASSERT_RETURN(maxExponent >= 1, input);
 
     const float inputSign = input >= 0 ? 1 : -1;
     const bool tensionIsPositive = tension >= 0.0f;
@@ -479,7 +479,7 @@ void Graph::setTensionAtIndex(int index, float tension)
 
 Vertex *Graph::getVertexAtIndex(int index)
 {
-    assert(index < vertexCount);
+    DISTRHO_SAFE_ASSERT(index < vertexCount);
 
     return &vertices[index];
 }
