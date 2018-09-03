@@ -350,6 +350,7 @@ float Graph::getOutValue(float input, float tension, float p1x, float p1y, float
     case WaveCurve:
     {
         tension = std::floor(tension * 100.f);
+        input = std::abs(input);
 
         const float frequency = (0.5f + tension) / deltaX;
         const float phase = p1x * frequency * 2.0f * M_PI;
