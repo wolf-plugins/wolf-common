@@ -307,7 +307,7 @@ void RightClickMenu::onNanoDisplay()
 
 bool RightClickMenu::onMouse(const MouseEvent &ev)
 {
-    if (ev.press == false)
+    if (ev.press == true)
     {
         for (size_t i = 0; i < fItems.size(); ++i)
         {
