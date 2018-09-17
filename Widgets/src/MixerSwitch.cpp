@@ -103,7 +103,9 @@ void MixerSwitch::draw()
     const float mainRectWidth = getWidth() - doubleGlowMargin - doubleSocketMargin;
     const float mainRectHeight = getHeight() - doubleGlowMargin - doubleSocketMargin;
     const float mainRectHalfWidth = mainRectWidth / 2.0f;
-    const float mainRectCenter = mainRectTopLeft + mainRectHalfWidth;
+    const float mainRectHalfHeight = mainRectHeight / 2.0f;
+    const float mainRectCenterX = mainRectTopLeft + mainRectHalfWidth;
+    const float mainRectCenterY = mainRectTopLeft + mainRectHalfHeight;
 
     //glow
     beginPath();
@@ -141,11 +143,11 @@ void MixerSwitch::draw()
     fontFace(NANOVG_DEJAVU_SANS_TTF);
     fontSize(14.0f);
     fillColor(Color(0, 0, 0, 255));
-    textAlign(ALIGN_MIDDLE | ALIGN_CENTER);
+    textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
 
     const char *label = fMixerSwitchType == MuteMixerSwitch ? "M" : "S";
 
-    text(mainRectCenter, mainRectCenter - 2, label, NULL);
+    text(mainRectCenterX, mainRectCenterY + 1, label, NULL);
 
     closePath();
 }
