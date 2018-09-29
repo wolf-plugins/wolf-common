@@ -104,7 +104,7 @@ bool ResizeHandle::onMotion(const MotionEvent &ev)
         if (!fIsHovered)
         {
             fIsHovered = true;
-            getParentWindow().setCursorStyle(Window::CursorStyle::NW_SE_Resize);
+            getParentWindow().setCursorStyle(Window::CursorStyle::SouthEastResize);
         }
 
         return true;
