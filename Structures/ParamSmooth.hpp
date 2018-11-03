@@ -12,7 +12,9 @@ public:
   ParamSmooth();
   ParamSmooth(float value);
 
-  float getSmoothedValue(float frequency, double sampleRate);
+  void calculateCoeff(float frequency, double sampleRate);
+
+  float getSmoothedValue();
   float getRawValue() const;
 
   void setValue(float value);
@@ -20,6 +22,7 @@ public:
 private:
   float fHistory;
   float fValue;
+  float fCoeff;
 
   DISTRHO_LEAK_DETECTOR(ParamSmooth)
 };

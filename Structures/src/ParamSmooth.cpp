@@ -8,8 +8,14 @@ ParamSmooth::ParamSmooth() : fHistory(0.0f),
 }
 
 ParamSmooth::ParamSmooth(float value) : fHistory(0.0f),
-                                        fValue(value)
+                                        fValue(value),
+                                        fCoeff(0.0f)
 {
+}
+
+void ParamSmooth::calculateCoeff(float frequency, double sampleRate)
+{
+    fCoeff = std::exp(-2.0 * M_PI * frequency / sampleRate);
 }
 
 void ParamSmooth::setValue(float value)
@@ -22,11 +28,9 @@ float ParamSmooth::getRawValue() const
     return fValue;
 }
 
-float ParamSmooth::getSmoothedValue(float frequency, double sampleRate)
+float ParamSmooth::getSmoothedValue()
 {
-    float coeff = std::exp(-2.0 * M_PI * frequency / sampleRate);
-
-    float result = fValue + coeff * (fHistory - fValue);
+    float result = fValue + fCoeff * (fHistory - fValue);
     fHistory = result;
 
     return result;
