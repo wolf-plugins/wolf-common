@@ -48,6 +48,7 @@ public:
   void setPosition(float x, float y);
   void setTension(float tension);
   void setType(CurveType type);
+  void setGraphPtr(Graph *graphPtr);
 
 protected:
   Vertex();

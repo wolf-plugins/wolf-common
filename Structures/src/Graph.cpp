@@ -232,6 +232,11 @@ float Vertex::unwarpCoordinate(float coordinate, const float warpAmount, const W
     }
 }
 
+void Vertex::setGraphPtr(Graph *graphPtr)
+{
+    this->graphPtr = graphPtr;
+}
+
 void Vertex::setX(float x)
 {
     this->x = unwarpCoordinate(x, graphPtr->getHorizontalWarpAmount(), graphPtr->getHorizontalWarpType());
