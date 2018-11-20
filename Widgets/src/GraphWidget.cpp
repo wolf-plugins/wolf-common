@@ -43,8 +43,8 @@ void GraphWidget::onNanoDisplay()
 
     beginPath();
 
-    fillColor(WolfShaperConfig::graph_margin);
-    strokeColor(WolfShaperConfig::side_borders);
+    fillColor(CONFIG_NAMESPACE::graph_margin);
+    strokeColor(CONFIG_NAMESPACE::side_borders);
     strokeWidth(1.0f);
 
     rect(0.f, 0.f, width, height);
@@ -58,7 +58,7 @@ void GraphWidget::onNanoDisplay()
 
     const float topBorderWidth = 2.0f;
 
-    strokeColor(WolfShaperConfig::top_border);
+    strokeColor(CONFIG_NAMESPACE::top_border);
     strokeWidth(topBorderWidth);
 
     moveTo(0, 1);
@@ -77,8 +77,8 @@ void GraphWidget::onNanoDisplay()
 
     fGraphWidgetInner->flipYAxis();
 
-    //fGraphWidgetInner->drawGraphLine(5.0f, WolfShaperConfig::graph_edges_background_normal, WolfShaperConfig::graph_edges_background_focused);    //outer
-    fGraphWidgetInner->drawGraphLine(2.0f, WolfShaperConfig::graph_edges_foreground_normal, WolfShaperConfig::graph_edges_foreground_focused); //inner
+    //fGraphWidgetInner->drawGraphLine(5.0f, CONFIG_NAMESPACE::graph_edges_background_normal, CONFIG_NAMESPACE::graph_edges_background_focused);    //outer
+    fGraphWidgetInner->drawGraphLine(2.0f, CONFIG_NAMESPACE::graph_edges_foreground_normal, CONFIG_NAMESPACE::graph_edges_foreground_focused); //inner
 
     fGraphWidgetInner->drawInputIndicator();
 
@@ -299,11 +299,11 @@ void GraphWidgetInner::drawGrid()
     const float verticalStep = width / squaresPerRow;
     const float horizontalStep = height / squaresPerRow;
 
-    const Color gridForegroundColor = WolfShaperConfig::grid_foreground;
-    const Color gridBackgroundColor = WolfShaperConfig::grid_background;
-    const Color subGridColor = WolfShaperConfig::sub_grid;
-    const Color gridMiddleLineHorizontalColor = WolfShaperConfig::grid_middle_line_horizontal;
-    const Color gridMiddleLineVerticalColor = WolfShaperConfig::grid_middle_line_vertical;
+    const Color gridForegroundColor = CONFIG_NAMESPACE::grid_foreground;
+    const Color gridBackgroundColor = CONFIG_NAMESPACE::grid_background;
+    const Color subGridColor = CONFIG_NAMESPACE::sub_grid;
+    const Color gridMiddleLineHorizontalColor = CONFIG_NAMESPACE::grid_middle_line_horizontal;
+    const Color gridMiddleLineVerticalColor = CONFIG_NAMESPACE::grid_middle_line_vertical;
 
     //vertical
     for (int i = 0; i < squaresPerRow + 1; ++i)
@@ -399,7 +399,7 @@ void GraphWidgetInner::drawBackground()
     rect(0.f, 0.f, width, height);
     //Paint gradient = radialGradient(centerX, centerY, 1.0f, centerX, Color(42, 42, 42, 255), Color(33, 32, 39, 255));
     //fillPaint(gradient);
-    fillColor(WolfShaperConfig::graph_background);
+    fillColor(CONFIG_NAMESPACE::graph_background);
     fill();
 
     closePath();
@@ -479,7 +479,7 @@ void GraphWidgetInner::drawAlignmentLines()
     beginPath();
 
     strokeWidth(1.0f);
-    strokeColor(WolfShaperConfig::alignment_lines);
+    strokeColor(CONFIG_NAMESPACE::alignment_lines);
 
     moveTo(x, 0);
     lineTo(x, height);
@@ -539,7 +539,7 @@ void GraphWidgetInner::drawInputIndicator()
 
     beginPath();
 
-    strokeColor(WolfShaperConfig::input_volume_indicator);
+    strokeColor(CONFIG_NAMESPACE::input_volume_indicator);
     strokeWidth(2.0f);
 
     moveTo(inputIndicatorX, 0);
