@@ -108,6 +108,11 @@ protected:
    */
   void drawAlignmentLines();
 
+  /**
+   * Draw a gradient envelope at the bottom of the graph's function.
+   */
+  void drawGradient();
+
   void updateInput(const float input);
 
   void setHorizontalWarpAmount(const float warpAmount);
