@@ -77,14 +77,14 @@ void GraphWidget::onNanoDisplay()
 
     fGraphWidgetInner->flipYAxis();
 
+    if (fGraphWidgetInner->focusedElement != nullptr && dynamic_cast<GraphVertex *>(fGraphWidgetInner->focusedElement))
+        fGraphWidgetInner->drawAlignmentLines();
+
     //fGraphWidgetInner->drawGraphLine(5.0f, CONFIG_NAMESPACE::graph_edges_background_normal, CONFIG_NAMESPACE::graph_edges_background_focused);    //outer
     fGraphWidgetInner->drawGradient();
     fGraphWidgetInner->drawGraphLine(CONFIG_NAMESPACE::graph_edges_stroke_width, CONFIG_NAMESPACE::graph_edges_foreground_normal, CONFIG_NAMESPACE::graph_edges_foreground_focused); //inner
-    
-    fGraphWidgetInner->drawInputIndicator();
 
-    if (fGraphWidgetInner->focusedElement != nullptr && dynamic_cast<GraphVertex *>(fGraphWidgetInner->focusedElement))
-        fGraphWidgetInner->drawAlignmentLines();
+    fGraphWidgetInner->drawInputIndicator();
 
     if (!fGraphWidgetInner->mustHideVertices)
         fGraphWidgetInner->drawVertices();
@@ -505,12 +505,12 @@ void GraphWidgetInner::drawGradient()
     float peak = 0.0f;
 
     beginPath();
-    
+
     moveTo(0, lineEditor.getVertexAtIndex(0)->getY() * height);
 
     for (int vertexIndex = 0; vertexIndex < lineEditor.getVertexCount() - 1; ++vertexIndex)
     {
-        const wolf::Vertex *leftVertex = lineEditor.getVertexAtIndex(vertexIndex); 
+        const wolf::Vertex *leftVertex = lineEditor.getVertexAtIndex(vertexIndex);
         const wolf::Vertex *rightVertex = lineEditor.getVertexAtIndex(vertexIndex + 1);
 
         const float edgeLength = (rightVertex->getX() - leftVertex->getX()) * width;
@@ -957,7 +957,7 @@ void GraphWidgetInner::onFocusOut()
     hovered = false;
     mouseLeftDown = false;
     mouseRightDown = false;
-    
+
     getParentWindow().showCursor();
 
     repaint();
