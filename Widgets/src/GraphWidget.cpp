@@ -78,8 +78,7 @@ void GraphWidget::onNanoDisplay()
     fGraphWidgetInner->flipYAxis();
 
     //fGraphWidgetInner->drawGraphLine(5.0f, CONFIG_NAMESPACE::graph_edges_background_normal, CONFIG_NAMESPACE::graph_edges_background_focused);    //outer
-    fGraphWidgetInner->drawGraphLine(2.0f, CONFIG_NAMESPACE::graph_edges_foreground_normal, CONFIG_NAMESPACE::graph_edges_foreground_focused); //inner
-
+    fGraphWidgetInner->drawGraphLine(CONFIG_NAMESPACE::graph_edges_stroke_width, CONFIG_NAMESPACE::graph_edges_foreground_normal, CONFIG_NAMESPACE::graph_edges_foreground_focused); //inner
     fGraphWidgetInner->drawInputIndicator();
 
     if (fGraphWidgetInner->focusedElement != nullptr && dynamic_cast<GraphVertex *>(fGraphWidgetInner->focusedElement))
@@ -476,6 +475,8 @@ void GraphWidgetInner::drawAlignmentLines()
     const int width = getWidth();
     const int height = getHeight();
 
+    translate(0.5f, 0.5f);
+
     beginPath();
 
     strokeWidth(1.0f);
@@ -490,6 +491,8 @@ void GraphWidgetInner::drawAlignmentLines()
     stroke();
 
     closePath();
+
+    translate(-0.5f, -0.5f);
 }
 
 void GraphWidgetInner::updateInput(const float input)

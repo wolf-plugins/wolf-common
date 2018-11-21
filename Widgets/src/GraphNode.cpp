@@ -30,17 +30,17 @@ GraphVertex::GraphVertex(GraphWidgetInner *parent, GraphVertexType type) : Graph
     {
     case GraphVertexType::Left:
     case GraphVertexType::Middle:
-        surface = Circle<int>(0, 0, 8.0f);
+        surface = Circle<int>(0, 0, CONFIG_NAMESPACE::vertex_radius);
         break;
     case GraphVertexType::Right:
-        surface = Circle<int>(parent->getWidth(), parent->getHeight(), 8.0f);
+        surface = Circle<int>(parent->getWidth(), parent->getHeight(), CONFIG_NAMESPACE::vertex_radius);
         break;
     }
 }
 
 void GraphVertex::reset()
 {
-    surface = Circle<int>(0, 0, 8.0f);
+    surface = Circle<int>(0, 0, CONFIG_NAMESPACE::vertex_radius);
     type = GraphVertexType::Middle;
     grabbed = false;
 }
@@ -56,7 +56,7 @@ void GraphVertex::render()
 
     parent->beginPath();
 
-    parent->strokeWidth(2.0f);
+    parent->strokeWidth(CONFIG_NAMESPACE::vertex_stroke_width);
 
     parent->strokeColor(CONFIG_NAMESPACE::vertex_stroke_normal);
 
@@ -430,14 +430,14 @@ void GraphTensionHandle::render()
 
     parent->beginPath();
 
-    parent->strokeWidth(2.0f);
+    parent->strokeWidth(CONFIG_NAMESPACE::tension_handle_stroke_width);
 
     if (parent->edgeMustBeEmphasized(vertex->getIndex())) //TODO: make that a method on the vertex
         parent->strokeColor(CONFIG_NAMESPACE::tension_handle_focused);
     else
         parent->strokeColor(CONFIG_NAMESPACE::tension_handle_normal);
 
-    parent->circle(getX(), getY(), 6.0f);
+    parent->circle(getX(), getY(), CONFIG_NAMESPACE::tension_handle_radius);
 
     parent->stroke();
 
