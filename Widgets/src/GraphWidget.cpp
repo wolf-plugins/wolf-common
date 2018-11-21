@@ -576,10 +576,7 @@ void GraphWidgetInner::drawInputIndicator()
     const float width = getWidth();
     const float height = getHeight();
 
-    if (maxInput <= 0.0f)
-        return;
-
-    const float inputIndicatorX = std::round(maxInput * width);
+    const float inputIndicatorX = std::round(fInput * width);
 
     beginPath();
 
@@ -596,23 +593,7 @@ void GraphWidgetInner::drawInputIndicator()
 
 void GraphWidgetInner::idleCallback()
 {
-    const float input = fInput;
-    const float deadZone = 0.001f;
-
-    if (input > deadZone && input > maxInput)
-    {
-        maxInput = input;
-        maxInputAcceleration = 0.0f;
-
-        repaint();
-    }
-    else if (maxInput > -deadZone)
-    {
-        maxInput -= maxInputAcceleration;
-        maxInputAcceleration += std::pow(maxInputAcceleration + 0.01f, 2); //not sure if visually pleasant
-
-        repaint();
-    }
+    repaint();
 }
 
 void GraphWidgetInner::drawInOutLabels()
