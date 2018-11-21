@@ -578,16 +578,33 @@ void GraphWidgetInner::drawInputIndicator()
 
     const float inputIndicatorX = std::round(fInput * width);
 
+    translate(0.5f, 0.5f);
+
     beginPath();
 
     strokeColor(CONFIG_NAMESPACE::input_volume_indicator);
-    strokeWidth(2.0f);
+    strokeWidth(1.0f);
 
     moveTo(inputIndicatorX, 0);
     lineTo(inputIndicatorX, height);
 
     stroke();
 
+    closePath();
+
+    translate(-0.5f, -0.5f);
+
+    //circle at indicator intersection with the graph
+    const float circleY = lineEditor.getValueAt(fInput) * height;
+
+    beginPath();
+
+    fillColor(CONFIG_NAMESPACE::playhead_circle_fill);
+    strokeColor(CONFIG_NAMESPACE::playhead_circle_stroke);
+
+    circle(inputIndicatorX, circleY, 3.5f);
+    fill();
+    stroke();
     closePath();
 }
 
