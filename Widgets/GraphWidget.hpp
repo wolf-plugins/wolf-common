@@ -4,7 +4,7 @@
 #include "ObjectPool.hpp"
 #include "DistrhoUI.hpp"
 #include "Graph.hpp"
-#include "Layout.hpp"
+#include "Margin.hpp"
 #include "Widget.hpp"
 #include "RightClickMenu.hpp"
 

@@ -3,7 +3,7 @@
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"
-#include "Layout.hpp"
+#include "Margin.hpp"
 
 START_NAMESPACE_DISTRHO
 
