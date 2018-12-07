@@ -52,15 +52,20 @@ RelativePosition::RelativePosition(int left, int right, int top, int bottom) : l
 {
 }
 
+class Layout;
+
 class LayoutItem
 {
   public:
-	LayoutItem(Widget *widget);
+	LayoutItem(Layout *parent, Widget *widget);
 
 	Widget *getWidget();
 
 	LayoutItem &setAnchors(Anchors anchors);
 	Anchors getAnchors();
+
+	LayoutItem &setSize(const uint width, const uint height);
+	LayoutItem &setPosition(const int x, const int y);
 
 	void setRelativePos(int left, int right, int top, int bottom);
 	void setRelativeLeft(int left);
@@ -72,16 +77,17 @@ class LayoutItem
 
   private:
 	Widget *fWidget;
-
+	Layout *fParent;
 	Anchors fAnchors;
 
 	// the absolute distance of the item from the sides of the layout
 	RelativePosition fRelativePos;
 };
 
-LayoutItem::LayoutItem(Widget *widget) : fWidget(widget),
-										 fAnchors(),
-										 fRelativePos()
+LayoutItem::LayoutItem(Layout *parent, Widget *widget) : fWidget(widget),
+														 fParent(parent),
+														 fAnchors(),
+														 fRelativePos()
 {
 }
 
@@ -122,12 +128,12 @@ void LayoutItem::setRelativeRight(int right)
 
 void LayoutItem::setRelativeTop(int top)
 {
-	fRelativePos.left = top;
+	fRelativePos.top = top;
 }
 
 void LayoutItem::setRelativeBottom(int bottom)
 {
-	fRelativePos.right = bottom;
+	fRelativePos.bottom = bottom;
 }
 
 RelativePosition LayoutItem::getRelativePos()
@@ -141,7 +147,7 @@ class Layout : public Widget
 	Layout(Widget *parent);
 	LayoutItem &addItem(Widget *widget);
 	size_t getItemCount();
-	LayoutItem getItem(const int index);
+	LayoutItem *getItem(const int index);
 
   protected:
 	virtual void onItemAdded(const LayoutItem &item);
@@ -155,9 +161,31 @@ Layout::Layout(Widget *parent) : Widget(parent)
 	setSize(parent->getSize());
 }
 
-LayoutItem Layout::getItem(const int index)
+LayoutItem &LayoutItem::setSize(const uint width, const uint height)
 {
-	return fItems[index];
+	fWidget->setSize(width, height);
+
+	fRelativePos.right = fParent->getWidth() - (fRelativePos.left + fWidget->getWidth());
+	fRelativePos.bottom = fParent->getHeight() - (fRelativePos.top + fWidget->getHeight());
+
+	return *this;
+}
+
+LayoutItem &LayoutItem::setPosition(const int x, const int y)
+{
+	fRelativePos.left = x;
+	fRelativePos.right = fParent->getWidth() - (fRelativePos.left + fWidget->getWidth());
+	fRelativePos.top = y;
+	fRelativePos.bottom = fParent->getHeight() - (fRelativePos.top + fWidget->getHeight());
+
+	fWidget->setAbsolutePos(fParent->getAbsoluteX() + fRelativePos.left, fParent->getAbsoluteY() + fRelativePos.top);
+
+	return *this;
+}
+
+LayoutItem *Layout::getItem(const int index)
+{
+	return &fItems[index];
 }
 
 size_t Layout::getItemCount()
@@ -167,7 +195,7 @@ size_t Layout::getItemCount()
 
 LayoutItem &Layout::addItem(Widget *widget)
 {
-	LayoutItem item = LayoutItem(widget);
+	LayoutItem item = LayoutItem(this, widget);
 
 	fItems.push_back(item);
 
@@ -217,43 +245,43 @@ void RelativeLayout::repositionItems(Size<uint> oldSize, Size<uint> newSize)
 
 	for (int i = 0; i < getItemCount(); ++i)
 	{
-		LayoutItem item = getItem(i);
-		const Anchors anchors = item.getAnchors();
+		LayoutItem *item = getItem(i);
+		const Anchors anchors = item->getAnchors();
 
 		int deltaWidth = newSize.getWidth() - oldSize.getWidth();
 		int deltaHeight = newSize.getHeight() - oldSize.getHeight();
 
 		if (!anchors.right)
 		{
-			int right = item.getRelativePos().right;
+			int right = item->getRelativePos().right;
 
-			item.setRelativeRight(right + deltaWidth);
+			item->setRelativeRight(right + deltaWidth);
 		}
 		else if (!anchors.left)
 		{
-			int left = item.getRelativePos().left;
+			int left = item->getRelativePos().left;
 
-			item.setRelativeLeft(left + deltaWidth);
+			item->setRelativeLeft(left + deltaWidth);
 		}
 
-		item.getWidget()->setAbsoluteX(absX + item.getRelativePos().left);
-		item.getWidget()->setWidth(getWidth() - item.getRelativePos().left - item.getRelativePos().right);
+		item->getWidget()->setAbsoluteX(absX + item->getRelativePos().left);
+		item->getWidget()->setWidth(getWidth() - item->getRelativePos().left - item->getRelativePos().right);
 
 		if (!anchors.bottom)
 		{
-			int bottom = item.getRelativePos().bottom;
+			int bottom = item->getRelativePos().bottom;
 
-			item.setRelativeBottom(bottom + deltaHeight);
+			item->setRelativeBottom(bottom + deltaHeight);
 		}
 		else if (!anchors.top)
 		{
-			int top = item.getRelativePos().top;
+			int top = item->getRelativePos().top;
 
-			item.setRelativeTop(top + deltaHeight);
+			item->setRelativeTop(top + deltaHeight);
 		}
 
-		item.getWidget()->setAbsoluteY(absY + item.getRelativePos().top);
-		item.getWidget()->setHeight(getHeight() - item.getRelativePos().top - item.getRelativePos().bottom);
+		item->getWidget()->setAbsoluteY(absY + item->getRelativePos().top);
+		item->getWidget()->setHeight(getHeight() - item->getRelativePos().top - item->getRelativePos().bottom);
 	}
 }
 
@@ -269,16 +297,15 @@ void RelativeLayout::onPositionChanged(const PositionChangedEvent &ev)
 
 	for (int i = 0; i < getItemCount(); ++i)
 	{
-		LayoutItem item = getItem(i);
+		LayoutItem *item = getItem(i);
 
-		item.getWidget()->setAbsoluteX(absX + item.getRelativePos().left);
-		item.getWidget()->setAbsoluteY(absY + item.getRelativePos().top);
+		item->getWidget()->setAbsoluteX(absX + item->getRelativePos().left);
+		item->getWidget()->setAbsoluteY(absY + item->getRelativePos().top);
 	}
 }
 
 void RelativeLayout::onItemAdded(const LayoutItem &item)
 {
-	//repositionItems(getSize(), getSize());
 }
 
 END_NAMESPACE_DISTRHO
