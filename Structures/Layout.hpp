@@ -4,6 +4,15 @@ START_NAMESPACE_DISTRHO
 
 struct Anchors
 {
+	enum AnchorType
+	{
+		None = 1,
+		Left = 2,
+		Right = 4,
+		Top = 8,
+		Bottom = 16
+	};
+
 	Anchors();
 	Anchors(bool left, bool right, bool top, bool bottom);
 
@@ -61,7 +70,9 @@ class LayoutItem
 
 	Widget *getWidget();
 
+	LayoutItem &setAnchors(int anchors);
 	LayoutItem &setAnchors(Anchors anchors);
+
 	Anchors getAnchors();
 
 	LayoutItem &setSize(const uint width, const uint height);
@@ -94,6 +105,16 @@ LayoutItem::LayoutItem(Layout *parent, Widget *widget) : fWidget(widget),
 Widget *LayoutItem::getWidget()
 {
 	return fWidget;
+}
+
+LayoutItem &LayoutItem::setAnchors(int anchors)
+{
+	fAnchors.left = anchors & Anchors::Left;
+	fAnchors.right = anchors & Anchors::Right;
+	fAnchors.top = anchors & Anchors::Top;
+	fAnchors.bottom = anchors & Anchors::Bottom;
+
+	return *this;
 }
 
 LayoutItem &LayoutItem::setAnchors(Anchors anchors)
