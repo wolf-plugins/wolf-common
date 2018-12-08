@@ -10,7 +10,8 @@ struct Anchors
 		Left = 2,
 		Right = 4,
 		Top = 8,
-		Bottom = 16
+		Bottom = 16,
+		All = 32
 	};
 
 	Anchors();
@@ -109,6 +110,16 @@ Widget *LayoutItem::getWidget()
 
 LayoutItem &LayoutItem::setAnchors(int anchors)
 {
+	if (anchors & Anchors::All)
+	{
+		fAnchors.left = true;
+		fAnchors.right = true;
+		fAnchors.top = true;
+		fAnchors.bottom = true;
+
+		return *this;
+	}
+
 	fAnchors.left = anchors & Anchors::Left;
 	fAnchors.right = anchors & Anchors::Right;
 	fAnchors.top = anchors & Anchors::Top;
