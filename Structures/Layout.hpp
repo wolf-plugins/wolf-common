@@ -1,5 +1,15 @@
 #pragma once
 
+#ifdef SERIALIZATION_SUPPORT
+
+#include <cereal/types/unordered_map.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/vector.hpp>
+#include <fstream>
+
+#endif
+
 START_NAMESPACE_DISTRHO
 
 struct Anchors
@@ -21,6 +31,17 @@ struct Anchors
 	bool right;
 	bool top;
 	bool bottom;
+
+#ifdef SERIALIZATION_SUPPORT
+	template <class Archive>
+	void serialize(Archive &ar)
+	{
+		ar(CEREAL_NVP(left),
+		   CEREAL_NVP(right),
+		   CEREAL_NVP(top),
+		   CEREAL_NVP(bottom));
+	}
+#endif
 };
 
 Anchors::Anchors() : left(true),
@@ -46,6 +67,17 @@ struct RelativePosition
 	int right;
 	int top;
 	int bottom;
+
+#ifdef SERIALIZATION_SUPPORT
+	template <class Archive>
+	void serialize(Archive &ar)
+	{
+		ar(CEREAL_NVP(left),
+		   CEREAL_NVP(right),
+		   CEREAL_NVP(top),
+		   CEREAL_NVP(bottom));
+	}
+#endif
 };
 
 RelativePosition::RelativePosition() : left(0),
@@ -87,6 +119,14 @@ class LayoutItem
 
 	RelativePosition getRelativePos();
 
+#ifdef SERIALIZATION_SUPPORT
+	template <class Archive>
+	void serialize(Archive &ar)
+	{
+		ar(CEREAL_NVP(fAnchors),
+		   CEREAL_NVP(fRelativePos));
+	}
+#endif
   private:
 	Widget *fWidget;
 	Layout *fParent;
@@ -180,11 +220,11 @@ class Layout : public Widget
 	LayoutItem &addItem(Widget *widget);
 	size_t getItemCount();
 	LayoutItem *getItem(const int index);
+	LayoutItem *getFirstItem();
+	LayoutItem *getLastItem();
 
   protected:
 	virtual void onItemAdded(const LayoutItem &item);
-
-  private:
 	std::vector<LayoutItem> fItems;
 };
 
@@ -217,7 +257,19 @@ LayoutItem &LayoutItem::setPosition(const int x, const int y)
 
 LayoutItem *Layout::getItem(const int index)
 {
+	DISTRHO_SAFE_ASSERT_RETURN(index >= 0 && index < getItemCount(), nullptr);
+
 	return &fItems[index];
+}
+
+LayoutItem *Layout::getFirstItem()
+{
+	return getItem(0);
+}
+
+LayoutItem *Layout::getLastItem()
+{
+	return getItem(getItemCount() - 1);
 }
 
 size_t Layout::getItemCount()
@@ -247,13 +299,18 @@ class RelativeLayout : public Layout
 	void repositionItems(Size<uint> oldSize, Size<uint> newSize);
 	void repositionItems();
 
+#ifdef SERIALIZATION_SUPPORT
+	template <class Archive>
+	void serialize(Archive &ar)
+	{
+		ar(CEREAL_NVP(fItems));
+	}
+#endif
   protected:
 	void onResize(const ResizeEvent &ev) override;
 	void onItemAdded(const LayoutItem &item) override;
 	void onPositionChanged(const PositionChangedEvent &ev) override;
 	void onDisplay() override;
-
-  private:
 };
 
 RelativeLayout::RelativeLayout(Widget *parent) : Layout(parent)
