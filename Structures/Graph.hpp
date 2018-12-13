@@ -38,8 +38,8 @@ class Vertex
 public:
   friend class Graph;
 
-  float getX() const;
-  float getY() const;
+  float getX();
+  float getY();
   float getTension() const;
   CurveType getType() const;
 
@@ -60,7 +60,15 @@ protected:
 private:
   float x;
   float y;
+  bool xDirty;
+  bool yDirty;
   float tension;
+  float hWarp;
+  float vWarp;
+  float graphHWarp;
+  float graphVWarp;
+  WarpType graphHType;
+  WarpType graphVType;
   CurveType type;
 
   Graph *graphPtr;

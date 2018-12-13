@@ -14,7 +14,15 @@ namespace wolf
 
 Vertex::Vertex() : x(0),
                    y(0),
+                   xDirty(true),
+                   yDirty(true),
                    tension(0),
+                   hWarp(0.0f),
+                   vWarp(0.0f),
+                   graphHWarp(0.0f),
+                   graphVWarp(0.0f),
+                   graphHType(None),
+                   graphVType(None),
                    type(SingleCurve),
                    graphPtr(nullptr)
 {
@@ -22,7 +30,15 @@ Vertex::Vertex() : x(0),
 
 Vertex::Vertex(float posX, float posY, float tension, CurveType type, Graph *graphPtr) : x(posX),
                                                                                          y(posY),
+                                                                                         xDirty(true),
+                                                                                         yDirty(true),
                                                                                          tension(tension),
+                                                                                         hWarp(0.0f),
+                                                                                         vWarp(0.0f),
+                                                                                         graphHWarp(0.0f),
+                                                                                         graphVWarp(0.0f),
+                                                                                         graphHType(None),
+                                                                                         graphVType(None),
                                                                                          type(type),
                                                                                          graphPtr(graphPtr)
 {
@@ -164,14 +180,30 @@ float Vertex::warpCoordinate(const float coordinate, const float warpAmount, con
     }
 }
 
-float Vertex::getX() const
+float Vertex::getX()
 {
-    return warpCoordinate(x, graphPtr->getHorizontalWarpAmount(), graphPtr->getHorizontalWarpType());
+    if (xDirty || graphHWarp != graphPtr->getHorizontalWarpAmount() || graphHType != graphPtr->getHorizontalWarpType())
+    {
+        graphHWarp = graphPtr->getHorizontalWarpAmount();
+        graphHType = graphPtr->getHorizontalWarpType();
+        hWarp = warpCoordinate(x, graphHWarp, graphHType);
+        xDirty = false;
+    }
+
+    return hWarp;
 }
 
-float Vertex::getY() const
+float Vertex::getY()
 {
-    return warpCoordinate(y, graphPtr->getVerticalWarpAmount(), graphPtr->getVerticalWarpType());
+    if (yDirty || graphVWarp != graphPtr->getVerticalWarpAmount() || graphVType != graphPtr->getVerticalWarpType())
+    {
+        graphVWarp = graphPtr->getVerticalWarpAmount();
+        graphVType = graphPtr->getVerticalWarpType();
+        vWarp = warpCoordinate(y, graphVWarp, graphVType);
+        yDirty = false;
+    }
+
+    return vWarp;
 }
 
 float Vertex::getTension() const
@@ -232,19 +264,16 @@ float Vertex::unwarpCoordinate(float coordinate, const float warpAmount, const W
     }
 }
 
-void Vertex::setGraphPtr(Graph *graphPtr)
-{
-    this->graphPtr = graphPtr;
-}
-
 void Vertex::setX(float x)
 {
     this->x = unwarpCoordinate(x, graphPtr->getHorizontalWarpAmount(), graphPtr->getHorizontalWarpType());
+    xDirty = true;
 }
 
 void Vertex::setY(float y)
 {
     this->y = unwarpCoordinate(y, graphPtr->getVerticalWarpAmount(), graphPtr->getVerticalWarpType());
+    yDirty = true;
 }
 
 void Vertex::setPosition(float x, float y)
@@ -261,6 +290,11 @@ void Vertex::setTension(float tension)
 void Vertex::setType(CurveType type)
 {
     this->type = type;
+}
+
+void Vertex::setGraphPtr(Graph *graphPtr)
+{
+    this->graphPtr = graphPtr;
 }
 
 Graph::Graph() : vertexCount(0),
@@ -461,7 +495,7 @@ void Graph::insertVertex(float x, float y, float tension, CurveType type)
 
     Vertex vertex = Vertex(x, y, tension, type, this);
     vertex.setPosition(x, y);
-    
+
     vertices[i] = vertex;
 
     ++vertexCount;

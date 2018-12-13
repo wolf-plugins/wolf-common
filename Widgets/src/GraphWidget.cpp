@@ -438,8 +438,8 @@ void GraphWidgetInner::drawGraphEdge(int vertexIndex, float lineWidth, Color col
     const float width = getWidth();
     const float height = getHeight();
 
-    const wolf::Vertex *leftVertex = lineEditor.getVertexAtIndex(vertexIndex);
-    const wolf::Vertex *rightVertex = lineEditor.getVertexAtIndex(vertexIndex + 1);
+    wolf::Vertex *leftVertex = lineEditor.getVertexAtIndex(vertexIndex);
+    wolf::Vertex *rightVertex = lineEditor.getVertexAtIndex(vertexIndex + 1);
 
     beginPath();
 
@@ -518,8 +518,8 @@ void GraphWidgetInner::drawGradient()
 
     for (int vertexIndex = 0; vertexIndex < lineEditor.getVertexCount() - 1; ++vertexIndex)
     {
-        const wolf::Vertex *leftVertex = lineEditor.getVertexAtIndex(vertexIndex);
-        const wolf::Vertex *rightVertex = lineEditor.getVertexAtIndex(vertexIndex + 1);
+        wolf::Vertex *leftVertex = lineEditor.getVertexAtIndex(vertexIndex);
+        wolf::Vertex *rightVertex = lineEditor.getVertexAtIndex(vertexIndex + 1);
 
         const float edgeLength = (rightVertex->getX() - leftVertex->getX()) * width;
 
