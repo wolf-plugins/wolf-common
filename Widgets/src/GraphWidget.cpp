@@ -80,7 +80,6 @@ void GraphWidget::onNanoDisplay()
     if (fGraphWidgetInner->focusedElement != nullptr && dynamic_cast<GraphVertex *>(fGraphWidgetInner->focusedElement))
         fGraphWidgetInner->drawAlignmentLines();
 
-    //fGraphWidgetInner->drawGraphLine(5.0f, CONFIG_NAMESPACE::graph_edges_background_normal, CONFIG_NAMESPACE::graph_edges_background_focused);    //outer
     fGraphWidgetInner->drawGradient();
     fGraphWidgetInner->drawGraphLine(CONFIG_NAMESPACE::graph_edges_stroke_width, CONFIG_NAMESPACE::graph_edges_foreground_normal, CONFIG_NAMESPACE::graph_edges_foreground_focused); //inner
 
@@ -118,6 +117,11 @@ void GraphWidget::updateInput(const float input)
     fGraphWidgetInner->updateInput(input);
 }
 
+void GraphWidget::setGraphGradientMode(GraphGradientMode graphGradientMode)
+{
+    fGraphWidgetInner->setGraphGradientMode(graphGradientMode);
+}
+
 void GraphWidget::setHorizontalWarpAmount(const float warpAmount)
 {
     fGraphWidgetInner->setHorizontalWarpAmount(warpAmount);
@@ -152,6 +156,7 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
       mouseRightDown(false),
       hovered(false),
       maxInput(0.0f),
+      graphGradientMode(GraphGradientMode::None),
       fInput(0.0f),
       mustHideVertices(false),
       fLastCurveTypeSelected(wolf::SingleCurve)
@@ -499,6 +504,9 @@ void GraphWidgetInner::drawAlignmentLines()
 
 void GraphWidgetInner::drawGradient()
 {
+    if (graphGradientMode == GraphGradientMode::None)
+        return;
+
     const float width = getWidth();
     const float height = getHeight();
 
@@ -539,6 +547,12 @@ void GraphWidgetInner::drawGradient()
 void GraphWidgetInner::updateInput(const float input)
 {
     fInput = input;
+}
+
+void GraphWidgetInner::setGraphGradientMode(GraphGradientMode graphGradientMode)
+{
+    this->graphGradientMode = graphGradientMode;
+    repaint();
 }
 
 void GraphWidgetInner::setHorizontalWarpAmount(const float warpAmount)

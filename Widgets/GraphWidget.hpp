@@ -15,6 +15,12 @@ class GraphTensionHandle;
 class GraphNode;
 class GraphWidget;
 
+enum class GraphGradientMode
+{
+  None = 0,
+  Bottom
+};
+
 class GraphWidgetInner : public NanoWidget,
                          public IdleCallback,
                          public RightClickMenu::Callback
@@ -59,7 +65,7 @@ protected:
   void onFocusOut() override;
 
   void idleCallback() override;
-  
+
   void rightClickMenuItemSelected(RightClickMenuItem *rightClickMenuItem);
 
   void onMouseLeave();
@@ -114,6 +120,8 @@ protected:
   void drawGradient();
 
   void updateInput(const float input);
+
+  void setGraphGradientMode(GraphGradientMode graphGradientMode);
 
   void setHorizontalWarpAmount(const float warpAmount);
   void setHorizontalWarpType(const wolf::WarpType warpType);
@@ -192,6 +200,11 @@ private:
   bool mouseRightDown;
 
   /**
+   * The type of gradient that should be drawn along with the graph's function.
+   */
+  GraphGradientMode graphGradientMode;
+
+  /**
    * The radius size of the vertices in the graph.
    */
   const float absoluteVertexSize = 7.0f;
@@ -226,6 +239,8 @@ public:
   void rebuildFromString(const char *serializedGraph);
   void reset();
   void updateInput(const float input);
+
+  void setGraphGradientMode(GraphGradientMode graphGradientMode);
 
   void setHorizontalWarpAmount(const float warpAmount);
   void setHorizontalWarpType(const wolf::WarpType warpType);
