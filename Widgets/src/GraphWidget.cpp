@@ -590,6 +590,9 @@ void GraphWidgetInner::drawInputIndicator()
     const float width = getWidth();
     const float height = getHeight();
 
+    if (fInput <= 0.0f)
+        return;
+
     const float inputIndicatorX = std::round(fInput * width);
 
     translate(0.5f, 0.5f);
