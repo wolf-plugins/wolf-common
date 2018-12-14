@@ -51,7 +51,7 @@ RightClickMenu::RightClickMenu(NanoWidget *parent) noexcept : Window(parent->get
                                                               fParent(parent),
                                                               fFontSize(17.0f),
                                                               fSectionFontSize(14.0f),
-                                                              fBorderColor(Color(161, 67, 198, 255)),
+                                                              fBorderColor(Color(239, 61, 227, 255)),
                                                               fMargin(Margin(7, 15, 7, 13)),
                                                               fLongestWidth(0.0f)
 {
