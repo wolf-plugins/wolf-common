@@ -58,12 +58,17 @@ void GraphVertex::render()
 
     parent->strokeWidth(CONFIG_NAMESPACE::vertex_stroke_width);
 
-    parent->strokeColor(CONFIG_NAMESPACE::vertex_stroke_normal);
 
     if (focused)
+    {
+        parent->strokeColor(CONFIG_NAMESPACE::vertex_stroke_focused);
         parent->fillColor(CONFIG_NAMESPACE::vertex_fill_focused);
+    }
     else
+    {
+        parent->strokeColor(CONFIG_NAMESPACE::vertex_stroke_normal);
         parent->fillColor(CONFIG_NAMESPACE::vertex_fill_normal);
+    }
 
     parent->circle(getX(), getY(), getSize());
 
