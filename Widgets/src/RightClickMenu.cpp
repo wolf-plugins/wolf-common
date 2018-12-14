@@ -1,4 +1,5 @@
 #include "RightClickMenu.hpp"
+#include "Config.hpp"
 #include <unistd.h>
 
 START_NAMESPACE_DISTRHO
@@ -51,7 +52,7 @@ RightClickMenu::RightClickMenu(NanoWidget *parent) noexcept : Window(parent->get
                                                               fParent(parent),
                                                               fFontSize(17.0f),
                                                               fSectionFontSize(14.0f),
-                                                              fBorderColor(Color(239, 61, 227, 255)),
+                                                              fBorderColor(CONFIG_NAMESPACE::right_click_menu_border_color),
                                                               fMargin(Margin(7, 15, 7, 13)),
                                                               fLongestWidth(0.0f)
 {
