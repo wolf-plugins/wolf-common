@@ -80,6 +80,8 @@ GraphVertexType GraphVertex::getType()
 
 bool GraphVertex::contains(Point<int> pos)
 {
+    Circle<int> surface(getX(), getY(), 8.0f);
+
     return wolf::pointInCircle(surface, pos);
 }
 
@@ -88,7 +90,7 @@ bool GraphTensionHandle::contains(Point<int> pos)
     if (vertex->getType() == GraphVertexType::Right) //last vertex doesn't have a tension handle
         return false;
 
-    Circle<int> surface(getX(), getY(), 6.0f);
+    Circle<int> surface(getX(), getY(), 8.0f);
 
     return wolf::pointInCircle(surface, pos);
 }
