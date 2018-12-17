@@ -13,7 +13,7 @@ class Oversampler
     Oversampler();
     ~Oversampler();
 
-    float **upsample(int ratio, uint32_t numSamples, double sampleRate, const float **audio);
+    float **upsample(int ratio, uint32_t numSamples, double sampleRate, const float * const *audio);
     void downsample(float **targetBuffer);
 
   protected:

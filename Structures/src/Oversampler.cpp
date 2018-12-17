@@ -22,7 +22,7 @@ Oversampler::~Oversampler()
     free(fBuffer);
 }
 
-float **Oversampler::upsample(int ratio, uint32_t numSamples, double sampleRate, const float **audio)
+float **Oversampler::upsample(int ratio, uint32_t numSamples, double sampleRate, const float * const *audio)
 {
     if (fSampleRate != sampleRate * ratio || fRatio != ratio)
     {
