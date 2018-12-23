@@ -30,6 +30,11 @@ float normalize(const float &value, const float &max)
 
 float logScale(const float value, const float min, const float max)
 {
+    if (value < min)
+        return min;
+    if (value > max)
+        return max;
+
     const float b = std::log(max / min) / (max - min);
     const float a = max / std::exp(max * b);
 
@@ -38,6 +43,11 @@ float logScale(const float value, const float min, const float max)
 
 float invLogScale(const float value, const float min, const float max)
 {
+    if (value < min)
+        return min;
+    if (value > max)
+        return max;
+
     const float b = std::log(max / min) / (max - min);
     const float a = max / std::exp(max * b);
 
@@ -324,7 +334,7 @@ double ipow2(int exponent)
 /* 
  * Parse a hexadecimal-formatted floating-point number (C99 hex float constant-style). 
  */
-double parseHexFloat(char const* ptr, char **endPointer)
+double parseHexFloat(char const *ptr, char **endPointer)
 {
     DISTRHO_SAFE_ASSERT(ptr != NULL);
     DISTRHO_SAFE_ASSERT((ptr[0] == '0' && ptr[1] == 'x') || (ptr[0] == '-' && ptr[1] == '0' && ptr[2] == 'x'));
