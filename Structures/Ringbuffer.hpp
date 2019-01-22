@@ -18,6 +18,7 @@ class Ringbuffer
 
     void add(const T item);
     T get();
+    void clear();
 
     int count();
     bool full();
@@ -51,6 +52,14 @@ void Ringbuffer<T>::add(const T value)
 {
     ++fCount;
     fItems[++fEnd % fCapacity] = value;
+}
+
+template <class T>
+void Ringbuffer<T>::clear()
+{
+    fCount = 0;
+    fStart = 0;
+    fEnd = -1;
 }
 
 template <class T>
