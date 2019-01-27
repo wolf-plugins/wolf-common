@@ -38,7 +38,7 @@ private:
 
   bool fSelected;
 
-  Rectangle<float> fBounds;
+  DGL_NAMESPACE::Rectangle<float> fBounds;
 };
 
 class RightClickMenuSection : public RightClickMenuItem
@@ -79,8 +79,8 @@ protected:
 
   void adaptSize();
 
-  Rectangle<float> getBoundsOfItem(const int index);
-  Rectangle<float> getBoundsOfItemComment(const int index);
+  DGL_NAMESPACE::Rectangle<float> getBoundsOfItem(const int index);
+  DGL_NAMESPACE::Rectangle<float> getBoundsOfItemComment(const int index);
 
 private:
   void findLongestItem();
