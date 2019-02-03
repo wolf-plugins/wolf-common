@@ -154,11 +154,11 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
       focusedElement(nullptr),
       mouseLeftDown(false),
       mouseRightDown(false),
+      graphGradientMode(GraphGradientMode::None),
+      mustHideVertices(false),
       hovered(false),
       maxInput(0.0f),
-      graphGradientMode(GraphGradientMode::None),
       fInput(0.0f),
-      mustHideVertices(false),
       fLastCurveTypeSelected(wolf::SingleCurve)
 {
     setSize(size);
@@ -262,7 +262,6 @@ void GraphWidgetInner::rebuildFromString(const char *serializedGraph)
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
         GraphVertex *vertex = graphVerticesPool.getObject();
-        const wolf::Vertex *lineEditorVertex = lineEditor.getVertexAtIndex(i);
 
         vertex->index = i;
 
@@ -417,7 +416,6 @@ bool GraphWidgetInner::edgeMustBeEmphasized(int vertexIndex)
         return false;
 
     GraphVertex *vertex = graphVertices[vertexIndex];
-    const GraphVertexType type = vertex->getType();
 
     if (dynamic_cast<GraphTensionHandle *>(focusedElement))
         return focusedElement == vertex->getTensionHandle();

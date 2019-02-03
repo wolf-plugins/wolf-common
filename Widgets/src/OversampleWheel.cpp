@@ -130,7 +130,6 @@ void OversampleWheel::drawOutline()
 void OversampleWheel::draw()
 {
     const float width = getWidth();
-    const float height = getHeight();
 
     //outline
     drawOutline();

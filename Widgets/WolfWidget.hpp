@@ -21,7 +21,7 @@ protected:
   void mouseWarp(); //TODO: design this
 
 private:
-  int *fFocusedWidgetId; //only one focused widget at a time
+  uint *fFocusedWidgetId; //only one focused widget at a time
   const char *fDescription;
 
   DISTRHO_LEAK_DETECTOR(WolfWidget)

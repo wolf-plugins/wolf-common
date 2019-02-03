@@ -116,7 +116,7 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
             fLeftMouseDownLocation.setY(ev.pos.getY());
 
             Window &window = getParentWindow();
-            const uint windowHeight = window.getHeight();
+            const int windowHeight = window.getHeight();
 
             if (ev.pos.getY() + getAbsoluteY() >= windowHeight - 1)
             {

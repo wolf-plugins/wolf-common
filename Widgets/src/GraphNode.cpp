@@ -165,8 +165,6 @@ float GraphTensionHandle::getY() const
     float tension = vertex->getTension();
 
     //calculate value for generic curve
-    float input = 0.5f;
-
     float p1x = 0.0f;
     float p1y = leftVertex->getY() / parent->getHeight();
     float p2x = 1.0f;
@@ -298,7 +296,6 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
         difference = -difference;
 
     Window &window = getParentWindow();
-    const uint windowHeight = window.getHeight();
 
     //FIXME: this is a bit confusing... mouseDownPosition is flipped, but setCursorPos expects the real y value
     if (ev.pos.getY() <= 2)
@@ -306,7 +303,7 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
         window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + parent->getHeight() - 2);
         mouseDownPosition.setY(2);
     }
-    else if (ev.pos.getY() >= parent->getHeight() + 2)
+    else if (ev.pos.getY() >= (int)parent->getHeight() + 2)
     {
         window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + 2);
         mouseDownPosition.setY(parent->getHeight() - 2);

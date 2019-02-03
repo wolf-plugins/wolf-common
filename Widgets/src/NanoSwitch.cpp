@@ -6,8 +6,8 @@ START_NAMESPACE_DISTRHO
 NanoSwitch::NanoSwitch(NanoWidget *widget, Size<uint> size) noexcept
     : WolfWidget(widget),
       fIsDown(false),
-      fCallback(nullptr),
-      fIsHovered(false)
+      fIsHovered(false),
+      fCallback(nullptr)
 {
     setSize(size);
 }

@@ -298,11 +298,11 @@ void Vertex::setGraphPtr(Graph *graphPtr)
 }
 
 Graph::Graph() : vertexCount(0),
-                 bipolarMode(false),
                  horizontalWarpAmount(0.0f),
                  verticalWarpAmount(0.0f),
                  horizontalWarpType(None),
-                 verticalWarpType(None)
+                 verticalWarpType(None),
+                 bipolarMode(false)
 {
     insertVertex(0.0f, 0.0f);
     insertVertex(1.0f, 1.0f);
@@ -566,7 +566,7 @@ void Graph::clear()
 
 void Graph::rebuildFromString(const char *serializedGraph)
 {
-    char *rest = (char *const)serializedGraph;
+    char *rest = (char *)serializedGraph;
 
     int i = 0;
 

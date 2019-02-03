@@ -20,7 +20,7 @@ const char *WolfWidget::getDescription()
 
 bool WolfWidget::canBeFocused()
 {
-    const int id = *fFocusedWidgetId;
+    const uint id = *fFocusedWidgetId;
 
     return id == kNoWidgetFocusedId || id == getId();
 }
