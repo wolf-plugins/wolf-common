@@ -336,8 +336,8 @@ double ipow2(int exponent)
  */
 double parseHexFloat(char const *ptr, char **endPointer)
 {
-    DISTRHO_SAFE_ASSERT(ptr != NULL);
-    DISTRHO_SAFE_ASSERT((ptr[0] == '0' && ptr[1] == 'x') || (ptr[0] == '-' && ptr[1] == '0' && ptr[2] == 'x'));
+    DISTRHO_SAFE_ASSERT_RETURN(ptr != NULL, 0);
+    DISTRHO_SAFE_ASSERT_RETURN((ptr[0] == '0' && ptr[1] == 'x') || (ptr[0] == '-' && ptr[1] == '0' && ptr[2] == 'x'), 0);
 
     double sign;
 
@@ -353,7 +353,7 @@ double parseHexFloat(char const *ptr, char **endPointer)
     }
 
     // Start initializing the mantissa
-    DISTRHO_SAFE_ASSERT(*ptr == '0' || *ptr == '1');
+    DISTRHO_SAFE_ASSERT_RETURN(*ptr == '0' || *ptr == '1', 0);
     double mantissa = (*ptr == '1') ? 1.0 : 0.0;
 
     ++ptr;
@@ -373,10 +373,20 @@ double parseHexFloat(char const *ptr, char **endPointer)
             // Figure out the raw value from 0-15
 
             int digit;
+
             if (*ptr >= '0' && *ptr <= '9')
+            {
                 digit = *ptr - '0';
+            }
             else if (*ptr >= 'a' && *ptr <= 'f')
+            {
                 digit = 10 + *ptr - 'a';
+            }
+            else
+            {
+                fprintf(stderr, "Error while parsing hexfloat: invalid digit");
+                return 0;
+            }
 
             // And add its contribution to the mantissa
             mantissa += scale * digit;
@@ -388,7 +398,7 @@ double parseHexFloat(char const *ptr, char **endPointer)
     {
         // If there's not a '.', then we better be going straight to the
         // exponent
-        DISTRHO_SAFE_ASSERT(*ptr == 'p');
+        DISTRHO_SAFE_ASSERT_RETURN(*ptr == 'p', 0);
     }
 
     ++ptr; // skip the 'p'
@@ -401,6 +411,6 @@ double parseHexFloat(char const *ptr, char **endPointer)
     // so let's be sure.
     return sign * (mantissa * ipow2(exponent));
 }
-}
+} // namespace wolf
 
 END_NAMESPACE_DISTRHO

@@ -4,11 +4,12 @@
 
 START_NAMESPACE_DISTRHO
 
-RightClickMenuItem::RightClickMenuItem(int id, const char *label, const char *comment, bool enabled) noexcept : fId(id),
+RightClickMenuItem::RightClickMenuItem(int id, const char *label, const char *comment, bool enabled) noexcept : fIsSection(false),
+                                                                                                                fId(id),
+                                                                                                                fEnabled(enabled),
                                                                                                                 fLabel(label),
                                                                                                                 fComment(comment),
-                                                                                                                fEnabled(enabled),
-                                                                                                                fIsSection(false)
+                                                                                                                fSelected(false)
 {
 }
 
@@ -52,9 +53,9 @@ RightClickMenu::RightClickMenu(NanoWidget *parent) noexcept : Window(parent->get
                                                               fParent(parent),
                                                               fFontSize(17.0f),
                                                               fSectionFontSize(14.0f),
+                                                              fLongestWidth(0.0f),
                                                               fBorderColor(CONFIG_NAMESPACE::right_click_menu_border_color),
-                                                              fMargin(Margin(7, 15, 7, 13)),
-                                                              fLongestWidth(0.0f)
+                                                              fMargin(Margin(7, 15, 7, 13))
 {
     Window::setResizable(false);
     Window::setBorderless(true);
@@ -291,9 +292,9 @@ void RightClickMenu::onNanoDisplay()
         }
 
         text(fItems[i].isSection() ? 0 : 12, verticalOffset, fItems[i].getLabel(), NULL);
-        
+
         if (fItems[i].hasComment())
-        {            
+        {
             fontSize(fSectionFontSize); //FIXME: wrong font size?
             fillColor(Color(100, 100, 100, 255));
 
