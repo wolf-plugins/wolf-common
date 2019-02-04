@@ -2,7 +2,7 @@
 #define RINGBUFFER_H
 
 #include <stdexcept>
-#include <cassert>
+#include "src/DistrhoDefines.h"
 
 START_NAMESPACE_DISTRHO
 
@@ -18,6 +18,7 @@ class Ringbuffer
 
     void add(const T item);
     T get();
+    T peek(const int distance);
     void clear();
 
     int count();
@@ -65,10 +66,20 @@ void Ringbuffer<T>::clear()
 template <class T>
 T Ringbuffer<T>::get()
 {
-    assert(!empty());
+    DISTRHO_SAFE_ASSERT(!empty());
 
     --fCount;
     return fItems[fStart++ % fCapacity];
+}
+
+template <class T>
+T Ringbuffer<T>::peek(const int distance)
+{
+    DISTRHO_SAFE_ASSERT(distance >= 0);
+    DISTRHO_SAFE_ASSERT(!empty());
+    DISTRHO_SAFE_ASSERT(distance < count() || full());
+
+    return fItems[(fStart + distance) % fCapacity];
 }
 
 template <class T>
