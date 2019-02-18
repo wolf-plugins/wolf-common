@@ -1,5 +1,8 @@
 #pragma once
 
+#include "src/DistrhoDefines.h"
+#include "Widget.hpp"
+
 #ifdef SERIALIZATION_SUPPORT
 
 #include <cereal/types/unordered_map.hpp>
