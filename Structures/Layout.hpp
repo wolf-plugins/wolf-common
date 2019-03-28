@@ -3,16 +3,6 @@
 #include "src/DistrhoDefines.h"
 #include "Widget.hpp"
 
-#ifdef SERIALIZATION_SUPPORT
-
-#include <cereal/types/unordered_map.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/vector.hpp>
-#include <fstream>
-
-#endif
-
 START_NAMESPACE_DISTRHO
 
 struct Anchors
@@ -34,17 +24,6 @@ struct Anchors
 	bool right;
 	bool top;
 	bool bottom;
-
-#ifdef SERIALIZATION_SUPPORT
-	template <class Archive>
-	void serialize(Archive &ar)
-	{
-		ar(CEREAL_NVP(left),
-		   CEREAL_NVP(right),
-		   CEREAL_NVP(top),
-		   CEREAL_NVP(bottom));
-	}
-#endif
 };
 
 struct RelativePosition
@@ -56,17 +35,6 @@ struct RelativePosition
 	int right;
 	int top;
 	int bottom;
-
-#ifdef SERIALIZATION_SUPPORT
-	template <class Archive>
-	void serialize(Archive &ar)
-	{
-		ar(CEREAL_NVP(left),
-		   CEREAL_NVP(right),
-		   CEREAL_NVP(top),
-		   CEREAL_NVP(bottom));
-	}
-#endif
 };
 
 class Layout;
@@ -94,14 +62,6 @@ class LayoutItem
 
 	RelativePosition getRelativePos();
 
-#ifdef SERIALIZATION_SUPPORT
-	template <class Archive>
-	void serialize(Archive &ar)
-	{
-		ar(CEREAL_NVP(fAnchors),
-		   CEREAL_NVP(fRelativePos));
-	}
-#endif
   private:
 	Widget *fWidget;
 	Layout *fParent;
@@ -133,13 +93,6 @@ class RelativeLayout : public Layout
 	void repositionItems(Size<uint> oldSize, Size<uint> newSize);
 	void repositionItems();
 
-#ifdef SERIALIZATION_SUPPORT
-	template <class Archive>
-	void serialize(Archive &ar)
-	{
-		ar(CEREAL_NVP(fItems));
-	}
-#endif
   protected:
 	void onResize(const ResizeEvent &ev) override;
 	void onPositionChanged(const PositionChangedEvent &ev) override;
