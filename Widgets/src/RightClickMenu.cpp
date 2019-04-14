@@ -350,7 +350,10 @@ bool RightClickMenu::onMouse(const MouseEvent &ev)
     {
         for (size_t i = 0; i < fItems.size(); ++i)
         {
-            if (fItems[i].getEnabled() == true && getBoundsOfItem(i).contains(Point<float>(ev.pos.getX(), ev.pos.getY())) && !fItems[i].isSection())
+            Rectangle<float> itemBounds = getBoundsOfItem(i);
+            itemBounds.setWidth(Widget::getWidth() - fMargin.right);
+
+            if (fItems[i].getEnabled() == true && itemBounds.contains(Point<float>(ev.pos.getX(), ev.pos.getY())) && !fItems[i].isSection())
             {
                 fCallback->rightClickMenuItemSelected(&fItems[i]);
 
@@ -370,7 +373,10 @@ bool RightClickMenu::onMotion(const MotionEvent &ev)
 
     for (size_t i = 0; i < fItems.size(); ++i)
     {
-        if (fItems[i].getEnabled() == true && getBoundsOfItem(i).contains(Point<float>(ev.pos.getX(), ev.pos.getY())) && !fItems[i].isSection())
+        Rectangle<float> itemBounds = getBoundsOfItem(i);
+        itemBounds.setWidth(Widget::getWidth() - fMargin.right);
+
+        if (fItems[i].getEnabled() == true && itemBounds.contains(Point<float>(ev.pos.getX(), ev.pos.getY())) && !fItems[i].isSection())
         {
             fHoveredIndex = i;
             return true;
