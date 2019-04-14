@@ -43,6 +43,21 @@ bool RightClickMenuItem::isSection()
     return fIsSection;
 }
 
+void RightClickMenuItem::setLabel(const char *label)
+{
+    fLabel = label;
+}
+
+bool RightClickMenuItem::getSelected()
+{
+    return fSelected;
+}
+
+void RightClickMenuItem::setSelected(const bool selected)
+{
+    fSelected = selected;
+}
+
 RightClickMenuSection::RightClickMenuSection(const char *label) noexcept : RightClickMenuItem(-1, label, "", false)
 {
     fIsSection = true;
@@ -291,14 +306,22 @@ void RightClickMenu::onNanoDisplay()
             fillColor(Color(100, 100, 100, 255));
         }
 
-        text(fItems[i].isSection() ? 0 : 12, verticalOffset, fItems[i].getLabel(), NULL);
+        text(fItems[i].isSection() ? 0 : 14, verticalOffset, fItems[i].getLabel(), NULL);
 
         if (fItems[i].hasComment())
         {
-            fontSize(fSectionFontSize); //FIXME: wrong font size?
+            fontSize(fSectionFontSize);
             fillColor(Color(100, 100, 100, 255));
 
-            text(getBoundsOfItem(i).getWidth() + 12 + 4, verticalOffset, fItems[i].getComment(), NULL);
+            text(getBoundsOfItem(i).getWidth() + 14 + 4, verticalOffset, fItems[i].getComment(), NULL);
+        }
+
+        if (fItems[i].getSelected())
+        {
+            fontSize(fFontSize);
+            fillColor(Color(255, 255, 255));
+
+            text(0, verticalOffset, "✓", NULL);
         }
 
         verticalOffset += bounds.getHeight();
@@ -313,7 +336,7 @@ bool RightClickMenu::onMouse(const MouseEvent &ev)
     {
         for (size_t i = 0; i < fItems.size(); ++i)
         {
-            if (fItems[i].getEnabled() == true && getBoundsOfItem(i).contains(Point<float>(ev.pos.getX(), ev.pos.getY())))
+            if (fItems[i].getEnabled() == true && getBoundsOfItem(i).contains(Point<float>(ev.pos.getX(), ev.pos.getY())) && !fItems[i].isSection())
             {
                 fCallback->rightClickMenuItemSelected(&fItems[i]);
 

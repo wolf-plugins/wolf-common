@@ -19,11 +19,12 @@ public:
   bool getEnabled();
   void setEnabled(bool enabled);
   const char *getLabel();
+  void setLabel(const char *label);
   const char *getComment();
   bool hasComment();
   
-  void getSelected();
-  void setSelected();
+  bool getSelected();
+  void setSelected(const bool selected);
 
   bool isSection();
 
