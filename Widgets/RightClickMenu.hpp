@@ -22,7 +22,7 @@ public:
   void setLabel(const char *label);
   const char *getComment();
   bool hasComment();
-  
+
   bool getSelected();
   void setSelected(const bool selected);
 
@@ -72,13 +72,14 @@ public:
   RightClickMenuItem *getItemById(int id);
   void setCallback(Callback *callback) noexcept;
   void setSectionEnabled(int index, bool enabled);
-  
+
 protected:
   void onNanoDisplay() override;
   void onFocusOut() override;
   bool onMouse(const MouseEvent &ev) override;
-
+  bool onMotion(const MotionEvent &ev) override;
   void adaptSize();
+  void onClose() override;
 
   DGL_NAMESPACE::Rectangle<float> getBoundsOfItem(const int index);
   DGL_NAMESPACE::Rectangle<float> getBoundsOfItemComment(const int index);
@@ -92,6 +93,7 @@ private:
   float fFontSize;
   float fSectionFontSize;
 
+  float fHoveredIndex;
   float fLongestWidth;
   Color fBorderColor;
   Margin fMargin;

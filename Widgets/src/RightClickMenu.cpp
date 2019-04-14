@@ -68,6 +68,7 @@ RightClickMenu::RightClickMenu(NanoWidget *parent) noexcept : Window(parent->get
                                                               fParent(parent),
                                                               fFontSize(17.0f),
                                                               fSectionFontSize(14.0f),
+                                                              fHoveredIndex(-1),
                                                               fLongestWidth(0.0f),
                                                               fBorderColor(CONFIG_NAMESPACE::right_click_menu_border_color),
                                                               fMargin(Margin(7, 15, 7, 13))
@@ -286,6 +287,20 @@ void RightClickMenu::onNanoDisplay()
 
     for (size_t i = 0; i < fItems.size(); ++i)
     {
+        const Color itemTextColorEnabled = i == fHoveredIndex ? Color(0,0,0) : Color(255,255,255);
+        const Color itemTextColorDisabled = Color(100,100,100);
+
+        if (i == fHoveredIndex)
+        {
+            beginPath();
+
+            fillColor(Color(255, 255, 255));
+            rect(0, verticalOffset, width - fMargin.right, fFontSize);
+            fill();
+
+            closePath();
+        }
+
         beginPath();
 
         if (fItems[i].isSection())
@@ -299,11 +314,11 @@ void RightClickMenu::onNanoDisplay()
 
         if (fItems[i].getEnabled() == true)
         {
-            fillColor(Color(255, 255, 255, 255));
+            fillColor(itemTextColorEnabled);
         }
         else
         {
-            fillColor(Color(100, 100, 100, 255));
+            fillColor(itemTextColorDisabled);
         }
 
         text(fItems[i].isSection() ? 0 : 14, verticalOffset, fItems[i].getLabel(), NULL);
@@ -311,7 +326,7 @@ void RightClickMenu::onNanoDisplay()
         if (fItems[i].hasComment())
         {
             fontSize(fSectionFontSize);
-            fillColor(Color(100, 100, 100, 255));
+            fillColor(itemTextColorDisabled);
 
             text(getBoundsOfItem(i).getWidth() + 14 + 4, verticalOffset, fItems[i].getComment(), NULL);
         }
@@ -319,8 +334,7 @@ void RightClickMenu::onNanoDisplay()
         if (fItems[i].getSelected())
         {
             fontSize(fFontSize);
-            fillColor(Color(255, 255, 255));
-
+            fillColor(itemTextColorEnabled);
             text(0, verticalOffset, "✓", NULL);
         }
 
@@ -350,9 +364,31 @@ bool RightClickMenu::onMouse(const MouseEvent &ev)
     return true;
 }
 
+bool RightClickMenu::onMotion(const MotionEvent &ev)
+{
+    Widget::repaint();
+
+    for (size_t i = 0; i < fItems.size(); ++i)
+    {
+        if (fItems[i].getEnabled() == true && getBoundsOfItem(i).contains(Point<float>(ev.pos.getX(), ev.pos.getY())) && !fItems[i].isSection())
+        {
+            fHoveredIndex = i;
+            return true;
+        }
+    }
+
+    fHoveredIndex = -1;
+    return true;
+}
+
 void RightClickMenu::onFocusOut()
 {
     close();
+}
+
+void RightClickMenu::onClose()
+{
+    fHoveredIndex = -1;
 }
 
 END_NAMESPACE_DISTRHO
