@@ -869,12 +869,20 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
             {
                 fNodeSelectedByRightClick = node;
 
-                GraphVertexType vertexType = static_cast<GraphVertex *>(node)->getType();
+                GraphVertex *vertex = static_cast<GraphVertex *>(node);
+                GraphVertexType vertexType = vertex->getType();
+                const wolf::CurveType curveType = lineEditor.getVertexAtIndex(vertex->getIndex())->getType();
+
                 const bool mustEnableDelete = vertexType == GraphVertexType::Middle;
                 const bool mustEnableCurveTypeSection = vertexType != GraphVertexType::Right;
 
                 fRightClickMenu->getItemById(deleteNodeItem)->setEnabled(mustEnableDelete);
                 fRightClickMenu->setSectionEnabled(1, mustEnableCurveTypeSection);
+
+                fRightClickMenu->getItemById(singlePowerCurveItem)->setSelected(curveType == wolf::SingleCurve);
+                fRightClickMenu->getItemById(doublePowerCurveItem)->setSelected(curveType == wolf::DoubleCurve);
+                fRightClickMenu->getItemById(stairsCurveItem)->setSelected(curveType == wolf::StairsCurve);
+                fRightClickMenu->getItemById(waveCurveItem)->setSelected(curveType == wolf::WaveCurve);
 
                 fRightClickMenu->show(getAbsoluteX() + ev.pos.getX(), getAbsoluteY() + ev.pos.getY());
             }
