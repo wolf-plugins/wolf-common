@@ -13,7 +13,7 @@ public:
     {
     public:
         virtual ~Callback() {}
-        virtual void resizeHandleMoved(int width, int height) = 0;
+        virtual void resizeHandleMoved(const int width, const int height) = 0;
     };
 
     explicit ResizeHandle(NanoWidget* widget, Size<uint> size) noexcept;

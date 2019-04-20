@@ -2,6 +2,7 @@
 
 #include "src/DistrhoDefines.h"
 #include "Widget.hpp"
+#include "Window.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -41,7 +42,7 @@ class Layout;
 
 class LayoutItem
 {
-  public:
+public:
 	LayoutItem(Layout *parent, Widget *widget);
 
 	Widget *getWidget();
@@ -62,7 +63,7 @@ class LayoutItem
 
 	RelativePosition getRelativePos();
 
-  private:
+private:
 	Widget *fWidget;
 	Layout *fParent;
 	Anchors fAnchors;
@@ -73,27 +74,40 @@ class LayoutItem
 
 class Layout : public Widget
 {
-  public:
+public:
 	Layout(Widget *parent);
+	Layout(Window &parent);
 	LayoutItem &addItem(Widget *widget);
 	size_t getItemCount();
 	LayoutItem *getItem(const uint index);
 	LayoutItem *getFirstItem();
 	LayoutItem *getLastItem();
 
-  protected:
+protected:
 	virtual void onItemAdded(const LayoutItem &item);
 	std::vector<LayoutItem> fItems;
 };
 
 class RelativeLayout : public Layout
 {
-  public:
+public:
 	RelativeLayout(Widget *parent);
 	void repositionItems(Size<uint> oldSize, Size<uint> newSize);
 	void repositionItems();
 
-  protected:
+protected:
+	void onResize(const ResizeEvent &ev) override;
+	void onPositionChanged(const PositionChangedEvent &ev) override;
+	void onDisplay() override;
+};
+
+class StackLayout : public Layout
+{
+public:
+	StackLayout(Widget *widget);
+	void repositionItems();
+
+protected:
 	void onResize(const ResizeEvent &ev) override;
 	void onPositionChanged(const PositionChangedEvent &ev) override;
 	void onDisplay() override;

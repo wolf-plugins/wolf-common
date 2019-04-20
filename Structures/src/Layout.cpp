@@ -112,6 +112,13 @@ RelativePosition LayoutItem::getRelativePos()
 Layout::Layout(Widget *parent) : Widget(parent)
 {
 	setSize(parent->getSize());
+	hide();
+}
+
+Layout::Layout(Window &parent) : Widget(parent)
+{
+	setSize(parent.getSize());
+	hide();
 }
 
 LayoutItem &LayoutItem::setSize(const uint width, const uint height)
@@ -175,7 +182,6 @@ void Layout::onItemAdded(const LayoutItem &)
 
 RelativeLayout::RelativeLayout(Widget *parent) : Layout(parent)
 {
-	hide();
 }
 
 void RelativeLayout::onDisplay()
@@ -252,5 +258,41 @@ void RelativeLayout::onPositionChanged(const PositionChangedEvent &)
 		item->getWidget()->setAbsoluteY(absY + item->getRelativePos().top);
 	}
 }
+
+StackLayout::StackLayout(Widget *parent) : Layout(parent)
+{
+}
+
+void StackLayout::onDisplay()
+{
+}
+
+void StackLayout::repositionItems()
+{
+	const int absX = getAbsoluteX();
+	const int absY = getAbsoluteY();
+
+	int accumulatedWidth = 0;
+
+	for (size_t i = 0; i < getItemCount(); ++i)
+	{
+		Widget *widget = fItems[i].getWidget();
+		widget->setAbsolutePos(absX + accumulatedWidth, absY);
+		widget->setHeight(getHeight());
+
+		accumulatedWidth += fItems[i].getWidget()->getWidth();
+	}
+}
+
+void StackLayout::onResize(const ResizeEvent &ev)
+{
+	repositionItems();
+}
+
+void StackLayout::onPositionChanged(const PositionChangedEvent &)
+{
+	repositionItems();
+}
+
 
 END_NAMESPACE_DISTRHO
