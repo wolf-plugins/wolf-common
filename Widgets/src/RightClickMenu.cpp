@@ -287,8 +287,8 @@ void RightClickMenu::onNanoDisplay()
 
     for (size_t i = 0; i < fItems.size(); ++i)
     {
-        const Color itemTextColorEnabled = i == fHoveredIndex ? Color(0,0,0) : Color(255,255,255);
-        const Color itemTextColorDisabled = Color(100,100,100);
+        const Color itemTextColorEnabled = i == fHoveredIndex ? Color(0, 0, 0) : Color(255, 255, 255);
+        const Color itemTextColorDisabled = Color(100, 100, 100);
 
         if (i == fHoveredIndex)
         {
