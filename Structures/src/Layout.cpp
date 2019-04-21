@@ -76,32 +76,42 @@ Anchors LayoutItem::getAnchors()
 	return fAnchors;
 }
 
-void LayoutItem::setRelativePos(int left, int right, int top, int bottom)
+LayoutItem &LayoutItem::setRelativePos(const int left, const int right, const int top, const int bottom)
 {
 	fRelativePos.left = left;
 	fRelativePos.right = right;
 	fRelativePos.top = top;
 	fRelativePos.bottom = bottom;
+
+	return *this;
 }
 
-void LayoutItem::setRelativeLeft(int left)
+LayoutItem &LayoutItem::setRelativeLeft(const int left)
 {
 	fRelativePos.left = left;
+
+	return *this;
 }
 
-void LayoutItem::setRelativeRight(int right)
+LayoutItem &LayoutItem::setRelativeRight(const int right)
 {
 	fRelativePos.right = right;
+
+	return *this;
 }
 
-void LayoutItem::setRelativeTop(int top)
+LayoutItem &LayoutItem::setRelativeTop(const int top)
 {
 	fRelativePos.top = top;
+
+	return *this;
 }
 
-void LayoutItem::setRelativeBottom(int bottom)
+LayoutItem &LayoutItem::setRelativeBottom(const int bottom)
 {
 	fRelativePos.bottom = bottom;
+
+	return *this;
 }
 
 RelativePosition LayoutItem::getRelativePos()
@@ -276,9 +286,9 @@ void StackLayout::repositionItems()
 
 	for (size_t i = 0; i < getItemCount(); ++i)
 	{
-		Widget *widget = fItems[i].getWidget();
-		widget->setAbsolutePos(absX + accumulatedWidth, absY);
-		widget->setHeight(getHeight());
+		LayoutItem &layoutItem = fItems[i];
+		Widget *widget = layoutItem.getWidget();
+		widget->setAbsolutePos(absX + accumulatedWidth + layoutItem.getRelativePos().left, absY + layoutItem.getRelativePos().top);
 
 		accumulatedWidth += fItems[i].getWidget()->getWidth();
 	}

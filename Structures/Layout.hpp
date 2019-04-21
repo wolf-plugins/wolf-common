@@ -55,11 +55,11 @@ public:
 	LayoutItem &setSize(const uint width, const uint height);
 	LayoutItem &setPosition(const int x, const int y);
 
-	void setRelativePos(int left, int right, int top, int bottom);
-	void setRelativeLeft(int left);
-	void setRelativeRight(int right);
-	void setRelativeTop(int top);
-	void setRelativeBottom(int bottom);
+	LayoutItem &setRelativePos(const int left, const int right, const int top, const int bottom);
+	LayoutItem &setRelativeLeft(const int left);
+	LayoutItem &setRelativeRight(const int right);
+	LayoutItem &setRelativeTop(const int top);
+	LayoutItem &setRelativeBottom(const int bottom);
 
 	RelativePosition getRelativePos();
 
@@ -70,6 +70,8 @@ private:
 
 	// the absolute distance of the item from the sides of the layout
 	RelativePosition fRelativePos;
+
+	DISTRHO_LEAK_DETECTOR(LayoutItem);
 };
 
 class Layout : public Widget
@@ -86,6 +88,9 @@ public:
 protected:
 	virtual void onItemAdded(const LayoutItem &item);
 	std::vector<LayoutItem> fItems;
+
+private:
+	DISTRHO_LEAK_DETECTOR(Layout);
 };
 
 class RelativeLayout : public Layout
@@ -99,6 +104,9 @@ protected:
 	void onResize(const ResizeEvent &ev) override;
 	void onPositionChanged(const PositionChangedEvent &ev) override;
 	void onDisplay() override;
+
+private:
+	DISTRHO_LEAK_DETECTOR(RelativeLayout);
 };
 
 class StackLayout : public Layout
@@ -111,6 +119,9 @@ protected:
 	void onResize(const ResizeEvent &ev) override;
 	void onPositionChanged(const PositionChangedEvent &ev) override;
 	void onDisplay() override;
+
+private:
+	DISTRHO_LEAK_DETECTOR(StackLayout);
 };
 
 END_NAMESPACE_DISTRHO
