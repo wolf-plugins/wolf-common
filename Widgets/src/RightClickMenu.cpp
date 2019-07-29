@@ -74,7 +74,7 @@ RightClickMenu::RightClickMenu(NanoWidget *parent) noexcept : Window(parent->get
                                                               fMargin(Margin(7, 15, 7, 13))
 {
     Window::setResizable(false);
-    Window::setBorderless(true);
+    //Window::setBorderless(true);
 
     loadSharedResources();
 }
@@ -92,10 +92,10 @@ void RightClickMenu::show(int posX, int posY)
 
     adaptSize();
 
-    Window::hideFromTaskbar();
+    //Window::hideFromTaskbar();
 
     Window &parentWindow = fParent->getParentWindow();
-    Point<int> windowPos = parentWindow.getAbsolutePos();
+    //Point<int> windowPos = parentWindow.getAbsolutePos();
 
     //FIXME: this is really a mess... right now, it's necessary to set the size before and after the exec to get the correct window dimensions on win32...
     //it still flickers a bit, so it's not a perfect solution
@@ -111,7 +111,7 @@ void RightClickMenu::show(int posX, int posY)
     adaptSize();
 #endif
 
-    Window::setAbsolutePos(posX + windowPos.getX(), posY + windowPos.getY());
+    //Window::setAbsolutePos(posX + windowPos.getX(), posY + windowPos.getY());
 }
 
 void RightClickMenu::close()
@@ -387,10 +387,10 @@ bool RightClickMenu::onMotion(const MotionEvent &ev)
     return true;
 }
 
-void RightClickMenu::onFocusOut()
+/* void RightClickMenu::onFocusOut()
 {
     close();
-}
+} */
 
 void RightClickMenu::onClose()
 {

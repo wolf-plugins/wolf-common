@@ -677,7 +677,7 @@ bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
             ui->setState("graph", lineEditor.serialize());
             repaint();
 
-            getParentWindow().setCursorPos(tensionHandle->getAbsoluteX(), tensionHandle->getAbsoluteY());
+//            getParentWindow().setCursorPos(tensionHandle->getAbsoluteX(), tensionHandle->getAbsoluteY());
 
             return true;
         }
@@ -858,7 +858,7 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
 
                 if (node == nullptr)
                 {
-                    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+//                    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
                 }
 
                 repaint();
@@ -962,12 +962,12 @@ bool GraphWidgetInner::onMotion(const MotionEvent &ev)
     }
 
     //The mouse pointer is not over any graph node
-    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+//    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 
     return true;
 }
 
-void GraphWidgetInner::onFocusOut()
+/* void GraphWidgetInner::onFocusOut()
 {
     if (focusedElement != nullptr)
     {
@@ -982,11 +982,11 @@ void GraphWidgetInner::onFocusOut()
     getParentWindow().showCursor();
 
     repaint();
-}
+} */
 
 void GraphWidgetInner::onMouseLeave()
 {
-    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+//    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 }
 
 END_NAMESPACE_DISTRHO

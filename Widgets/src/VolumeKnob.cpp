@@ -47,7 +47,7 @@ void VolumeKnob::onMouseHover()
     if (!canBeFocused())
         return;
 
-    getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
+//    getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
 
     fHoverAnimation->play(Animation::Forward);
 }
@@ -57,7 +57,7 @@ void VolumeKnob::onMouseLeave()
     if (!canBeFocused())
         return;
         
-    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+//    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 
     fHoverAnimation->play(Animation::Backward);
 }

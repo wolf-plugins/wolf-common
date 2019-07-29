@@ -242,7 +242,7 @@ bool GraphVertex::onMotion(const Widget::MotionEvent &ev)
 {
     if (!grabbed)
     {
-        getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
+        //getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
         return true;
     }
 
@@ -278,7 +278,7 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
 {
     if (!grabbed)
     {
-        parent->getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
+        //parent->getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
         return true;
     }
 
@@ -300,12 +300,12 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
     //FIXME: this is a bit confusing... mouseDownPosition is flipped, but setCursorPos expects the real y value
     if (ev.pos.getY() <= 2)
     {
-        window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + parent->getHeight() - 2);
+        //window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + parent->getHeight() - 2);
         mouseDownPosition.setY(2);
     }
     else if (ev.pos.getY() >= (int)parent->getHeight() + 2)
     {
-        window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + 2);
+        //window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + 2);
         mouseDownPosition.setY(parent->getHeight() - 2);
     }
     else
@@ -333,7 +333,7 @@ void GraphVertex::removeFromGraph()
 bool GraphVertex::leftDoubleClick(const Widget::MouseEvent &)
 {
     removeFromGraph();
-    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+    //getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 
     return true;
 }
@@ -348,7 +348,7 @@ void GraphVertex::clipCursorToNeighbouringVertices()
     const int top = parent->getAbsoluteY();
     const int right = rightVertex ? rightVertex->getAbsoluteX() : this->getAbsoluteX();
 
-    getParentWindow().clipCursor(Rectangle<int>(left, top, right - left, parent->getHeight()));
+    //getParentWindow().clipCursor(Rectangle<int>(left, top, right - left, parent->getHeight()));
 }
 
 bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
@@ -378,17 +378,17 @@ bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
 
     if (grabbed)
     {
-        window.hideCursor();
+        //window.hideCursor();
 
         clipCursorToNeighbouringVertices();
     }
     else
     {
-        window.setCursorPos(getAbsoluteX(), getAbsoluteY());
-        window.unclipCursor();
+        //window.setCursorPos(getAbsoluteX(), getAbsoluteY());
+        //window.unclipCursor();
 
-        window.showCursor();
-        window.setCursorStyle(Window::CursorStyle::Grab);
+        //window.showCursor();
+        //window.setCursorStyle(Window::CursorStyle::Grab);
     }
 
     parent->repaint();
@@ -410,16 +410,15 @@ bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
     {
         mouseDownPosition = wolf::flipY(ev.pos, parent->getHeight());
 
-        window.hideCursor();
-        window.clipCursor(Rectangle<int>(getAbsoluteX(), 0, 0, (int)window.getHeight()));
+        //window.hideCursor();
+        //window.clipCursor(Rectangle<int>(getAbsoluteX(), 0, 0, (int)window.getHeight()));
     }
     else
     {
-        window.unclipCursor();
-        window.setCursorPos(getAbsoluteX(), getAbsoluteY());
-        window.showCursor();
-
-        window.setCursorStyle(Window::CursorStyle::Grab);
+        //window.unclipCursor();
+        //window.setCursorPos(getAbsoluteX(), getAbsoluteY());
+        //window.showCursor();
+        //window.setCursorStyle(Window::CursorStyle::Grab);
     }
 
     parent->repaint();

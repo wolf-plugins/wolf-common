@@ -77,9 +77,9 @@ bool NanoWheel::onMouse(const MouseEvent &ev)
         {
             fLeftMouseDown = false;
 
-            window.setCursorPos(this);
-            window.showCursor();
-            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
+//            window.setCursorPos(this);
+//            window.showCursor();
+//            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
 
             return true;
         }
@@ -92,7 +92,7 @@ bool NanoWheel::onMouse(const MouseEvent &ev)
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
 
-        window.hideCursor();
+//        window.hideCursor();
 
         return true;
     }
@@ -142,7 +142,7 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
         if (!fIsHovered)
         {
             fIsHovered = true;
-            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
+//            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
         }
 
         return true;
@@ -150,7 +150,7 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
     else if (fIsHovered)
     {
         fIsHovered = false;
-        getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+//        getParentWindow().setCursorStyle(Window::CursorStyle::Default);
     }
 
     return false;

@@ -75,7 +75,7 @@ public:
 
 protected:
   void onNanoDisplay() override;
-  void onFocusOut() override;
+  //void onFocusOut() override;
   bool onMouse(const MouseEvent &ev) override;
   bool onMotion(const MotionEvent &ev) override;
   void adaptSize();
