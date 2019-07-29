@@ -885,6 +885,7 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
                 fRightClickMenu->getItemById(waveCurveItem)->setSelected(curveType == wolf::WaveCurve);
 
                 fRightClickMenu->show(getAbsoluteX() + ev.pos.getX(), getAbsoluteY() + ev.pos.getY());
+                onFocusOut();
             }
 
             return true;
@@ -967,7 +968,7 @@ bool GraphWidgetInner::onMotion(const MotionEvent &ev)
     return true;
 }
 
-/* void GraphWidgetInner::onFocusOut()
+void GraphWidgetInner::onFocusOut()
 {
     if (focusedElement != nullptr)
     {
@@ -979,10 +980,10 @@ bool GraphWidgetInner::onMotion(const MotionEvent &ev)
     mouseLeftDown = false;
     mouseRightDown = false;
 
-    getParentWindow().showCursor();
+    //getParentWindow().showCursor();
 
     repaint();
-} */
+}
 
 void GraphWidgetInner::onMouseLeave()
 {

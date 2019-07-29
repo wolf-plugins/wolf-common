@@ -62,7 +62,7 @@ protected:
   bool onScroll(const ScrollEvent &ev) override;
   bool onMouse(const MouseEvent &ev) override;
   bool onMotion(const MotionEvent &ev) override;
-  //void onFocusOut() override;
+  void onFocusOut(); //override;
 
   void idleCallback() override;
 
