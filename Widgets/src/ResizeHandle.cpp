@@ -6,7 +6,7 @@
 START_NAMESPACE_DISTRHO
 
 ResizeHandle::ResizeHandle(NanoWidget *parent, Size<uint> size) noexcept
-    : NanoWidget(parent),
+    : NanoWidget(parent->getParentWindow()),
       fHasFocus(false),
       fIsHovered(false),
       fMinSizeX(1),
