@@ -9,6 +9,11 @@ export BUILD_VST2=true
 export BUILD_LV2=true 
 export BUILD_JACK=true 
 
+: ${BUILD_DSSI:=false}
+export BUILD_DSSI
+
+export BUILD_LADSPA=false
+
 EXTENSION=so
 
 if [ "$WIN32" = true ]; then
@@ -21,6 +26,8 @@ if [ "$WIN32" = true ]; then
     BUILD_VST2=true 
     BUILD_LV2=false 
     BUILD_JACK=false
+    BUILD_DSSI=false
+    BUILD_LADSPA=false
 
     EXTENSION=dll
 fi
@@ -45,6 +52,10 @@ fi
 
 if [ "$BUILD_JACK" = true ]; then
     tar -zcvf "$ARCHIVE_NAME-jack.tar.gz" "$PLUGIN_NAME"
+fi
+
+if [ "$BUILD_DSSI" = true ]; then
+    tar -zcvf "$ARCHIVE_NAME-dssi.tar.gz" "$PLUGIN_NAME-dssi.$EXTENSION" "$PLUGIN_NAME-dssi"
 fi
 
 cd ..
