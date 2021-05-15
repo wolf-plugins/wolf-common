@@ -865,7 +865,7 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
             }
 
             //else, show curve selection menu
-            else
+            /* else
             {
                 fNodeSelectedByRightClick = node;
 
@@ -886,7 +886,7 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
 
                 fRightClickMenu->show(getAbsoluteX() + ev.pos.getX(), getAbsoluteY() + ev.pos.getY());
                 onFocusOut();
-            }
+            } */
 
             return true;
         }
