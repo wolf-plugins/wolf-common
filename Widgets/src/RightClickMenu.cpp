@@ -97,19 +97,7 @@ void RightClickMenu::show(int posX, int posY)
     Window &parentWindow = fParent->getParentWindow();
     //Point<int> windowPos = parentWindow.getAbsolutePos();
 
-    //FIXME: this is really a mess... right now, it's necessary to set the size before and after the exec to get the correct window dimensions on win32...
-    //it still flickers a bit, so it's not a perfect solution
-#if defined(DISTRHO_OS_WINDOWS)
-    adaptSize();
-
-    Window::setAbsolutePos(posX + windowPos.getX(), posY + windowPos.getY());
-#endif
-
     Window::exec(false);
-
-#if defined(DISTRHO_OS_WINDOWS)
-    adaptSize();
-#endif
 
     //Window::setAbsolutePos(posX + windowPos.getX(), posY + windowPos.getY());
 }
