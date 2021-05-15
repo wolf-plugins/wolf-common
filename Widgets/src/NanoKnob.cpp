@@ -153,27 +153,14 @@ bool NanoKnob::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float resistance = 1200.0f;
+        const float resistance = 270.0f;
         const float difference = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / resistance * (fMax - fMin);
 
         Window &window = getParentWindow();
         const int windowHeight = window.getHeight();
 
-        // this doesn't seem right. TODO: investigate mouse cursor manipulation code for off-by-one error
-        if (ev.pos.getY() + getAbsoluteY() >= windowHeight - 1)
-        {
-//            window.setCursorPos(getAbsoluteX(), 2);
-            fLeftMouseDownLocation.setY(-getAbsoluteY() + 2);
-        }
-        else if (ev.pos.getY() + getAbsoluteY() == 0)
-        {
-//            window.setCursorPos(getAbsoluteX(), windowHeight - 2);
-            fLeftMouseDownLocation.setY(windowHeight - getAbsoluteY() - 2);
-        }
-        else
-        {
-            fLeftMouseDownLocation.setY(ev.pos.getY());
-        }
+
+        fLeftMouseDownLocation.setY(ev.pos.getY());
 
         setValue(fValue + difference, true);
 
