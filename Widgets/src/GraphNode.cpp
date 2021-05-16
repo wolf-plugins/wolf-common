@@ -295,23 +295,7 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
     if (leftVertex->getY() > rightVertex->getY())
         difference = -difference;
 
-    Window &window = getParentWindow();
-
-    //FIXME: this is a bit confusing... mouseDownPosition is flipped, but setCursorPos expects the real y value
-    if (ev.pos.getY() <= 2)
-    {
-        //window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + parent->getHeight() - 2);
-        mouseDownPosition.setY(2);
-    }
-    else if (ev.pos.getY() >= (int)parent->getHeight() + 2)
-    {
-        //window.setCursorPos(getAbsoluteX(), parent->getAbsoluteY() + 2);
-        mouseDownPosition.setY(parent->getHeight() - 2);
-    }
-    else
-    {
-        mouseDownPosition = pos;
-    }
+    mouseDownPosition = pos;
 
     tension = wolf::clamp(tension + difference / resistance, -100.0f, 100.0f);
 
@@ -340,15 +324,7 @@ bool GraphVertex::leftDoubleClick(const Widget::MouseEvent &)
 
 void GraphVertex::clipCursorToNeighbouringVertices()
 {
-    GraphVertex *leftVertex = getVertexAtLeft();
-    GraphVertex *rightVertex = getVertexAtRight();
 
-    //properties of the clip rectangle
-    const int left = leftVertex ? leftVertex->getAbsoluteX() : this->getAbsoluteX();
-    const int top = parent->getAbsoluteY();
-    const int right = rightVertex ? rightVertex->getAbsoluteX() : this->getAbsoluteX();
-
-    //getParentWindow().clipCursor(Rectangle<int>(left, top, right - left, parent->getHeight()));
 }
 
 bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
@@ -374,22 +350,6 @@ bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
     }
 
     grabbed = ev.press;
-    Window &window = getParentWindow();
-
-    if (grabbed)
-    {
-        //window.hideCursor();
-
-        clipCursorToNeighbouringVertices();
-    }
-    else
-    {
-        //window.setCursorPos(getAbsoluteX(), getAbsoluteY());
-        //window.unclipCursor();
-
-        //window.showCursor();
-        //window.setCursorStyle(Window::CursorStyle::Grab);
-    }
 
     parent->repaint();
 
@@ -404,21 +364,10 @@ GraphTensionHandle::GraphTensionHandle(GraphWidgetInner *parent, GraphVertex *ve
 bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
 {
     grabbed = ev.press;
-    Window &window = getParentWindow();
 
     if (grabbed)
     {
         mouseDownPosition = wolf::flipY(ev.pos, parent->getHeight());
-
-        //window.hideCursor();
-        //window.clipCursor(Rectangle<int>(getAbsoluteX(), 0, 0, (int)window.getHeight()));
-    }
-    else
-    {
-        //window.unclipCursor();
-        //window.setCursorPos(getAbsoluteX(), getAbsoluteY());
-        //window.showCursor();
-        //window.setCursorStyle(Window::CursorStyle::Grab);
     }
 
     parent->repaint();

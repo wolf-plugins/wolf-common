@@ -92,14 +92,7 @@ void RightClickMenu::show(int posX, int posY)
 
     adaptSize();
 
-    //Window::hideFromTaskbar();
-
-    Window &parentWindow = fParent->getParentWindow();
-    //Point<int> windowPos = parentWindow.getAbsolutePos();
-
     Window::exec(false);
-
-    //Window::setAbsolutePos(posX + windowPos.getX(), posY + windowPos.getY());
 }
 
 void RightClickMenu::close()

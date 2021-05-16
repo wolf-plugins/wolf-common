@@ -69,18 +69,11 @@ bool NanoWheel::onMouse(const MouseEvent &ev)
     if (ev.button != 1)
         return fLeftMouseDown;
 
-    Window &window = getParentWindow();
-
     if (!ev.press)
     {
         if (fLeftMouseDown == true)
         {
             fLeftMouseDown = false;
-
-//            window.setCursorPos(this);
-//            window.showCursor();
-//            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
-
             return true;
         }
 
@@ -91,8 +84,6 @@ bool NanoWheel::onMouse(const MouseEvent &ev)
     {
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
-
-//        window.hideCursor();
 
         return true;
     }

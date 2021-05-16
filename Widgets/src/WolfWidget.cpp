@@ -24,7 +24,7 @@ bool WolfWidget::canBeFocused()
 
 void WolfWidget::setFocus(bool focus)
 {
-    
+    (void)focus;
 }
 
 END_NAMESPACE_DISTRHO

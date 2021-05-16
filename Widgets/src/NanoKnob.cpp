@@ -94,19 +94,12 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
     if (ev.button != 1)
         return fLeftMouseDown;
 
-    Window &window = getParentWindow();
-
     if (!ev.press)
     {
         if (fLeftMouseDown == true)
         {
             fLeftMouseDown = false;
             setFocus(false);
-
-//            window.unclipCursor();
-//            window.setCursorPos(this);
-//            window.showCursor();
-//            getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
 
             onMouseUp();
 
@@ -122,9 +115,6 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
         fLeftMouseDown = true;
         
         setFocus(true);
-//        window.hideCursor();
-//        window.clipCursor(Rectangle<int>(getAbsoluteX() + getWidth() / 2.0f, 0, 0, (int)window.getHeight()));
-
         onMouseDown();
 
         return true;
