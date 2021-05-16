@@ -7,6 +7,7 @@
 #include "Margin.hpp"
 #include "Widget.hpp"
 #include "RightClickMenu.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -21,7 +22,7 @@ enum class GraphGradientMode
   Bottom
 };
 
-class GraphWidgetInner : public NanoWidget,
+class GraphWidgetInner : public WolfWidget,
                          public IdleCallback,
                          public RightClickMenu::Callback
 {
@@ -230,7 +231,7 @@ private:
   DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWidgetInner)
 };
 
-class GraphWidget : public NanoWidget
+class GraphWidget : public WolfWidget
 {
 public:
   GraphWidget(UI *ui, Size<uint> size);

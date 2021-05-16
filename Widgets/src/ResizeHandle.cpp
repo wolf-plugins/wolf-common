@@ -5,8 +5,8 @@
 
 START_NAMESPACE_DISTRHO
 
-ResizeHandle::ResizeHandle(NanoWidget *parent, Size<uint> size) noexcept
-    : NanoWidget(parent),
+ResizeHandle::ResizeHandle(Widget  *parent, Size<uint> size) noexcept
+    : WolfWidget(parent),
       fHasFocus(false),
       fIsHovered(false),
       fMinSizeX(1),

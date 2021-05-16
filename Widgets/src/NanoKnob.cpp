@@ -3,7 +3,7 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoKnob::NanoKnob(NanoWidget *widget, Size<uint> size) noexcept
+NanoKnob::NanoKnob(Widget  *widget, Size<uint> size) noexcept
     : WolfWidget(widget),
       fMin(0.0f),
       fMax(1.0f),

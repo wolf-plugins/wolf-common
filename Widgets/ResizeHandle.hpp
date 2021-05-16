@@ -3,10 +3,11 @@
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class ResizeHandle : public NanoWidget
+class ResizeHandle : public WolfWidget
 {
 public:
     class Callback
@@ -16,7 +17,7 @@ public:
         virtual void resizeHandleMoved(const int width, const int height) = 0;
     };
 
-    explicit ResizeHandle(NanoWidget* widget, Size<uint> size) noexcept;
+    explicit ResizeHandle(Widget * widget, Size<uint> size) noexcept;
 
     void setCallback(Callback* callback) noexcept;
     void setMinSize(int minX, int minY);

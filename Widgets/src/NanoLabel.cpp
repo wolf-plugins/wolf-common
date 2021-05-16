@@ -3,7 +3,7 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoLabel::NanoLabel(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(widget),
+NanoLabel::NanoLabel(Widget  *widget, Size<uint> size) noexcept : WolfWidget(widget),
                                                                      fText(""),
                                                                      fMargin(Margin(0, 0, 0, 0)),
                                                                      fAlign(ALIGN_LEFT | ALIGN_TOP),

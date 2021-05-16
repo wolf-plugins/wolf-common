@@ -3,13 +3,14 @@
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class LabelBox : public NanoWidget
+class LabelBox : public WolfWidget
 {
   public:
-    explicit LabelBox(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit LabelBox(Widget  *widget, Size<uint> size) noexcept;
 
     void setFontSize(float fontSize);
     float getFontSize();

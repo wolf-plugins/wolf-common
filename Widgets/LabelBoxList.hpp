@@ -11,7 +11,7 @@ START_NAMESPACE_DISTRHO
 class LabelBoxList : public LabelContainer
 {
   public:
-    explicit LabelBoxList(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit LabelBoxList(Widget  *widget, Size<uint> size) noexcept;
     void goNext();
     void goPrevious();
     

@@ -1,8 +1,9 @@
 #include "VolumeKnob.hpp"
+#include "Application.hpp"
 
 START_NAMESPACE_DISTRHO
 
-VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(widget, size)
+VolumeKnob::VolumeKnob(Widget  *widget, Size<uint> size) noexcept : NanoKnob(widget, size)
 
 {
     const float radius = size.getHeight() / 2.0f;
@@ -19,7 +20,7 @@ VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(
     fGrowAnimation = new FloatTransition(0.100f, &fKnobDiameter, fKnobDiameter - 7);
     fHoverAnimation = new ColorTransition(0.200f, &fKnobOCol, fKnobTargetOCol);
 
-    widget->getParentWindow().addIdleCallback(this);
+    getApp().addIdleCallback(this);
 }
 
 void VolumeKnob::idleCallback()

@@ -17,7 +17,7 @@ class NanoWheel : public WolfWidget
         virtual void nanoWheelValueChanged(NanoWheel *nanoWheel, int value) = 0;
     };
 
-    explicit NanoWheel(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit NanoWheel(Widget  *widget, Size<uint> size) noexcept;
 
     void setValue(int value, bool sendCallback = false) noexcept;
     int getValue() noexcept;
@@ -38,7 +38,7 @@ class NanoWheel : public WolfWidget
     Callback *fCallback;
 
     bool fLeftMouseDown;
-    Point<int> fLeftMouseDownLocation;
+    Point<double> fLeftMouseDownLocation;
 
     bool fIsHovered;
 

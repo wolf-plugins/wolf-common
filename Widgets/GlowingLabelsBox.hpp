@@ -11,7 +11,7 @@ START_NAMESPACE_DISTRHO
 class GlowingLabelsBox : public LabelContainer
 {
   public:
-    explicit GlowingLabelsBox(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit GlowingLabelsBox(Widget  *widget, Size<uint> size) noexcept;
 
   protected:
     void onNanoDisplay() override;

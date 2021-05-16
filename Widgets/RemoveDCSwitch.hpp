@@ -11,7 +11,7 @@ class RemoveDCSwitch : public NanoSwitch,
                        public IdleCallback
 {
   public:
-    explicit RemoveDCSwitch(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit RemoveDCSwitch(Widget  *widget, Size<uint> size) noexcept;
 
   protected:
     void draw() override;

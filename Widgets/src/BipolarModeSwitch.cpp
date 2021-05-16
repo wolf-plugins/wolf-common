@@ -2,7 +2,7 @@
 
 START_NAMESPACE_DISTRHO
 
-BipolarModeSwitch::BipolarModeSwitch(NanoWidget *widget, Size<uint> size) noexcept : NanoSwitch(widget, size)
+BipolarModeSwitch::BipolarModeSwitch(Widget  *widget, Size<uint> size) noexcept : NanoSwitch(widget, size)
 {
 }
 

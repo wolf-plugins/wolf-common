@@ -6,10 +6,10 @@
 
 START_NAMESPACE_DISTRHO
 
-class WolfWidget : public NanoWidget
+class WolfWidget : public NanoSubWidget
 {
 public:
-  WolfWidget(NanoWidget *widget) noexcept;
+  WolfWidget(Widget *widget) noexcept;
 
   void setDescription(const char *description);
   const char *getDescription();

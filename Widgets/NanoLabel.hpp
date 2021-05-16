@@ -3,15 +3,15 @@
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"
-#include "Layout.hpp"
 #include "Margin.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class NanoLabel : public NanoWidget
+class NanoLabel : public WolfWidget
 {
   public:
-    explicit NanoLabel(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit NanoLabel(Widget  *widget, Size<uint> size) noexcept;
 
     void setFontSize(float fontSize);
     void setColor(Color color);

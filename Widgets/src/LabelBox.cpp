@@ -5,7 +5,7 @@
 
 START_NAMESPACE_DISTRHO
 
-LabelBox::LabelBox(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(widget)
+LabelBox::LabelBox(Widget  *widget, Size<uint> size) noexcept : WolfWidget(widget)
 {
     setSize(size);
 

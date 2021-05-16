@@ -3,7 +3,7 @@
 
 START_NAMESPACE_DISTRHO
 
-WidgetBar::WidgetBar(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(widget),
+WidgetBar::WidgetBar(Widget  *widget, Size<uint> size) noexcept : WolfWidget(widget),
                                                                      fFillPaint(linearGradient(0, 0, 0, 0, Color(0, 0, 0, 0), Color(0, 0, 0, 0))),
                                                                      fStrokePaint(linearGradient(0, 0, 0, 0, Color(0, 0, 0, 0), Color(0, 0, 0, 0))),
                                                                      fStrokeWidth(2.0f)

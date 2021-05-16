@@ -3,11 +3,12 @@
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"
+#include "WolfWidget.hpp"
 #include <vector>
 
 START_NAMESPACE_DISTRHO
 
-class LabelContainer : public NanoWidget
+class LabelContainer : public WolfWidget
 {
 public:
     void setSelectedIndex(int index);
@@ -25,7 +26,7 @@ public:
     NanoVG::FontId getFontId();
 
 protected:
-    explicit LabelContainer(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit LabelContainer(Widget  *widget, Size<uint> size) noexcept;
 
 private:
     int fSelectedIndex;

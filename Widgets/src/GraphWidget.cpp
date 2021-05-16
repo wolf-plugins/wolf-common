@@ -7,6 +7,7 @@
 #include "GraphNode.hpp"
 #include "Mathf.hpp"
 #include "Config.hpp"
+#include "Application.hpp"
 
 #include "Fonts/chivo_italic.hpp"
 
@@ -18,7 +19,7 @@ START_NAMESPACE_DISTRHO
 
 const char *graphDefaultState = "0x0p+0,0x0p+0,0x0p+0,0;0x1p+0,0x1p+0,0x0p+0,0;";
 
-GraphWidget::GraphWidget(UI *ui, Size<uint> size) : NanoWidget((NanoWidget *)ui),
+GraphWidget::GraphWidget(UI *ui, Size<uint> size) : WolfWidget(ui),
                                                     fMargin(16, 16, 16, 16)
 {
     setSize(size);
@@ -148,7 +149,7 @@ void GraphWidget::setMustHideVertices(const bool hide)
 }
 
 GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
-    : NanoWidget((NanoWidget *)ui),
+    : WolfWidget(ui),
       ui(ui),
       graphVerticesPool(wolf::maxVertices, this, GraphVertexType::Middle),
       focusedElement(nullptr),
@@ -165,7 +166,7 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
 
     initializeDefaultVertices();
 
-    getParentWindow().addIdleCallback(this);
+    getApp().addIdleCallback(this);
 
     fRightClickMenu = new RightClickMenu(this);
 
@@ -660,7 +661,11 @@ void GraphWidgetInner::onNanoDisplay()
 
 bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
 {
-    const Point<int> point = wolf::flipY(ev.pos, getHeight());
+    const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
+
+    // the pos used to be an int, but DPF changed it to a double; 
+    // let's do a quick and dirty conversion for now
+    Point<int> point = Point<int>(posDouble.getX(), posDouble.getY());
 
     //Testing for mouse hover on tension handles
     for (int i = 0; i < lineEditor.getVertexCount() - 1; ++i)
@@ -775,7 +780,11 @@ GraphNode *GraphWidgetInner::getHoveredNode(Point<int> cursorPos)
 
 bool GraphWidgetInner::leftClick(const MouseEvent &ev)
 {
-    const Point<int> point = wolf::flipY(ev.pos, getHeight());
+    const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
+
+    // the pos used to be an int, but DPF changed it to a double; 
+    // let's do a quick and dirty conversion for now
+    Point<int> point = Point<int>(posDouble.getX(), posDouble.getY());
 
     if (mouseRightDown)
         return true;
@@ -833,7 +842,11 @@ void GraphWidgetInner::rightClickMenuItemSelected(RightClickMenuItem *rightClick
 
 bool GraphWidgetInner::rightClick(const MouseEvent &ev)
 {
-    const Point<int> point = wolf::flipY(ev.pos, getHeight());
+    const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
+
+    // the pos used to be an int, but DPF changed it to a double; 
+    // let's do a quick and dirty conversion for now
+    Point<int> point = Point<int>(posDouble.getX(), posDouble.getY());
 
     if (mouseLeftDown)
         return true;
@@ -933,7 +946,12 @@ bool GraphWidgetInner::onMotion(const MotionEvent &ev)
     if (mustHideVertices)
         return false;
 
-    const Point<int> point = wolf::flipY(ev.pos, getHeight());
+    const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
+
+    // the pos used to be an int, but DPF changed it to a double; 
+    // let's do a quick and dirty conversion for now
+    Point<int> point = Point<int>(posDouble.getX(), posDouble.getY());
+    
     GraphNode *hoveredNode = getHoveredNode(point);
 
     if (contains(ev.pos) || hoveredNode != nullptr)

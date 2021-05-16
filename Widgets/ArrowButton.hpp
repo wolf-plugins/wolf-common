@@ -14,7 +14,7 @@ public:
         Right
     };
 
-    explicit ArrowButton(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit ArrowButton(Widget  *widget, Size<uint> size) noexcept;
     void setArrowDirection(ArrowDirection direction);
 
 protected:

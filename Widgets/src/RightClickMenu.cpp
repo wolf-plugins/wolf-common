@@ -63,8 +63,8 @@ RightClickMenuSection::RightClickMenuSection(const char *label) noexcept : Right
     fIsSection = true;
 }
 
-RightClickMenu::RightClickMenu(NanoWidget *parent) noexcept : Window(parent->getParentApp(), parent->getParentWindow()),
-                                                              NanoWidget((Window &)*this),
+RightClickMenu::RightClickMenu(Widget  *parent) noexcept : Window(parent->getParentApp(), parent->getParentWindow()),
+                                                              WolfWidget(parent),
                                                               fParent(parent),
                                                               fFontSize(17.0f),
                                                               fSectionFontSize(14.0f),
@@ -373,9 +373,11 @@ bool RightClickMenu::onMotion(const MotionEvent &ev)
     close();
 } */
 
-void RightClickMenu::onClose()
+bool RightClickMenu::onClose()
 {
     fHoveredIndex = -1;
+
+    return true;
 }
 
 END_NAMESPACE_DISTRHO

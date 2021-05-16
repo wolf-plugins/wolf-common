@@ -16,8 +16,8 @@ GraphNode::GraphNode(GraphWidgetInner *parent) : parent(parent),
 
 GraphNode::~GraphNode() {}
 
-bool GraphNode::onMotion(const Widget::MotionEvent &) { return false; }
-bool GraphNode::onMouse(const Widget::MouseEvent &) { return false; }
+bool GraphNode::onMotion(const MotionEvent &) { return false; }
+bool GraphNode::onMouse(const MouseEvent &) { return false; }
 void GraphNode::render() {}
 
 GraphVertex::GraphVertex(GraphWidgetInner *parent, GraphVertexType type) : GraphNode(parent),
@@ -238,7 +238,7 @@ void GraphVertex::updateGraph()
     parent->ui->setState("graph", lineEditor->serialize());
 }
 
-bool GraphVertex::onMotion(const Widget::MotionEvent &ev)
+bool GraphVertex::onMotion(const MotionEvent &ev)
 {
     if (!grabbed)
     {
@@ -246,7 +246,11 @@ bool GraphVertex::onMotion(const Widget::MotionEvent &ev)
         return true;
     }
 
-    Point<int> pos = wolf::flipY(ev.pos, parent->getHeight());
+    Point<double> posDouble = wolf::flipY(ev.pos, parent->getHeight());
+
+    // the pos used to be an int, but DPF changed it to a double; 
+    // let's do a quick and dirty conversion for now
+    Point<int> pos = Point<int>(posDouble.getX(), posDouble.getY());
 
     Point<int> clampedPosition = clampVertexPosition(pos);
     surface.setPos(clampedPosition);
@@ -274,7 +278,7 @@ void GraphTensionHandle::reset()
     parent->ui->setState("graph", lineEditor->serialize());
 }
 
-bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
+bool GraphTensionHandle::onMotion(const MotionEvent &ev)
 {
     if (!grabbed)
     {
@@ -284,7 +288,11 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
 
     const float resistance = 4.0f;
 
-    Point<int> pos = wolf::flipY(ev.pos, parent->getHeight());
+    Point<double> posDouble = wolf::flipY(ev.pos, parent->getHeight());
+
+    // the pos used to be an int, but DPF changed it to a double; 
+    // let's do a quick and dirty conversion for now
+    Point<int> pos = Point<int>(posDouble.getX(), posDouble.getY());
 
     const GraphVertex *leftVertex = vertex;
     const GraphVertex *rightVertex = vertex->getVertexAtRight();
@@ -314,7 +322,7 @@ void GraphVertex::removeFromGraph()
     parent->removeVertex(index);
 }
 
-bool GraphVertex::leftDoubleClick(const Widget::MouseEvent &)
+bool GraphVertex::leftDoubleClick(const MouseEvent &)
 {
     removeFromGraph();
     //getParentWindow().setCursorStyle(Window::CursorStyle::Default);
@@ -327,7 +335,7 @@ void GraphVertex::clipCursorToNeighbouringVertices()
 
 }
 
-bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
+bool GraphVertex::onMouse(const MouseEvent &ev)
 {
     using namespace std::chrono;
 
@@ -361,13 +369,19 @@ GraphTensionHandle::GraphTensionHandle(GraphWidgetInner *parent, GraphVertex *ve
 {
 }
 
-bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
+bool GraphTensionHandle::onMouse(const MouseEvent &ev)
 {
     grabbed = ev.press;
 
     if (grabbed)
     {
-        mouseDownPosition = wolf::flipY(ev.pos, parent->getHeight());
+        Point<double> posDouble = wolf::flipY(ev.pos, parent->getHeight());
+
+        // the pos used to be an int, but DPF changed it to a double; 
+        // let's do a quick and dirty conversion for now
+        Point<int> pos = Point<int>(posDouble.getX(), posDouble.getY());
+
+        mouseDownPosition = wolf::flipY(pos, parent->getHeight());
     }
 
     parent->repaint();

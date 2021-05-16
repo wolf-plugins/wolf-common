@@ -3,7 +3,7 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoSwitch::NanoSwitch(NanoWidget *widget, Size<uint> size) noexcept
+NanoSwitch::NanoSwitch(Widget  *widget, Size<uint> size) noexcept
     : WolfWidget(widget),
       fIsDown(false),
       fIsHovered(false),

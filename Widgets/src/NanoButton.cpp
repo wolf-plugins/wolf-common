@@ -3,8 +3,8 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoButton::NanoButton(NanoWidget *parent, Size<uint> size) noexcept
-    : NanoWidget(parent),
+NanoButton::NanoButton(Widget  *parent, Size<uint> size) noexcept
+    : WolfWidget(parent),
       fState(kNanoStateNormal),
       fHasFocus(false),
       fIsHovered(false)
