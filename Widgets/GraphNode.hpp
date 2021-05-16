@@ -135,7 +135,7 @@ private:
   GraphVertexType type;
 
   std::chrono::steady_clock::time_point lastClickTimePoint;
-  uint lastClickButton;
+  int lastClickButton;
 
   DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphVertex)
 };

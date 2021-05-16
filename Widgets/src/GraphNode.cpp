@@ -341,12 +341,12 @@ bool GraphVertex::onMouse(const MouseEvent &ev)
 
     steady_clock::time_point now = steady_clock::now();
 
-    bool doubleClick = ev.press && lastClickButton == ev.button && duration_cast<duration<double>>(now - lastClickTimePoint).count() < 0.250;
+    bool doubleClick = ev.press && lastClickButton == (int)ev.button && duration_cast<duration<double>>(now - lastClickTimePoint).count() < 0.250;
 
     if (ev.press)
     {
         lastClickTimePoint = now;
-        lastClickButton = ev.button;
+        lastClickButton = (int)ev.button;
     }
 
     if (doubleClick)
