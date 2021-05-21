@@ -43,8 +43,8 @@ public:
 protected:
   void idleCallback() override;
 
-  virtual bool onMotion(const MotionEvent &ev);
-  virtual bool onMouse(const MouseEvent &ev);
+  virtual bool onMotion(const Widget::MotionEvent &ev);
+  virtual bool onMouse(const Widget::MouseEvent &ev);
 
   Point<int> getCorrectedPos(Point<int> surface);
   wolf::Graph *getLineEditor() const;
@@ -70,8 +70,8 @@ public:
   float getY() const override;
 
 protected:
-  bool onMotion(const MotionEvent &ev) override;
-  bool onMouse(const MouseEvent &ev) override;
+  bool onMotion(const Widget::MotionEvent &ev) override;
+  bool onMouse(const Widget::MouseEvent &ev) override;
 
 private:
   GraphVertex *vertex;
@@ -115,12 +115,12 @@ public:
   GraphVertexType getType();
 
 protected:
-  bool leftDoubleClick(const MouseEvent &ev);
+  bool leftDoubleClick(const Widget::MouseEvent &ev);
 
   GraphTensionHandle tensionHandle;
 
-  bool onMotion(const MotionEvent &ev) override;
-  bool onMouse(const MouseEvent &ev) override;
+  bool onMotion(const Widget::MotionEvent &ev) override;
+  bool onMouse(const Widget::MouseEvent &ev) override;
 
   void clipCursorToNeighbouringVertices();
 

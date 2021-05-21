@@ -63,7 +63,7 @@ RightClickMenuSection::RightClickMenuSection(const char *label) noexcept : Right
     fIsSection = true;
 }
 
-RightClickMenu::RightClickMenu(Widget  *parent) noexcept : Window(parent->getParentApp(), parent->getParentWindow()),
+RightClickMenu::RightClickMenu(Widget  *parent) noexcept : Window(parent->getApp(), parent->getWindow()),
                                                               WolfWidget(parent),
                                                               fParent(parent),
                                                               fFontSize(17.0f),
@@ -92,7 +92,7 @@ void RightClickMenu::show(int posX, int posY)
 
     adaptSize();
 
-    Window::exec(false);
+    Window::runAsModal(false);
 }
 
 void RightClickMenu::close()
@@ -175,7 +175,7 @@ void RightClickMenu::adaptSize()
     const Size<uint> size = Size<uint>(fLongestWidth + fMargin.left + fMargin.right + 12, fItems.size() * fFontSize + fMargin.top + fMargin.bottom);
 
     Window::setSize(size);
-    NanoWidget::setSize(size);
+    NanoSubWidget::setSize(size);
 }
 
 RightClickMenuItem *RightClickMenu::getItemById(int id)
@@ -240,8 +240,8 @@ void RightClickMenu::setCallback(Callback *callback) noexcept
 
 void RightClickMenu::onNanoDisplay()
 {
-    const float width = NanoWidget::getWidth();
-    const float height = NanoWidget::getHeight();
+    const float width = NanoSubWidget::getWidth();
+    const float height = NanoSubWidget::getHeight();
 
     beginPath();
 

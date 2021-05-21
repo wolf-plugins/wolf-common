@@ -16,8 +16,8 @@ GraphNode::GraphNode(GraphWidgetInner *parent) : parent(parent),
 
 GraphNode::~GraphNode() {}
 
-bool GraphNode::onMotion(const MotionEvent &) { return false; }
-bool GraphNode::onMouse(const MouseEvent &) { return false; }
+bool GraphNode::onMotion(const Widget::MotionEvent &) { return false; }
+bool GraphNode::onMouse(const Widget::MouseEvent &) { return false; }
 void GraphNode::render() {}
 
 GraphVertex::GraphVertex(GraphWidgetInner *parent, GraphVertexType type) : GraphNode(parent),
@@ -220,7 +220,7 @@ Point<int> GraphVertex::clampVertexPosition(const Point<int> point) const
 
 Window &GraphNode::getParentWindow()
 {
-    return parent->getParentWindow();
+    return parent->getWindow();
 }
 
 void GraphVertex::updateGraph()
@@ -238,7 +238,7 @@ void GraphVertex::updateGraph()
     parent->ui->setState("graph", lineEditor->serialize());
 }
 
-bool GraphVertex::onMotion(const MotionEvent &ev)
+bool GraphVertex::onMotion(const Widget::MotionEvent &ev)
 {
     if (!grabbed)
     {
@@ -278,7 +278,7 @@ void GraphTensionHandle::reset()
     parent->ui->setState("graph", lineEditor->serialize());
 }
 
-bool GraphTensionHandle::onMotion(const MotionEvent &ev)
+bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
 {
     if (!grabbed)
     {
@@ -322,7 +322,7 @@ void GraphVertex::removeFromGraph()
     parent->removeVertex(index);
 }
 
-bool GraphVertex::leftDoubleClick(const MouseEvent &)
+bool GraphVertex::leftDoubleClick(const Widget::MouseEvent &)
 {
     removeFromGraph();
     //getParentWindow().setCursorStyle(Window::CursorStyle::Default);
@@ -335,7 +335,7 @@ void GraphVertex::clipCursorToNeighbouringVertices()
 
 }
 
-bool GraphVertex::onMouse(const MouseEvent &ev)
+bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
 {
     using namespace std::chrono;
 
@@ -369,7 +369,7 @@ GraphTensionHandle::GraphTensionHandle(GraphWidgetInner *parent, GraphVertex *ve
 {
 }
 
-bool GraphTensionHandle::onMouse(const MouseEvent &ev)
+bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
 {
     grabbed = ev.press;
 
