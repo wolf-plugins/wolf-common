@@ -168,7 +168,7 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
 
     getApp().addIdleCallback(this);
 
-    fRightClickMenu = new RightClickMenu(this);
+    /* fRightClickMenu = new RightClickMenu(this);
 
     fRightClickMenu->addSection("Node");
     fRightClickMenu->addItem(deleteNodeItem, "Delete", "(double L-click)");
@@ -179,7 +179,7 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
     fRightClickMenu->addItem(stairsCurveItem, "Stairs");
     fRightClickMenu->addItem(waveCurveItem, "Wave");
 
-    fRightClickMenu->setCallback(this);
+    fRightClickMenu->setCallback(this); */
 
     using namespace WOLF_FONTS;
     createFontFromMemory("chivo_italic", (const uchar *)chivo_italic, chivo_italic_size, 0);

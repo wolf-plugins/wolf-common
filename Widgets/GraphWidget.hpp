@@ -222,7 +222,7 @@ private:
 
   float fInput;
 
-  ScopedPointer<RightClickMenu> fRightClickMenu;
+  // ScopedPointer<RightClickMenu> fRightClickMenu;
   GraphNode *fNodeSelectedByRightClick;
   wolf::CurveType fLastCurveTypeSelected;
 

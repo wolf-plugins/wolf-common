@@ -1,5 +1,6 @@
 #include "NanoLabel.hpp"
 #include "Mathf.hpp"
+#include "Fonts/chivo_bold.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -12,7 +13,10 @@ NanoLabel::NanoLabel(Widget  *widget, Size<uint> size) noexcept : WolfWidget(wid
 {
     setSize(size);
 
-    fFontId = findFont(NANOVG_DEJAVU_SANS_TTF);
+    using namespace WOLF_FONTS;
+    NanoVG::FontId chivoBoldId = createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
+    
+    fFontId = chivoBoldId;
 }
 
 void NanoLabel::onNanoDisplay()
