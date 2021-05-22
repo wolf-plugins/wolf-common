@@ -122,7 +122,7 @@ void VolumeKnob::draw()
     beginPath();
 
     strokeWidth(2.0f);
-    strokePaint(linearGradient(0, 0, 0, height - 10, Color(190, 190, 190, 0.2f), Color(23, 23, 23, 1.f)));
+    strokePaint(linearGradient(0, 0, 0, height - 10, Color(190, 190, 190, 0.f), Color(23, 23, 23, 1.f)));
 
     Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobDiameter, fKnobICol, fKnobOCol);
     fillPaint(knobPaint);

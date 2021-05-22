@@ -105,7 +105,7 @@ void OversampleWheel::drawText()
         text(std::round(width - trianglesWidth - trianglesHorizontalMargin - textMarginRight), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
 
         fontBlur(5.0f);
-        fillColor(Color(255, 255, 255, 80));
+        fillColor(Color(255, 255, 255, 0.4f));
 
         text(std::round(width - trianglesWidth - trianglesHorizontalMargin - textMarginRight), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
 
