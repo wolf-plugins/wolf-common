@@ -11,14 +11,14 @@ START_NAMESPACE_DISTRHO
 class LabelBoxList : public LabelContainer
 {
   public:
-    explicit LabelBoxList(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit LabelBoxList(Widget  *widget, Size<uint> size) noexcept;
     void goNext();
     void goPrevious();
     
   protected:
     void onNanoDisplay() override;
-    void onShow() override;
-    void onHide() override;
+    //void onShow() override;
+    //void onHide() override;
     
   private:
     LabelBox fLabelBox;

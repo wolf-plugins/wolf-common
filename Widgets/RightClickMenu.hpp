@@ -5,6 +5,7 @@
 #include "Window.hpp"
 #include "NanoVG.hpp"
 #include "NanoLabel.hpp"
+#include "WolfWidget.hpp"
 
 #include <vector>
 
@@ -49,7 +50,7 @@ public:
 };
 
 class RightClickMenu : private Window,
-                       public NanoWidget
+                       public WolfWidget
 {
 public:
   class Callback
@@ -59,7 +60,7 @@ public:
     virtual void rightClickMenuItemSelected(RightClickMenuItem *rightClickMenuItem) = 0;
   };
 
-  RightClickMenu(NanoWidget *parent) noexcept;
+  RightClickMenu(Widget  *parent) noexcept;
   ~RightClickMenu();
 
   void show(int posX, int posY);
@@ -75,11 +76,11 @@ public:
 
 protected:
   void onNanoDisplay() override;
-  void onFocusOut() override;
+  //void onFocusOut() override;
   bool onMouse(const MouseEvent &ev) override;
   bool onMotion(const MotionEvent &ev) override;
   void adaptSize();
-  void onClose() override;
+  bool onClose() override;
 
   DGL_NAMESPACE::Rectangle<float> getBoundsOfItem(const int index);
   DGL_NAMESPACE::Rectangle<float> getBoundsOfItemComment(const int index);
@@ -88,7 +89,7 @@ private:
   void findLongestItem();
 
   std::vector<RightClickMenuItem> fItems;
-  NanoWidget *fParent;
+  Widget *fParent;
 
   float fFontSize;
   float fSectionFontSize;

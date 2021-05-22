@@ -1,16 +1,17 @@
 #include "LabelBox.hpp"
 #include "Mathf.hpp"
+#include "Fonts/chivo_bold.hpp"
 
 //#include "Fonts/chivo_bold.hpp"
 
 START_NAMESPACE_DISTRHO
 
-LabelBox::LabelBox(NanoWidget *widget, Size<uint> size) noexcept : NanoWidget(widget)
+LabelBox::LabelBox(Widget  *widget, Size<uint> size) noexcept : WolfWidget(widget)
 {
     setSize(size);
 
-    //using namespace WOLF_FONTS;
-    //createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
+    using namespace WOLF_FONTS;
+    createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
 }
 
 void LabelBox::onNanoDisplay()
@@ -46,8 +47,6 @@ void LabelBox::onNanoDisplay()
     closePath();
 
     //Text
-    beginPath();
-
     fontFace("chivo_bold");
     fontSize(16.0f);
     fillColor(Color(255, 255, 255, 255));

@@ -8,7 +8,7 @@ START_NAMESPACE_DISTRHO
 class BipolarModeSwitch : public NanoSwitch
 {
 public:
-    explicit BipolarModeSwitch(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit BipolarModeSwitch(Widget  *widget, Size<uint> size) noexcept;
 
 protected:
     void drawHandle();

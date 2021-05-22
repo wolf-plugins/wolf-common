@@ -2,7 +2,7 @@
 
 START_NAMESPACE_DISTRHO
 
-ArrowButton::ArrowButton(NanoWidget *widget, Size<uint> size) noexcept : NanoButton(widget, size),
+ArrowButton::ArrowButton(Widget  *widget, Size<uint> size) noexcept : NanoButton(widget, size),
                                                                          fArrowDirection(Left)
 {
 }

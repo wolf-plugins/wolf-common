@@ -2,7 +2,7 @@
 
 START_NAMESPACE_DISTRHO
 
-ResetGraphButton::ResetGraphButton(NanoWidget *widget, Size<uint> size) noexcept : NanoButton(widget, size)
+ResetGraphButton::ResetGraphButton(Widget  *widget, Size<uint> size) noexcept : NanoButton(widget, size)
 {
 }
 

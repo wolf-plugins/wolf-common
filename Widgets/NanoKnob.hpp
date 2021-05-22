@@ -18,7 +18,7 @@ public:
     virtual void nanoKnobValueChanged(NanoKnob *nanoKnob, const float value) = 0;
   };
 
-  explicit NanoKnob(NanoWidget *widget, Size<uint> size) noexcept;
+  explicit NanoKnob(Widget  *widget, Size<uint> size) noexcept;
 
   float getValue() const noexcept;
   void setValue(float value, bool sendCallback = false) noexcept;
@@ -55,7 +55,7 @@ private:
   bool fUsingLog;
 
   bool fLeftMouseDown;
-  Point<int> fLeftMouseDownLocation;
+  Point<double> fLeftMouseDownLocation;
   bool fIsHovered;
   
   int fRotationAngle;

@@ -3,9 +3,8 @@
 
 START_NAMESPACE_DISTRHO
 
-WolfWidget::WolfWidget(NanoWidget *widget) noexcept : NanoWidget(widget)
+WolfWidget::WolfWidget(Widget *widget) noexcept : NanoSubWidget(widget)
 {
-    fFocusedWidgetId = widget->getFocusedWidgetIdPtr();
 }
 
 void WolfWidget::setDescription(const char *description)
@@ -20,17 +19,12 @@ const char *WolfWidget::getDescription()
 
 bool WolfWidget::canBeFocused()
 {
-    const uint id = *fFocusedWidgetId;
-
-    return id == kNoWidgetFocusedId || id == getId();
+    return true;
 }
 
 void WolfWidget::setFocus(bool focus)
 {
-    if(focus)
-        *fFocusedWidgetId = getId();
-    else
-        *fFocusedWidgetId = kNoWidgetFocusedId;
+    (void)focus;
 }
 
 END_NAMESPACE_DISTRHO

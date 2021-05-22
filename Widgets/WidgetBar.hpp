@@ -3,13 +3,14 @@
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class WidgetBar : public NanoWidget
+class WidgetBar : public WolfWidget
 {
   public:
-    explicit WidgetBar(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit WidgetBar(Widget  *widget, Size<uint> size) noexcept;
 
     void setFillPaint(Paint fillPaint);
     void setStrokePaint(Paint strokePaint);

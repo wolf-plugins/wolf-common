@@ -3,7 +3,7 @@
 
 START_NAMESPACE_DISTRHO
 
-LabelBoxList::LabelBoxList(NanoWidget *widget, Size<uint> size) noexcept : LabelContainer(widget, size),
+LabelBoxList::LabelBoxList(Widget  *widget, Size<uint> size) noexcept : LabelContainer(widget, size),
                                                                            fLabelBox(widget, size)
 {
     setSize(size);
@@ -29,7 +29,7 @@ void LabelBoxList::goPrevious()
     setSelectedIndex(index);
 }
 
-void LabelBoxList::onShow()
+/* void LabelBoxList::onShow()
 {
     fLabelBox.setVisible(true);
 }
@@ -37,6 +37,6 @@ void LabelBoxList::onShow()
 void LabelBoxList::onHide()
 {
     fLabelBox.setVisible(false);
-}
+} */
 
 END_NAMESPACE_DISTRHO

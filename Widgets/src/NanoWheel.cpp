@@ -4,10 +4,10 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoWheel::NanoWheel(NanoWidget *parent, Size<uint> size) noexcept
+NanoWheel::NanoWheel(Widget  *parent, Size<uint> size) noexcept
     : WolfWidget(parent),
       fLeftMouseDown(false),
-      fLeftMouseDownLocation(Point<int>(0, 0)),
+      fLeftMouseDownLocation(Point<double>(0, 0)),
       fIsHovered(true),
       fValue(0),
       fMin(0),
@@ -69,18 +69,11 @@ bool NanoWheel::onMouse(const MouseEvent &ev)
     if (ev.button != 1)
         return fLeftMouseDown;
 
-    Window &window = getParentWindow();
-
     if (!ev.press)
     {
         if (fLeftMouseDown == true)
         {
             fLeftMouseDown = false;
-
-            window.setCursorPos(this);
-            window.showCursor();
-            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
-
             return true;
         }
 
@@ -91,8 +84,6 @@ bool NanoWheel::onMouse(const MouseEvent &ev)
     {
         fLeftMouseDownLocation = ev.pos;
         fLeftMouseDown = true;
-
-        window.hideCursor();
 
         return true;
     }
@@ -107,7 +98,7 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
 
     if (fLeftMouseDown)
     {
-        const float tension = 40.0f;
+        const float tension = 20.0f;
 
         const int value = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / tension;
 
@@ -115,7 +106,7 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
         {
             fLeftMouseDownLocation.setY(ev.pos.getY());
 
-            Window &window = getParentWindow();
+            Window &window = getWindow();
             const int windowHeight = window.getHeight();
 
             if (ev.pos.getY() + getAbsoluteY() >= windowHeight - 1)
@@ -142,7 +133,7 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
         if (!fIsHovered)
         {
             fIsHovered = true;
-            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
+//            getParentWindow().setCursorStyle(Window::CursorStyle::UpDown);
         }
 
         return true;
@@ -150,7 +141,7 @@ bool NanoWheel::onMotion(const MotionEvent &ev)
     else if (fIsHovered)
     {
         fIsHovered = false;
-        getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+//        getParentWindow().setCursorStyle(Window::CursorStyle::Default);
     }
 
     return false;

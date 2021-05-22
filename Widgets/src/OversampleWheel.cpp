@@ -11,7 +11,7 @@ const float trianglesHeight = 6.0f;
 const float textMarginRight = 3.0f;
 const float outlineWidth = 2.0f;
 
-OversampleWheel::OversampleWheel(NanoWidget *widget, Size<uint> size) noexcept : NanoWheel(widget, size),
+OversampleWheel::OversampleWheel(Widget  *widget, Size<uint> size) noexcept : NanoWheel(widget, size),
                                                                                  fFontSize(18.0f)
 {
     using namespace WOLF_FONTS;
@@ -105,7 +105,7 @@ void OversampleWheel::drawText()
         text(std::round(width - trianglesWidth - trianglesHorizontalMargin - textMarginRight), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
 
         fontBlur(5.0f);
-        fillColor(Color(255, 255, 255, 80));
+        fillColor(Color(255, 255, 255, 0.4f));
 
         text(std::round(width - trianglesWidth - trianglesHorizontalMargin - textMarginRight), std::round(height / 1.45f), oversamplingFactors[getValue()], NULL);
 

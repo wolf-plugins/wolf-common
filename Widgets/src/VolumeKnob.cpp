@@ -1,8 +1,9 @@
 #include "VolumeKnob.hpp"
+#include "Application.hpp"
 
 START_NAMESPACE_DISTRHO
 
-VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(widget, size)
+VolumeKnob::VolumeKnob(Widget  *widget, Size<uint> size) noexcept : NanoKnob(widget, size)
 
 {
     const float radius = size.getHeight() / 2.0f;
@@ -19,7 +20,7 @@ VolumeKnob::VolumeKnob(NanoWidget *widget, Size<uint> size) noexcept : NanoKnob(
     fGrowAnimation = new FloatTransition(0.100f, &fKnobDiameter, fKnobDiameter - 7);
     fHoverAnimation = new ColorTransition(0.200f, &fKnobOCol, fKnobTargetOCol);
 
-    widget->getParentWindow().addIdleCallback(this);
+    getApp().addIdleCallback(this);
 }
 
 void VolumeKnob::idleCallback()
@@ -47,7 +48,7 @@ void VolumeKnob::onMouseHover()
     if (!canBeFocused())
         return;
 
-    getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
+//    getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
 
     fHoverAnimation->play(Animation::Forward);
 }
@@ -57,7 +58,7 @@ void VolumeKnob::onMouseLeave()
     if (!canBeFocused())
         return;
         
-    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
+//    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 
     fHoverAnimation->play(Animation::Backward);
 }
@@ -121,7 +122,7 @@ void VolumeKnob::draw()
     beginPath();
 
     strokeWidth(2.0f);
-    strokePaint(linearGradient(0, 0, 0, height - 10, Color(190, 190, 190, 30), Color(23, 23, 23, 255)));
+    strokePaint(linearGradient(0, 0, 0, height - 10, Color(190, 190, 190, 0.f), Color(23, 23, 23, 1.f)));
 
     Paint knobPaint = linearGradient(radius, gaugeWidth, radius, fKnobDiameter, fKnobICol, fKnobOCol);
     fillPaint(knobPaint);

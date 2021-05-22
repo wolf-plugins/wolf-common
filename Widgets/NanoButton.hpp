@@ -3,10 +3,11 @@
 
 #include "Widget.hpp"
 #include "NanoVG.hpp"
+#include "WolfWidget.hpp"
 
 START_NAMESPACE_DISTRHO
 
-class NanoButton : public NanoWidget
+class NanoButton : public WolfWidget
 {
 public:
     class Callback
@@ -23,7 +24,7 @@ public:
     };
 
     explicit NanoButton(Window& parent, Size<uint> size) noexcept;
-    explicit NanoButton(NanoWidget* widget, Size<uint> size) noexcept;
+    explicit NanoButton(Widget * widget, Size<uint> size) noexcept;
 
     void setCallback(Callback* callback) noexcept;
 

@@ -3,7 +3,7 @@
 
 START_NAMESPACE_DISTRHO
 
-NanoKnob::NanoKnob(NanoWidget *widget, Size<uint> size) noexcept
+NanoKnob::NanoKnob(Widget  *widget, Size<uint> size) noexcept
     : WolfWidget(widget),
       fMin(0.0f),
       fMax(1.0f),
@@ -94,19 +94,12 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
     if (ev.button != 1)
         return fLeftMouseDown;
 
-    Window &window = getParentWindow();
-
     if (!ev.press)
     {
         if (fLeftMouseDown == true)
         {
             fLeftMouseDown = false;
             setFocus(false);
-
-            window.unclipCursor();
-            window.setCursorPos(this);
-            window.showCursor();
-            getParentWindow().setCursorStyle(Window::CursorStyle::Grab);
 
             onMouseUp();
 
@@ -122,9 +115,6 @@ bool NanoKnob::onMouse(const MouseEvent &ev)
         fLeftMouseDown = true;
         
         setFocus(true);
-        window.hideCursor();
-        window.clipCursor(Rectangle<int>(getAbsoluteX() + getWidth() / 2.0f, 0, 0, (int)window.getHeight()));
-
         onMouseDown();
 
         return true;
@@ -153,27 +143,10 @@ bool NanoKnob::onMotion(const MotionEvent &ev)
 {
     if (fLeftMouseDown)
     {
-        const float resistance = 1200.0f;
+        const float resistance = 300.0f;
         const float difference = (fLeftMouseDownLocation.getY() - ev.pos.getY()) / resistance * (fMax - fMin);
 
-        Window &window = getParentWindow();
-        const int windowHeight = window.getHeight();
-
-        // this doesn't seem right. TODO: investigate mouse cursor manipulation code for off-by-one error
-        if (ev.pos.getY() + getAbsoluteY() >= windowHeight - 1)
-        {
-            window.setCursorPos(getAbsoluteX(), 2);
-            fLeftMouseDownLocation.setY(-getAbsoluteY() + 2);
-        }
-        else if (ev.pos.getY() + getAbsoluteY() == 0)
-        {
-            window.setCursorPos(getAbsoluteX(), windowHeight - 2);
-            fLeftMouseDownLocation.setY(windowHeight - getAbsoluteY() - 2);
-        }
-        else
-        {
-            fLeftMouseDownLocation.setY(ev.pos.getY());
-        }
+        fLeftMouseDownLocation.setY(ev.pos.getY());
 
         setValue(fValue + difference, true);
 
@@ -205,7 +178,7 @@ bool NanoKnob::onScroll(const ScrollEvent &ev)
     if (!contains(ev.pos))
         return false;
 
-    const float resistance = 80.0f;
+    const float resistance = 40.0f;
 
     setValue(getValue() + ev.delta.getY() / resistance * (fMax - fMin), true);
 

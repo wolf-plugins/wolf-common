@@ -15,7 +15,7 @@ class NanoSwitch : public WolfWidget
         virtual void nanoSwitchClicked(NanoSwitch *nanoSwitch) = 0;
     };
 
-    explicit NanoSwitch(NanoWidget *widget, Size<uint> size) noexcept;
+    explicit NanoSwitch(Widget  *widget, Size<uint> size) noexcept;
 
     bool isDown() const noexcept;
     void setDown(bool down) noexcept;

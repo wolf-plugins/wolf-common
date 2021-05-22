@@ -1,8 +1,9 @@
 #include "RemoveDCSwitch.hpp"
+#include "Application.hpp"
 
 START_NAMESPACE_DISTRHO
 
-RemoveDCSwitch::RemoveDCSwitch(NanoWidget *widget, Size<uint> size) noexcept : NanoSwitch(widget, size),
+RemoveDCSwitch::RemoveDCSwitch(Widget  *widget, Size<uint> size) noexcept : NanoSwitch(widget, size),
 
                                                                                fSocketColor(27, 27, 27, 255),
                                                                                fSocketColorTransition(0.080f, &fSocketColor, Color(59, 36, 27, 255)),
@@ -24,7 +25,7 @@ RemoveDCSwitch::RemoveDCSwitch(NanoWidget *widget, Size<uint> size) noexcept : N
     const float mainRectHalfWidth = mainRectWidth / 2.0f;
     const float mainRectCenter = mainRectTopLeft + mainRectHalfWidth;
 
-    widget->getParentWindow().addIdleCallback(this);
+    getApp().addIdleCallback(this);
 
     const Paint targetGradient = radialGradient(mainRectCenter, mainRectCenter, 0.5f, mainRectHalfWidth, Color(254, 224, 191, 255), Color(240, 199, 154, 0));
 

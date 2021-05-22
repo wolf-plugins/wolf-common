@@ -10,6 +10,7 @@
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <vector>
 
 START_NAMESPACE_DISTRHO
 

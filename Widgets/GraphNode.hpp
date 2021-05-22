@@ -5,7 +5,7 @@
 
 START_NAMESPACE_DISTRHO
 
-class GraphWidgetInner;
+class GraphWidget;
 
 enum GraphVertexType
 {
@@ -17,9 +17,9 @@ enum GraphVertexType
 class GraphNode : public IdleCallback
 {
 public:
-  friend class GraphWidgetInner;
+  friend class GraphWidget;
 
-  GraphNode(GraphWidgetInner *parent);
+  GraphNode(GraphWidget *parent);
   ~GraphNode();
 
   /**
@@ -49,7 +49,7 @@ protected:
   Point<int> getCorrectedPos(Point<int> surface);
   wolf::Graph *getLineEditor() const;
 
-  GraphWidgetInner *parent;
+  GraphWidget *parent;
   Color color;
 
   bool grabbed;
@@ -58,9 +58,9 @@ protected:
 class GraphTensionHandle : public GraphNode
 {
 public:
-  friend class GraphWidgetInner;
+  friend class GraphWidget;
 
-  GraphTensionHandle(GraphWidgetInner *parent, GraphVertex *vertex);
+  GraphTensionHandle(GraphWidget *parent, GraphVertex *vertex);
 
   void reset();
   void render() override;
@@ -82,10 +82,10 @@ private:
 
 class GraphVertex : public GraphNode
 {
-  friend class GraphWidgetInner;
+  friend class GraphWidget;
 
 public:
-  GraphVertex(GraphWidgetInner *parent, GraphVertexType type);
+  GraphVertex(GraphWidget *parent, GraphVertexType type);
 
   void render() override;
 
