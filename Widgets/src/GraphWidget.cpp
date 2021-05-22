@@ -19,137 +19,9 @@ START_NAMESPACE_DISTRHO
 
 const char *graphDefaultState = "0x0p+0,0x0p+0,0x0p+0,0;0x1p+0,0x1p+0,0x0p+0,0;";
 
-GraphWidget::GraphWidget(UI *ui, Size<uint> size) : WolfWidget(ui),
-                                                    fMargin(16, 16, 16, 16)
-{
-    setSize(size);
-
-    const float graphWidth = size.getWidth() - fMargin.left - fMargin.right;
-    const float graphHeight = size.getHeight() - fMargin.top - fMargin.bottom;
-
-    const Size<uint> graphInnerSize = Size<uint>(graphWidth, graphHeight);
-
-    fGraphWidgetInner = new GraphWidgetInner(ui, graphInnerSize);
-    fGraphWidgetInner->parent = this;
-}
-
-GraphWidget::~GraphWidget()
-{
-}
-
-void GraphWidget::onNanoDisplay()
-{
-    const float width = getWidth();
-    const float height = getHeight();
-
-    beginPath();
-
-    fillColor(CONFIG_NAMESPACE::graph_margin);
-    strokeColor(CONFIG_NAMESPACE::side_borders);
-    strokeWidth(1.0f);
-
-    rect(0.f, 0.f, width, height);
-
-    fill();
-    stroke();
-
-    closePath();
-
-    beginPath();
-
-    const float topBorderWidth = 2.0f;
-
-    strokeColor(CONFIG_NAMESPACE::top_border);
-    strokeWidth(topBorderWidth);
-
-    moveTo(0, 1);
-    lineTo(width, 1);
-
-    stroke();
-
-    closePath();
-
-    translate(fMargin.left, fMargin.top);
-    fGraphWidgetInner->setAbsolutePos(getAbsoluteX() + fMargin.left, getAbsoluteY() + fMargin.top);
-
-    fGraphWidgetInner->drawBackground();
-    fGraphWidgetInner->drawGrid();
-    fGraphWidgetInner->drawInOutLabels();
-
-    fGraphWidgetInner->flipYAxis();
-
-    if (fGraphWidgetInner->focusedElement != nullptr && dynamic_cast<GraphVertex *>(fGraphWidgetInner->focusedElement))
-        fGraphWidgetInner->drawAlignmentLines();
-
-    fGraphWidgetInner->drawGradient();
-    fGraphWidgetInner->drawGraphLine(CONFIG_NAMESPACE::graph_edges_stroke_width, CONFIG_NAMESPACE::graph_edges_foreground_normal, CONFIG_NAMESPACE::graph_edges_foreground_focused); //inner
-
-    fGraphWidgetInner->drawInputIndicator();
-
-    if (!fGraphWidgetInner->mustHideVertices)
-        fGraphWidgetInner->drawVertices();
-}
-
-void GraphWidget::onResize(const ResizeEvent &ev)
-{
-    if (ev.oldSize.isNull())
-        return;
-
-    const float graphInnerWidth = getWidth() - fMargin.left - fMargin.right;
-    const float graphInnerHeight = getHeight() - fMargin.top - fMargin.bottom;
-
-    const Size<uint> graphInnerSize = Size<uint>(graphInnerWidth, graphInnerHeight);
-
-    fGraphWidgetInner->setSize(graphInnerSize);
-}
-
-void GraphWidget::rebuildFromString(const char *serializedGraph)
-{
-    fGraphWidgetInner->rebuildFromString(serializedGraph);
-}
-
-void GraphWidget::reset()
-{
-    fGraphWidgetInner->reset();
-}
-
-void GraphWidget::updateInput(const float input)
-{
-    fGraphWidgetInner->updateInput(input);
-}
-
-void GraphWidget::setGraphGradientMode(GraphGradientMode graphGradientMode)
-{
-    fGraphWidgetInner->setGraphGradientMode(graphGradientMode);
-}
-
-void GraphWidget::setHorizontalWarpAmount(const float warpAmount)
-{
-    fGraphWidgetInner->setHorizontalWarpAmount(warpAmount);
-}
-
-void GraphWidget::setHorizontalWarpType(const wolf::WarpType warpType)
-{
-    fGraphWidgetInner->setHorizontalWarpType(warpType);
-}
-
-void GraphWidget::setVerticalWarpAmount(const float warpAmount)
-{
-    fGraphWidgetInner->setVerticalWarpAmount(warpAmount);
-}
-
-void GraphWidget::setVerticalWarpType(const wolf::WarpType warpType)
-{
-    fGraphWidgetInner->setVerticalWarpType(warpType);
-}
-
-void GraphWidget::setMustHideVertices(const bool hide)
-{
-    fGraphWidgetInner->setMustHideVertices(hide);
-}
-
-GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
+GraphWidget::GraphWidget(UI *ui, Size<uint> size)
     : WolfWidget(ui),
+      fMargin(16, 16, 16, 16),
       ui(ui),
       graphVerticesPool(wolf::maxVertices, this, GraphVertexType::Middle),
       focusedElement(nullptr),
@@ -185,7 +57,7 @@ GraphWidgetInner::GraphWidgetInner(UI *ui, Size<uint> size)
     createFontFromMemory("chivo_italic", (const uchar *)chivo_italic, chivo_italic_size, 0);
 }
 
-GraphWidgetInner::~GraphWidgetInner()
+GraphWidget::~GraphWidget()
 {
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
@@ -193,7 +65,7 @@ GraphWidgetInner::~GraphWidgetInner()
     }
 }
 
-void GraphWidgetInner::onResize(const ResizeEvent &ev)
+void GraphWidget::onResize(const ResizeEvent &ev)
 {
     if (ev.oldSize.isNull())
         return;
@@ -201,7 +73,7 @@ void GraphWidgetInner::onResize(const ResizeEvent &ev)
     positionGraphNodes();
 }
 
-void GraphWidgetInner::positionGraphNodes()
+void GraphWidget::positionGraphNodes()
 {
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
@@ -214,7 +86,7 @@ void GraphWidgetInner::positionGraphNodes()
     repaint();
 }
 
-void GraphWidgetInner::initializeDefaultVertices()
+void GraphWidget::initializeDefaultVertices()
 {
     //Left vertex
     GraphVertex *vertex = graphVerticesPool.getObject();
@@ -235,7 +107,7 @@ void GraphWidgetInner::initializeDefaultVertices()
     graphVertices[1] = vertex;
 }
 
-void GraphWidgetInner::reset()
+void GraphWidget::reset()
 {
     resetVerticesPool();
 
@@ -245,7 +117,7 @@ void GraphWidgetInner::reset()
     lineEditor.rebuildFromString(graphDefaultState);
 }
 
-void GraphWidgetInner::resetVerticesPool()
+void GraphWidget::resetVerticesPool()
 {
     for (int i = 0; i < lineEditor.getVertexCount(); ++i)
     {
@@ -253,7 +125,7 @@ void GraphWidgetInner::resetVerticesPool()
     }
 }
 
-void GraphWidgetInner::rebuildFromString(const char *serializedGraph)
+void GraphWidget::rebuildFromString(const char *serializedGraph)
 {
     resetVerticesPool();
 
@@ -279,20 +151,20 @@ void GraphWidgetInner::rebuildFromString(const char *serializedGraph)
     positionGraphNodes();
 }
 
-void GraphWidgetInner::updateAnimations()
+void GraphWidget::updateAnimations()
 {
 }
 
-void GraphWidgetInner::flipYAxis()
+void GraphWidget::flipYAxis()
 {
     transform(1.0f, 0.0f, 0.0f, -1.0f, 0.0f, getHeight());
 }
 
-void GraphWidgetInner::drawSubGrid()
+void GraphWidget::drawSubGrid()
 {
 }
 
-void GraphWidgetInner::drawGrid()
+void GraphWidget::drawGrid()
 {
     const float width = getWidth();
     const float height = getHeight();
@@ -392,7 +264,7 @@ void GraphWidgetInner::drawGrid()
     }
 }
 
-void GraphWidgetInner::drawBackground()
+void GraphWidget::drawBackground()
 {
     const float width = getWidth();
     const float height = getHeight();
@@ -411,7 +283,7 @@ void GraphWidgetInner::drawBackground()
     closePath();
 }
 
-bool GraphWidgetInner::edgeMustBeEmphasized(int vertexIndex)
+bool GraphWidget::edgeMustBeEmphasized(int vertexIndex)
 {
     if (focusedElement == nullptr)
         return false;
@@ -430,7 +302,7 @@ bool GraphWidgetInner::edgeMustBeEmphasized(int vertexIndex)
     return focusedElement == vertex || focusedElement == vertex->getVertexAtRight();*/
 }
 
-void GraphWidgetInner::drawGraphEdge(int vertexIndex, float lineWidth, Color color)
+void GraphWidget::drawGraphEdge(int vertexIndex, float lineWidth, Color color)
 {
     DISTRHO_SAFE_ASSERT(vertexIndex < lineEditor.getVertexCount() - 1);
 
@@ -464,7 +336,7 @@ void GraphWidgetInner::drawGraphEdge(int vertexIndex, float lineWidth, Color col
     closePath();
 }
 
-void GraphWidgetInner::drawGraphLine(float lineWidth, Color normalColor, Color emphasizedColor)
+void GraphWidget::drawGraphLine(float lineWidth, Color normalColor, Color emphasizedColor)
 {
     for (int i = 0; i < lineEditor.getVertexCount() - 1; ++i)
     {
@@ -474,7 +346,7 @@ void GraphWidgetInner::drawGraphLine(float lineWidth, Color normalColor, Color e
     }
 }
 
-void GraphWidgetInner::drawAlignmentLines()
+void GraphWidget::drawAlignmentLines()
 {
     const int x = focusedElement->getX();
     const int y = focusedElement->getY();
@@ -501,7 +373,7 @@ void GraphWidgetInner::drawAlignmentLines()
     translate(-0.5f, -0.5f);
 }
 
-void GraphWidgetInner::drawGradient()
+void GraphWidget::drawGradient()
 {
     if (graphGradientMode == GraphGradientMode::None)
         return;
@@ -543,48 +415,48 @@ void GraphWidgetInner::drawGradient()
     closePath();
 }
 
-void GraphWidgetInner::updateInput(const float input)
+void GraphWidget::updateInput(const float input)
 {
     fInput = input;
 }
 
-void GraphWidgetInner::setGraphGradientMode(GraphGradientMode graphGradientMode)
+void GraphWidget::setGraphGradientMode(GraphGradientMode graphGradientMode)
 {
     this->graphGradientMode = graphGradientMode;
     repaint();
 }
 
-void GraphWidgetInner::setHorizontalWarpAmount(const float warpAmount)
+void GraphWidget::setHorizontalWarpAmount(const float warpAmount)
 {
     lineEditor.setHorizontalWarpAmount(warpAmount);
     positionGraphNodes();
 }
 
-void GraphWidgetInner::setHorizontalWarpType(const wolf::WarpType warpType)
+void GraphWidget::setHorizontalWarpType(const wolf::WarpType warpType)
 {
     lineEditor.setHorizontalWarpType(warpType);
     positionGraphNodes();
 }
 
-void GraphWidgetInner::setVerticalWarpAmount(const float warpAmount)
+void GraphWidget::setVerticalWarpAmount(const float warpAmount)
 {
     lineEditor.setVerticalWarpAmount(warpAmount);
     positionGraphNodes();
 }
 
-void GraphWidgetInner::setVerticalWarpType(const wolf::WarpType warpType)
+void GraphWidget::setVerticalWarpType(const wolf::WarpType warpType)
 {
     lineEditor.setVerticalWarpType(warpType);
     positionGraphNodes();
 }
 
-void GraphWidgetInner::setMustHideVertices(const bool hide)
+void GraphWidget::setMustHideVertices(const bool hide)
 {
     mustHideVertices = hide;
     repaint();
 }
 
-void GraphWidgetInner::drawInputIndicator()
+void GraphWidget::drawInputIndicator()
 {
     const float width = getWidth();
     const float height = getHeight();
@@ -624,12 +496,12 @@ void GraphWidgetInner::drawInputIndicator()
     closePath();
 }
 
-void GraphWidgetInner::idleCallback()
+void GraphWidget::idleCallback()
 {
     repaint();
 }
 
-void GraphWidgetInner::drawInOutLabels()
+void GraphWidget::drawInOutLabels()
 {
     fontFace("chivo_italic");
     fontSize(36.f);
@@ -642,7 +514,7 @@ void GraphWidgetInner::drawInOutLabels()
     text(5, 0, "Out", NULL);
 }
 
-void GraphWidgetInner::drawVertices()
+void GraphWidget::drawVertices()
 {
     const int vertexCount = lineEditor.getVertexCount();
 
@@ -655,11 +527,60 @@ void GraphWidgetInner::drawVertices()
     }
 }
 
-void GraphWidgetInner::onNanoDisplay()
+void GraphWidget::onNanoDisplay()
 {
+    const float width = getWidth();
+    const float height = getHeight();
+
+    beginPath();
+
+    fillColor(CONFIG_NAMESPACE::graph_margin);
+    strokeColor(CONFIG_NAMESPACE::side_borders);
+    strokeWidth(1.0f);
+
+    rect(0.f, 0.f, width, height);
+
+    fill();
+    stroke();
+
+    closePath();
+
+    beginPath();
+
+    const float topBorderWidth = 2.0f;
+
+    strokeColor(CONFIG_NAMESPACE::top_border);
+    strokeWidth(topBorderWidth);
+
+    moveTo(0, 1);
+    lineTo(width, 1);
+
+    stroke();
+
+    closePath();
+
+    translate(fMargin.left, fMargin.top);
+    scale((float)(width - fMargin.left - fMargin.right) / width, (float)(height - fMargin.top - fMargin.bottom) / height);
+
+    drawBackground();
+    drawGrid();
+    drawInOutLabels();
+
+    flipYAxis();
+
+    if (focusedElement != nullptr && dynamic_cast<GraphVertex *>(focusedElement))
+        drawAlignmentLines();
+
+    drawGradient();
+    drawGraphLine(CONFIG_NAMESPACE::graph_edges_stroke_width, CONFIG_NAMESPACE::graph_edges_foreground_normal, CONFIG_NAMESPACE::graph_edges_foreground_focused); //inner
+
+    drawInputIndicator();
+
+    if (!mustHideVertices)
+        drawVertices();
 }
 
-bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
+bool GraphWidget::onScroll(const ScrollEvent &ev)
 {
     const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
 
@@ -691,7 +612,7 @@ bool GraphWidgetInner::onScroll(const ScrollEvent &ev)
     return false;
 }
 
-void GraphWidgetInner::removeVertex(int index)
+void GraphWidget::removeVertex(int index)
 {
     //Make sure the vertex to remove is in the middle of the graph
     if (index <= 0)
@@ -719,7 +640,7 @@ void GraphWidgetInner::removeVertex(int index)
     repaint();
 }
 
-GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
+GraphVertex *GraphWidget::insertVertex(const Point<int> pos)
 {
     int i = lineEditor.getVertexCount();
 
@@ -755,7 +676,7 @@ GraphVertex *GraphWidgetInner::insertVertex(const Point<int> pos)
     return vertex;
 }
 
-GraphNode *GraphWidgetInner::getHoveredNode(Point<int> cursorPos)
+GraphNode *GraphWidget::getHoveredNode(Point<int> cursorPos)
 {
     //Testing for mouse hover on graph vertices
     for (int i = lineEditor.getVertexCount() - 1; i >= 0; --i)
@@ -778,13 +699,30 @@ GraphNode *GraphWidgetInner::getHoveredNode(Point<int> cursorPos)
     return nullptr;
 }
 
-bool GraphWidgetInner::leftClick(const MouseEvent &ev)
+Point<int> GraphWidget::projectCursorPos(Point<double> pt)
 {
-    const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
+    // Flip the position upside down
+    const Point<double> flippedPos = wolf::flipY(pt, getHeight());
 
-    // the pos used to be an int, but DPF changed it to a double; 
-    // let's do a quick and dirty conversion for now
-    Point<int> point = Point<int>(posDouble.getX(), posDouble.getY());
+    // Adjust for zoom
+    const float innerGraphLeft = fMargin.left;
+    const float innerGraphRight = getWidth() - fMargin.right;
+    const float innerGraphWidth = innerGraphRight - innerGraphLeft;
+
+    const float innerGraphTop = fMargin.top;
+    const float innerGraphBottom = getHeight() - fMargin.bottom;
+    const float innerGraphHeight = innerGraphBottom - innerGraphTop;
+
+    // Inverse lerp
+    const float x = (flippedPos.getX() - innerGraphLeft) / innerGraphWidth;
+    const float y = (flippedPos.getY() - innerGraphTop) / innerGraphHeight;
+
+    return Point<int>(x * getWidth(), y * getHeight());
+}
+
+bool GraphWidget::leftClick(const MouseEvent &ev)
+{
+    const Point<int> point = projectCursorPos(ev.pos);
 
     if (mouseRightDown)
         return true;
@@ -815,12 +753,12 @@ bool GraphWidgetInner::leftClick(const MouseEvent &ev)
     return false;
 }
 
-bool GraphWidgetInner::middleClick(const MouseEvent &)
+bool GraphWidget::middleClick(const MouseEvent &)
 {
     return false;
 }
 
-void GraphWidgetInner::rightClickMenuItemSelected(RightClickMenuItem *rightClickMenuItem)
+void GraphWidget::rightClickMenuItemSelected(RightClickMenuItem *rightClickMenuItem)
 {
     GraphVertex *vertex = static_cast<GraphVertex *>(fNodeSelectedByRightClick);
 
@@ -840,13 +778,9 @@ void GraphWidgetInner::rightClickMenuItemSelected(RightClickMenuItem *rightClick
     }
 }
 
-bool GraphWidgetInner::rightClick(const MouseEvent &ev)
+bool GraphWidget::rightClick(const MouseEvent &ev)
 {
-    const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
-
-    // the pos used to be an int, but DPF changed it to a double; 
-    // let's do a quick and dirty conversion for now
-    Point<int> point = Point<int>(posDouble.getX(), posDouble.getY());
+    const Point<int> point = projectCursorPos(ev.pos);
 
     if (mouseLeftDown)
         return true;
@@ -923,7 +857,7 @@ bool GraphWidgetInner::rightClick(const MouseEvent &ev)
     return false;
 }
 
-bool GraphWidgetInner::onMouse(const MouseEvent &ev)
+bool GraphWidget::onMouse(const MouseEvent &ev)
 {
     if (mustHideVertices)
         return false;
@@ -941,16 +875,12 @@ bool GraphWidgetInner::onMouse(const MouseEvent &ev)
     return false;
 }
 
-bool GraphWidgetInner::onMotion(const MotionEvent &ev)
+bool GraphWidget::onMotion(const MotionEvent &ev)
 {
     if (mustHideVertices)
         return false;
 
-    const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
-
-    // the pos used to be an int, but DPF changed it to a double; 
-    // let's do a quick and dirty conversion for now
-    Point<int> point = Point<int>(posDouble.getX(), posDouble.getY());
+    const Point<int> point = projectCursorPos(ev.pos);
     
     GraphNode *hoveredNode = getHoveredNode(point);
 
@@ -986,7 +916,7 @@ bool GraphWidgetInner::onMotion(const MotionEvent &ev)
     return true;
 }
 
-void GraphWidgetInner::onFocusOut()
+void GraphWidget::onFocusOut()
 {
     if (focusedElement != nullptr)
     {
@@ -1003,7 +933,7 @@ void GraphWidgetInner::onFocusOut()
     repaint();
 }
 
-void GraphWidgetInner::onMouseLeave()
+void GraphWidget::onMouseLeave()
 {
 //    getParentWindow().setCursorStyle(Window::CursorStyle::Default);
 }

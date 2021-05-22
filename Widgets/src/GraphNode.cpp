@@ -9,7 +9,7 @@
 
 START_NAMESPACE_DISTRHO
 
-GraphNode::GraphNode(GraphWidgetInner *parent) : parent(parent),
+GraphNode::GraphNode(GraphWidget *parent) : parent(parent),
                                                  grabbed(false)
 {
 }
@@ -20,7 +20,7 @@ bool GraphNode::onMotion(const Widget::MotionEvent &) { return false; }
 bool GraphNode::onMouse(const Widget::MouseEvent &) { return false; }
 void GraphNode::render() {}
 
-GraphVertex::GraphVertex(GraphWidgetInner *parent, GraphVertexType type) : GraphNode(parent),
+GraphVertex::GraphVertex(GraphWidget *parent, GraphVertexType type) : GraphNode(parent),
                                                                            tensionHandle(parent, this),
                                                                            surface(Circle<int>(0, 0, 8.0f)),
                                                                            type(type),
@@ -246,11 +246,7 @@ bool GraphVertex::onMotion(const Widget::MotionEvent &ev)
         return true;
     }
 
-    Point<double> posDouble = wolf::flipY(ev.pos, parent->getHeight());
-
-    // the pos used to be an int, but DPF changed it to a double; 
-    // let's do a quick and dirty conversion for now
-    Point<int> pos = Point<int>(posDouble.getX(), posDouble.getY());
+    const Point<int> pos = parent->projectCursorPos(ev.pos);
 
     Point<int> clampedPosition = clampVertexPosition(pos);
     surface.setPos(clampedPosition);
@@ -288,11 +284,7 @@ bool GraphTensionHandle::onMotion(const Widget::MotionEvent &ev)
 
     const float resistance = 4.0f;
 
-    Point<double> posDouble = wolf::flipY(ev.pos, parent->getHeight());
-
-    // the pos used to be an int, but DPF changed it to a double; 
-    // let's do a quick and dirty conversion for now
-    Point<int> pos = Point<int>(posDouble.getX(), posDouble.getY());
+    const Point<int> pos = parent->projectCursorPos(ev.pos);
 
     const GraphVertex *leftVertex = vertex;
     const GraphVertex *rightVertex = vertex->getVertexAtRight();
@@ -364,7 +356,7 @@ bool GraphVertex::onMouse(const Widget::MouseEvent &ev)
     return true;
 }
 
-GraphTensionHandle::GraphTensionHandle(GraphWidgetInner *parent, GraphVertex *vertex) : GraphNode(parent),
+GraphTensionHandle::GraphTensionHandle(GraphWidget *parent, GraphVertex *vertex) : GraphNode(parent),
                                                                                         vertex(vertex)
 {
 }
@@ -375,11 +367,7 @@ bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
 
     if (grabbed)
     {
-        Point<double> posDouble = wolf::flipY(ev.pos, parent->getHeight());
-
-        // the pos used to be an int, but DPF changed it to a double; 
-        // let's do a quick and dirty conversion for now
-        Point<int> pos = Point<int>(posDouble.getX(), posDouble.getY());
+        const Point<int> pos = parent->projectCursorPos(ev.pos);
 
         mouseDownPosition = wolf::flipY(pos, parent->getHeight());
     }

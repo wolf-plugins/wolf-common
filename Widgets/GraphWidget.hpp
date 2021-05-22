@@ -22,18 +22,17 @@ enum class GraphGradientMode
   Bottom
 };
 
-class GraphWidgetInner : public WolfWidget,
+class GraphWidget: public WolfWidget,
                          public IdleCallback,
                          public RightClickMenu::Callback
 {
   friend class GraphNode;
   friend class GraphVertex;
   friend class GraphTensionHandle;
-  friend class GraphWidget;
 
 public:
-  GraphWidgetInner(UI *ui, Size<uint> size);
-  ~GraphWidgetInner();
+  GraphWidget(UI *ui, Size<uint> size);
+  ~GraphWidget();
 
   /**
    * Recreate the graph according to a saved state.
@@ -44,6 +43,19 @@ public:
    * Reset the graph back into its default state.
    */
   void reset();
+
+
+  void updateInput(const float input);
+
+  void setGraphGradientMode(GraphGradientMode graphGradientMode);
+
+  void setHorizontalWarpAmount(const float warpAmount);
+  void setHorizontalWarpType(const wolf::WarpType warpType);
+
+  void setVerticalWarpAmount(const float warpAmount);
+  void setVerticalWarpType(const wolf::WarpType warpType);
+
+  void setMustHideVertices(const bool hide);
 
 protected:
   enum GraphRightClickMenuItems
@@ -120,18 +132,6 @@ protected:
    */
   void drawGradient();
 
-  void updateInput(const float input);
-
-  void setGraphGradientMode(GraphGradientMode graphGradientMode);
-
-  void setHorizontalWarpAmount(const float warpAmount);
-  void setHorizontalWarpType(const wolf::WarpType warpType);
-
-  void setVerticalWarpAmount(const float warpAmount);
-  void setVerticalWarpType(const wolf::WarpType warpType);
-
-  void setMustHideVertices(const bool hide);
-
   void positionGraphNodes();
 
   /**
@@ -160,7 +160,11 @@ protected:
   bool rightClick(const MouseEvent &ev);
 
 private:
+  Margin fMargin;
+
   UI *ui;
+
+  Point<int> projectCursorPos(Point<double> pt);
 
   /**
    * Initialize the left and right vertices in the graph.
@@ -225,39 +229,6 @@ private:
   // ScopedPointer<RightClickMenu> fRightClickMenu;
   GraphNode *fNodeSelectedByRightClick;
   wolf::CurveType fLastCurveTypeSelected;
-
-  GraphWidget *parent;
-
-  DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWidgetInner)
-};
-
-class GraphWidget : public WolfWidget
-{
-public:
-  GraphWidget(UI *ui, Size<uint> size);
-  ~GraphWidget();
-
-  void rebuildFromString(const char *serializedGraph);
-  void reset();
-  void updateInput(const float input);
-
-  void setGraphGradientMode(GraphGradientMode graphGradientMode);
-
-  void setHorizontalWarpAmount(const float warpAmount);
-  void setHorizontalWarpType(const wolf::WarpType warpType);
-
-  void setVerticalWarpAmount(const float warpAmount);
-  void setVerticalWarpType(const wolf::WarpType warpType);
-
-  void setMustHideVertices(const bool hide);
-
-protected:
-  void onResize(const ResizeEvent &ev) override;
-  void onNanoDisplay() override;
-
-private:
-  ScopedPointer<GraphWidgetInner> fGraphWidgetInner;
-  Margin fMargin;
 
   DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GraphWidget)
 };
