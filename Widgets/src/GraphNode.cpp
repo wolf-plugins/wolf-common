@@ -369,7 +369,7 @@ bool GraphTensionHandle::onMouse(const Widget::MouseEvent &ev)
     {
         const Point<int> pos = parent->projectCursorPos(ev.pos);
 
-        mouseDownPosition = wolf::flipY(pos, parent->getHeight());
+        mouseDownPosition = pos;
     }
 
     parent->repaint();

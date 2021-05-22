@@ -582,7 +582,7 @@ void GraphWidget::onNanoDisplay()
 
 bool GraphWidget::onScroll(const ScrollEvent &ev)
 {
-    const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
+    /* const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
 
     // the pos used to be an int, but DPF changed it to a double; 
     // let's do a quick and dirty conversion for now
@@ -603,11 +603,11 @@ bool GraphWidget::onScroll(const ScrollEvent &ev)
             ui->setState("graph", lineEditor.serialize());
             repaint();
 
-//            getParentWindow().setCursorPos(tensionHandle->getAbsoluteX(), tensionHandle->getAbsoluteY());
+            //getParentWindow().setCursorPos(tensionHandle->getAbsoluteX(), tensionHandle->getAbsoluteY());
 
             return true;
         }
-    }
+    } */
 
     return false;
 }
