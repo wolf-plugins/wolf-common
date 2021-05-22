@@ -580,7 +580,7 @@ void GraphWidget::onNanoDisplay()
         drawVertices();
 }
 
-bool GraphWidget::onScroll(const ScrollEvent &ev)
+bool GraphWidget::onScroll(const ScrollEvent &)
 {
     /* const Point<double> posDouble = wolf::flipY(ev.pos, getHeight());
 
